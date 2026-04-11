@@ -1,0 +1,4 @@
+# Phase 2 — Threat Intelligence IOC Collector
+# Pin minor versions for reproducibility; update periodically.
+
+requests>=2.31.0,<3.0

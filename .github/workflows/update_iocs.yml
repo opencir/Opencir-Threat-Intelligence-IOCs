@@ -1,0 +1,145 @@
+name: Update IOC Feeds
+
+on:
+  schedule:
+    # Run every 6 hours at :05 past the hour (stagger to avoid rate limits)
+    - cron: "5 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      debug_mode:
+        description: "Enable verbose logging"
+        required: false
+        default: "false"
+
+concurrency:
+  group: ioc-update
+  cancel-in-progress: false   # never cancel a running update mid-commit
+
+permissions:
+  contents: write   # needed to push the updated feed files
+
+jobs:
+  collect-and-consolidate:
+    name: Collect → Validate → Consolidate → Commit
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      # ── 1. Checkout ─────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      # ── 2. Python setup ──────────────────────────────────────────────────────
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # ── 3. Collect feeds (parallel-ish via background processes) ─────────────
+      - name: Collect Abuse.ch feeds
+        run: python scripts/fetch_abusech.py
+        continue-on-error: true   # partial failure shouldn't abort the whole run
+
+      - name: Collect CISA KEV catalog
+        run: python scripts/fetch_cisa.py
+        continue-on-error: true
+
+      - name: Collect AlienVault OTX pulses
+        env:
+          OTX_API_KEY: ${{ secrets.OTX_API_KEY }}
+        run: python scripts/fetch_otx.py
+        continue-on-error: true
+
+      # ── 4. Consolidate ───────────────────────────────────────────────────────
+      - name: Consolidate and deduplicate IOCs
+        run: python scripts/consolidate.py
+
+      # ── 5. Show stats ────────────────────────────────────────────────────────
+      - name: Print run statistics
+        run: |
+          echo "=== Run Statistics ==="
+          cat consolidated/run_stats.json | python -m json.tool
+          echo ""
+          echo "=== File sizes ==="
+          ls -lh consolidated/
+
+      # ── 6. Commit & push ─────────────────────────────────────────────────────
+      - name: Commit updated IOCs
+        run: |
+          git config --global user.name  "ioc-bot[actions]"
+          git config --global user.email "ioc-bot@users.noreply.github.com"
+
+          # Stage feed data and consolidated outputs
+          git add feeds/ consolidated/
+
+          # Only commit if there are actual changes
+          if git diff --cached --quiet; then
+            echo "No changes to commit — IOCs unchanged since last run."
+          else
+            TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+            TOTAL=$(python -c "import json; d=json.load(open('consolidated/run_stats.json')); print(d['total_deduped'])")
+            git commit -m "chore: update IOCs [${TIMESTAMP}] — ${TOTAL} unique indicators"
+            git push
+          fi
+
+      # ── 7. Create summary ─────────────────────────────────────────────────────
+      - name: Write job summary
+        if: always()
+        run: |
+          python - <<'PYEOF'
+          import json, pathlib, os
+
+          stats_file = pathlib.Path("consolidated/run_stats.json")
+          if not stats_file.exists():
+              print("No stats file found.")
+              exit(0)
+
+          s = json.loads(stats_file.read_text())
+
+          summary = [
+              "## IOC Update Summary",
+              "",
+              f"| Metric | Value |",
+              f"|--------|-------|",
+              f"| Run at | {s['run_at']} |",
+              f"| Raw IOCs ingested | {s['total_raw']:,} |",
+              f"| After validation | {s['total_valid']:,} |",
+              f"| After deduplication | {s['total_deduped']:,} |",
+              f"| Filtered (noise) | {s['filtered']:,} |",
+              f"| Duplicates removed | {s['duplicates_removed']:,} |",
+              "",
+              "### Breakdown by type",
+              "",
+              "| Type | Count |",
+              "|------|-------|",
+          ]
+          for ioc_type, count in sorted(s.get("by_type", {}).items()):
+              summary.append(f"| {ioc_type} | {count:,} |")
+
+          summary_text = "\n".join(summary) + "\n"
+          summary_path = os.environ.get("GITHUB_STEP_SUMMARY", "/dev/stdout")
+          with open(summary_path, "a") as fh:
+              fh.write(summary_text)
+          print(summary_text)
+          PYEOF
+
+  # ── Optional: notify on failure ──────────────────────────────────────────────
+  notify-on-failure:
+    name: Notify on failure
+    runs-on: ubuntu-latest
+    needs: collect-and-consolidate
+    if: failure()
+    steps:
+      - name: Log failure
+        run: |
+          echo "::error::IOC update pipeline failed. Check the 'collect-and-consolidate' job logs for details."
+          echo "Consider checking API rate limits or feed availability."

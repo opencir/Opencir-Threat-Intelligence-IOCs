@@ -15,6 +15,8 @@ Import this module from consolidate.py; all functions are pure (no I/O).
 import ipaddress
 import logging
 import re
+import json
+from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
@@ -120,10 +122,9 @@ def is_valid_ip(value: str) -> bool:
     """Return True if *value* is a public, routable IP address."""
     if not value:
         return False
-    # Strip optional port (e.g. "1.2.3.4:8080")
-    host = value.split(":")[0] if ":" in value and not value.startswith("[") else value
-    # Handle bracketed IPv6
-    host = host.strip("[]")
+    host = value.strip().strip("[]")
+    if host.count(":") == 1 and "." in host.split(":")[0]:
+        host = host.split(":", 1)[0]
     try:
         addr = ipaddress.ip_address(host)
     except ValueError:
@@ -266,8 +267,9 @@ def filter_iocs(iocs: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], int]:
 
 def normalise_ip(value: str) -> str:
     """Canonicalise an IP address string (strips port, normalises IPv6)."""
-    host = value.split(":")[0] if ":" in value and not value.startswith("[") else value
-    host = host.strip("[]")
+    host = value.strip().strip("[]")
+    if host.count(":") == 1 and "." in host.split(":")[0]:
+        host = host.split(":", 1)[0]
     try:
         return str(ipaddress.ip_address(host))
     except ValueError:
@@ -285,8 +287,22 @@ def normalise_hash(value: str) -> str:
 
 
 def normalise_url(value: str) -> str:
-    """Strip trailing whitespace from a URL."""
-    return value.strip()
+    """Lowercase scheme/host and strip trailing whitespace from a URL."""
+    parsed = urlparse(value.strip())
+    if not parsed.scheme or not parsed.netloc:
+        return value.strip()
+    hostname = (parsed.hostname or "").lower()
+    if not hostname:
+        return value.strip()
+    netloc = hostname
+    if parsed.port:
+        netloc = f"{hostname}:{parsed.port}"
+    if parsed.username:
+        auth = parsed.username
+        if parsed.password:
+            auth = f"{auth}:{parsed.password}"
+        netloc = f"{auth}@{netloc}"
+    return parsed._replace(scheme=parsed.scheme.lower(), netloc=netloc).geturl()
 
 
 def normalise_ioc(ioc: dict[str, Any]) -> dict[str, Any]:
@@ -303,3 +319,46 @@ def normalise_ioc(ioc: dict[str, Any]) -> dict[str, Any]:
     if normaliser:
         return {**ioc, "value": normaliser(value)}
     return ioc
+
+
+def validate_feed_directory(feeds_dir: Path) -> dict[str, Any]:
+    """Validate all JSON feed files and return a summary."""
+    files = sorted(feeds_dir.glob("*.json"))
+    total_raw = 0
+    total_valid = 0
+    by_file: dict[str, dict[str, int]] = {}
+
+    for path in files:
+        data = json.loads(path.read_text())
+        if not isinstance(data, list):
+            continue
+        total_raw += len(data)
+        valid, filtered = filter_iocs(data)
+        total_valid += len(valid)
+        by_file[path.name] = {
+            "raw": len(data),
+            "valid": len(valid),
+            "filtered": filtered,
+        }
+
+    return {
+        "feed_files": len(files),
+        "total_raw": total_raw,
+        "total_valid": total_valid,
+        "total_filtered": total_raw - total_valid,
+        "by_file": by_file,
+    }
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Validate IOC feed files.")
+    parser.add_argument(
+        "--feeds-dir",
+        default=str(Path(__file__).resolve().parent.parent / "feeds"),
+        help="Directory containing feed JSON files.",
+    )
+    args = parser.parse_args()
+    summary = validate_feed_directory(Path(args.feeds_dir))
+    print(json.dumps(summary, indent=2))

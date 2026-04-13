@@ -9,9 +9,9 @@ Reads every JSON file from feeds/, runs validation, deduplicates by
     malicious_ips.txt        plain IP list      (firewall EDL / blocklist)
     malicious_domains.txt    plain domain list
     malicious_urls.txt       plain URL list
-    malicious_hashes.csv     SHA256, MD5, type, source, first_seen
+    malicious_hashes.csv     hash,type,malware,source,first_seen
     cve_watchlist.txt        CVE-YYYY-NNNN lines
-    master_iocs.json         full structured dataset
+    ioc_master.json          full structured dataset
     stix_bundle.json         STIX 2.1 bundle (indicators + observed-data)
     run_stats.json           pipeline run statistics
 
@@ -23,13 +23,10 @@ import csv
 import json
 import logging
 import uuid
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-# Local validation helpers
-import sys
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+from config import CONSOLIDATED_DIR, FEEDS_DIR, now_iso
 from validate import filter_iocs, normalise_ioc
 
 # ── Logging ───────────────────────────────────────────────────────────────────
@@ -39,14 +36,6 @@ logging.basicConfig(
     datefmt="%Y-%m-%dT%H:%M:%SZ",
 )
 log = logging.getLogger("consolidate")
-
-# ── Paths ─────────────────────────────────────────────────────────────────────
-ROOT = Path(__file__).resolve().parent.parent
-FEEDS_DIR = ROOT / "feeds"
-CONSOLIDATED_DIR = ROOT / "consolidated"
-CONSOLIDATED_DIR.mkdir(parents=True, exist_ok=True)
-
-NOW_ISO = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -109,10 +98,20 @@ def deduplicate(iocs: list[dict[str, Any]]) -> list[dict[str, Any]]:
         else:
             existing = seen[key]
             # Merge sources
-            sources = list(set(existing.get("sources", []) + [ioc.get("source", "unknown")]))
+            sources = sorted(set(existing.get("sources", []) + [ioc.get("source", "unknown")]))
+            tags = sorted(set((existing.get("tags") or []) + (ioc.get("tags") or [])))
+            first_seen_values = [v for v in [existing.get("first_seen", ""), ioc.get("first_seen", "")] if v]
+            last_seen_values = [v for v in [existing.get("last_seen", ""), ioc.get("last_seen", "")] if v]
             # Keep highest confidence
             conf = max(existing.get("confidence", 0), ioc.get("confidence", 0))
-            seen[key] = {**existing, "sources": sources, "confidence": conf}
+            seen[key] = {
+                **existing,
+                "sources": sources,
+                "tags": tags,
+                "confidence": conf,
+                "first_seen": min(first_seen_values) if first_seen_values else "",
+                "last_seen": max(last_seen_values) if last_seen_values else "",
+            }
 
     deduped = list(seen.values())
     log.info("After deduplication: %d unique IOCs", len(deduped))
@@ -139,18 +138,11 @@ def split_by_type(
 # Step 5 — Write outputs
 # ─────────────────────────────────────────────────────────────────────────────
 
-def write_plain_list(iocs: list[dict[str, Any]], filename: str, header: str = "") -> Path:
-    """Write a plain-text one-per-line blocklist (firewall / DNS-sink format)."""
+def write_plain_list(iocs: list[dict[str, Any]], filename: str):
+    """Write a plain-text one-per-line blocklist."""
     path = CONSOLIDATED_DIR / filename
-    lines = [
-        f"# {header}",
-        f"# Generated: {NOW_ISO}",
-        f"# Total: {len(iocs)}",
-        "#",
-    ]
-    for ioc in sorted(iocs, key=lambda x: x.get("value", "")):
-        lines.append(ioc["value"])
-    path.write_text("\n".join(lines) + "\n")
+    values = [ioc["value"] for ioc in sorted(iocs, key=lambda x: x.get("value", ""))]
+    path.write_text("\n".join(values) + ("\n" if values else ""))
     log.info("Wrote %d entries → %s", len(iocs), path.name)
     return path
 
@@ -161,47 +153,51 @@ def write_hash_csv(iocs: list[dict[str, Any]], filename: str = "malicious_hashes
     CrowdStrike Falcon / SentinelOne custom IOC lists.
     """
     path = CONSOLIDATED_DIR / filename
-    fieldnames = [
-        "sha256",
-        "md5",
-        "sha1",
-        "file_name",
-        "file_type",
-        "signature",
-        "malware",
-        "source",
-        "first_seen",
-        "confidence",
-        "tags",
-    ]
+    fieldnames = ["hash", "type", "malware", "source", "first_seen"]
+    rows: list[dict[str, str]] = []
+    seen_rows: set[tuple[str, str]] = set()
+
+    for ioc in sorted(iocs, key=lambda x: x.get("value", "")):
+        malware = ioc.get("malware", "") or ioc.get("malware_printable", "") or ioc.get("signature", "")
+        source = ",".join(ioc.get("sources", [ioc.get("source", "")]))
+        first_seen = ioc.get("first_seen", "")
+        candidates = [
+            ("md5", ioc.get("md5")),
+            ("sha1", ioc.get("sha1")),
+            ("sha256", ioc.get("sha256") or ioc.get("value")),
+        ]
+        for hash_type, hash_value in candidates:
+            clean_hash = (hash_value or "").strip().lower()
+            expected_length = {"md5": 32, "sha1": 40, "sha256": 64}[hash_type]
+            if len(clean_hash) != expected_length:
+                continue
+            dedupe_key = (clean_hash, hash_type)
+            if dedupe_key in seen_rows:
+                continue
+            seen_rows.add(dedupe_key)
+            rows.append(
+                {
+                    "hash": clean_hash,
+                    "type": hash_type,
+                    "malware": malware,
+                    "source": source,
+                    "first_seen": first_seen,
+                }
+            )
+
     with path.open("w", newline="") as fh:
         writer = csv.DictWriter(fh, fieldnames=fieldnames, extrasaction="ignore")
         writer.writeheader()
-        for ioc in sorted(iocs, key=lambda x: x.get("value", "")):
-            writer.writerow(
-                {
-                    "sha256": ioc.get("sha256") or (ioc["value"] if len(ioc["value"]) == 64 else ""),
-                    "md5": ioc.get("md5") or (ioc["value"] if len(ioc["value"]) == 32 else ""),
-                    "sha1": ioc.get("sha1") or (ioc["value"] if len(ioc["value"]) == 40 else ""),
-                    "file_name": ioc.get("file_name", ""),
-                    "file_type": ioc.get("file_type", ""),
-                    "signature": ioc.get("signature", ""),
-                    "malware": ioc.get("malware", "") or ioc.get("malware_printable", ""),
-                    "source": ",".join(ioc.get("sources", [ioc.get("source", "")])),
-                    "first_seen": ioc.get("first_seen", ""),
-                    "confidence": ioc.get("confidence", 0),
-                    "tags": ",".join(ioc.get("tags") or []),
-                }
-            )
-    log.info("Wrote %d hashes → %s", len(iocs), path.name)
+        writer.writerows(rows)
+    log.info("Wrote %d hash rows → %s", len(rows), path.name)
     return path
 
 
 def write_master_json(iocs: list[dict[str, Any]]) -> Path:
     """Write the full structured dataset as a single JSON file."""
-    path = CONSOLIDATED_DIR / "master_iocs.json"
+    path = CONSOLIDATED_DIR / "ioc_master.json"
     output = {
-        "generated_at": NOW_ISO,
+        "generated_at": now_iso(),
         "total": len(iocs),
         "iocs": iocs,
     }
@@ -216,16 +212,23 @@ def write_stix_bundle(iocs: list[dict[str, Any]]) -> Path:
     Full STIX 2.1 spec: https://docs.oasis-open.org/cti/stix/v2.1/
     """
     path = CONSOLIDATED_DIR / "stix_bundle.json"
+    current_time = now_iso()
 
     # STIX pattern templates per IOC type
     def _stix_pattern(ioc: dict) -> str | None:
         t = ioc.get("type", "")
         v = ioc.get("value", "").replace("'", "\\'")
         patterns = {
-            "ip": f"[ipv4-addr:value = '{v}']",
+            "ip": f"[ipv6-addr:value = '{v}']" if ":" in v else f"[ipv4-addr:value = '{v}']",
             "domain": f"[domain-name:value = '{v}']",
             "url": f"[url:value = '{v}']",
-            "hash": f"[file:hashes.'SHA-256' = '{v}']" if len(v) == 64 else f"[file:hashes.MD5 = '{v}']",
+            "hash": (
+                f"[file:hashes.'SHA-256' = '{v}']"
+                if len(v) == 64
+                else f"[file:hashes.'SHA-1' = '{v}']"
+                if len(v) == 40
+                else f"[file:hashes.MD5 = '{v}']"
+            ),
             "email": f"[email-addr:value = '{v}']",
             "cve": f"[vulnerability:name = '{v}']",
         }
@@ -241,14 +244,14 @@ def write_stix_bundle(iocs: list[dict[str, Any]]) -> Path:
             "type": "indicator",
             "spec_version": "2.1",
             "id": f"indicator--{uuid.uuid4()}",
-            "created": ioc.get("first_seen") or NOW_ISO,
-            "modified": NOW_ISO,
+            "created": ioc.get("first_seen") or current_time,
+            "modified": current_time,
             "name": name[:512],
             "description": ioc.get("vulnerability_name") or ioc.get("malware_printable") or "",
             "indicator_types": ["malicious-activity"],
             "pattern": pattern,
             "pattern_type": "stix",
-            "valid_from": ioc.get("first_seen") or NOW_ISO,
+            "valid_from": ioc.get("first_seen") or current_time,
             "confidence": ioc.get("confidence", 0),
             "labels": ioc.get("tags") or [],
             "external_references": [
@@ -264,7 +267,7 @@ def write_stix_bundle(iocs: list[dict[str, Any]]) -> Path:
         "type": "bundle",
         "id": f"bundle--{uuid.uuid4()}",
         "spec_version": "2.1",
-        "created": NOW_ISO,
+        "created": current_time,
         "objects": indicators,
     }
     path.write_text(json.dumps(bundle, indent=2))
@@ -281,7 +284,7 @@ def write_run_stats(
     """Write a JSON stats file for pipeline monitoring / dashboards."""
     path = CONSOLIDATED_DIR / "run_stats.json"
     stats = {
-        "run_at": NOW_ISO,
+        "run_at": now_iso(),
         "total_raw": total_raw,
         "total_valid": total_valid,
         "total_deduped": total_deduped,
@@ -306,6 +309,7 @@ def run() -> None:
     total_raw = len(raw_iocs)
     if not raw_iocs:
         log.warning("No IOCs to consolidate — exiting")
+        write_run_stats(0, 0, 0, {})
         return
 
     # 2. Validate + normalise
@@ -325,21 +329,18 @@ def run() -> None:
         write_plain_list(
             buckets["ip"],
             "malicious_ips.txt",
-            "Malicious IP Blocklist — firewall EDL / ACL import",
         )
 
     if buckets.get("domain"):
         write_plain_list(
             buckets["domain"],
             "malicious_domains.txt",
-            "Malicious Domain Blocklist — DNS sinkhole / firewall FQDN",
         )
 
     if buckets.get("url"):
         write_plain_list(
             buckets["url"],
             "malicious_urls.txt",
-            "Malicious URL Blocklist — proxy / web gateway import",
         )
 
     if buckets.get("hash"):
@@ -349,7 +350,6 @@ def run() -> None:
         write_plain_list(
             buckets["cve"],
             "cve_watchlist.txt",
-            "Actively Exploited CVEs (CISA KEV + ThreatFox)",
         )
 
     write_master_json(deduped)

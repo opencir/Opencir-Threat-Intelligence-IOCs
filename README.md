@@ -1,147 +1,123 @@
-# Threat Intelligence IOC Distribution Platform — Phase 2 MVP
+# Unified Threat Intelligence IOC Platform
 
-Automated collection, validation, deduplication, and distribution of threat
-intelligence Indicators of Compromise (IOCs) from public feeds.
+Automated collection, consolidation, validation, and distribution of Indicators of
+Compromise (IOCs) from public threat intelligence feeds.
 
-> **Phase 3 note:** When you're ready to move to OpenCTI, the `stix_bundle.json`
-> output pipes directly into OpenCTI via a STIX/TAXII connector — no schema changes needed.
+## IOC Types Collected
 
----
-
-## Feeds
-
-| Feed | IOC Types | Update Frequency |
+| Type | Format | Use Case |
 |---|---|---|
-| **Abuse.ch Feodo Tracker** | Botnet C2 IPs | Every 6 h |
-| **Abuse.ch URLhaus** | Malicious URLs | Every 6 h |
-| **Abuse.ch ThreatFox** | IPs, domains, URLs, hashes | Every 6 h |
-| **Abuse.ch MalwareBazaar** | SHA256 / MD5 / SHA1 hashes | Every 6 h |
-| **CISA KEV** | Actively exploited CVEs | Every 6 h |
-| **AlienVault OTX** | IPs, domains, URLs, hashes, CVEs | Every 6 h |
+| IP Addresses | IPv4/IPv6 | Firewall blocklists (C2 servers, malicious hosts) |
+| File Hashes | MD5, SHA1, SHA256 | EDR blocking (CrowdStrike, SentinelOne) |
+| Domains | FQDN | DNS sinkholing, proxy blocking |
+| URLs | Full URL | Web gateway blocking |
 
----
+## Feed Sources
+
+| Source | Feed | IOC Types | Update Frequency |
+|---|---|---|---|
+| [Microsoft Threat Intelligence](https://www.microsoft.com/en-us/security/blog/topic/threat-intelligence/?sort-by=newest-oldest) | Threat intelligence blog IOCs | IPs, Domains, Hashes, URLs | Every 6 hours |
+| [AlienVault OTX](https://otx.alienvault.com/) | Community threat intel | All types | Every 6 hours |
+| [CISA KEV](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) | Exploited CVEs | CVEs | Every 6 hours |
 
 ## Repository Structure
 
 ```
 threat-intel-iocs/
-├── feeds/                        Raw feed data (auto-updated)
-│   ├── abusech_feodo.json
-│   ├── abusech_urlhaus.json
-│   ├── abusech_threatfox.json
-│   ├── abusech_malwarebazaar.json
-│   ├── cisa_kev.json
-│   └── otx_pulses.json
-├── consolidated/                 Processed & deduplicated outputs
-│   ├── malicious_ips.txt         → Firewall EDL / ACL import
-│   ├── malicious_domains.txt     → DNS sinkhole / FQDN blocklist
-│   ├── malicious_urls.txt        → Proxy / web gateway import
-│   ├── malicious_hashes.csv      → CrowdStrike / SentinelOne IOC list
-│   ├── cve_watchlist.txt         → Vuln scanner / SIEM correlation
-│   ├── master_iocs.json          → Full structured dataset
-│   ├── stix_bundle.json          → STIX 2.1 bundle (Phase 3 input)
-│   └── run_stats.json            → Pipeline statistics
+├── feeds/
+│   ├── msft_threat_intel.json
+│   ├── otx_pulses.json
+│   └── cisa_kev.json
+├── consolidated/
+│   ├── malicious_ips.txt
+│   ├── malicious_domains.txt
+│   ├── malicious_urls.txt
+│   ├── malicious_hashes.csv
+│   ├── cve_watchlist.txt
+│   ├── ioc_master.json
+│   ├── stix_bundle.json
+│   └── run_stats.json
 ├── scripts/
-│   ├── fetch_abusech.py          Abuse.ch collector (4 feeds)
-│   ├── fetch_cisa.py             CISA KEV collector
-│   ├── fetch_otx.py              AlienVault OTX collector
-│   ├── validate.py               IOC validation & normalisation library
-│   └── consolidate.py            Merge / dedup / export pipeline
+│   ├── config.py
+│   ├── fetch_msft.py
+│   ├── fetch_otx.py
+│   ├── fetch_cisa.py
+│   ├── consolidate.py
+│   └── validate.py
 ├── .github/workflows/
-│   └── update_iocs.yml           Scheduled GitHub Actions workflow
-└── requirements.txt
+│   └── update_iocs.yml
+├── requirements.txt
+└── README.md
 ```
-
----
 
 ## Quick Start
 
-### 1. Clone and set up
+### Run locally
 
 ```bash
-git clone https://github.com/<your-org>/threat-intel-iocs.git
-cd threat-intel-iocs
 pip install -r requirements.txt
-```
 
-### 2. Add your OTX API key
+# Fetch from all feeds
+export OTX_API_KEY=<your_otx_key>           # optional unless fetching OTX
 
-Get a free key at [otx.alienvault.com](https://otx.alienvault.com/api), then:
-
-**For GitHub Actions** — add a repository secret named `OTX_API_KEY`:
-`Settings → Secrets and variables → Actions → New repository secret`
-
-**For local runs:**
-```bash
-export OTX_API_KEY=<your_key>
-```
-
-### 3. Run locally
-
-```bash
-# Collect all feeds
-python scripts/fetch_abusech.py
+python scripts/fetch_msft.py
 python scripts/fetch_cisa.py
-python scripts/fetch_otx.py       # requires OTX_API_KEY
+python scripts/fetch_otx.py      # Requires OTX_API_KEY env var
 
-# Merge, validate, deduplicate, and export
+# Optional validation summary
+python scripts/validate.py
+
+# Consolidate into unified lists
 python scripts/consolidate.py
 ```
 
-### 4. Trigger the GitHub Actions workflow
+### Environment Variables
 
-Either push a commit or use `Actions → Update IOC Feeds → Run workflow` in the
-GitHub UI. The workflow runs automatically every 6 hours.
+| Variable | Required | Description |
+|---|---|---|
+| `OTX_API_KEY` | For OTX feed | Free API key from otx.alienvault.com |
 
----
+### GitHub Actions
 
-## Consuming the Outputs
+The workflow in `.github/workflows/update_iocs.yml` runs every 6 hours
+automatically. Set `OTX_API_KEY` as a repository secret.
 
-### Palo Alto / Fortinet / pfSense — IP & domain blocklists
+## Output Formats for Integration
 
-Point your External Dynamic List (EDL) at the GitHub **raw** URL:
+### Firewalls (Palo Alto, Fortinet, pfSense)
+
+Use the raw URL of `consolidated/malicious_ips.txt` as an External Dynamic List:
 
 ```
-https://raw.githubusercontent.com/<org>/<repo>/main/consolidated/malicious_ips.txt
-https://raw.githubusercontent.com/<org>/<repo>/main/consolidated/malicious_domains.txt
+https://raw.githubusercontent.com/<owner>/<repo>/main/consolidated/malicious_ips.txt
 ```
 
-### CrowdStrike Falcon — Custom IOC import
+### EDR Platforms (CrowdStrike, SentinelOne)
 
-Import `consolidated/malicious_hashes.csv` via:
-`Falcon Console → Intelligence → Custom IOCs → Import`
+Import `consolidated/malicious_hashes.csv` via custom IOC upload or API
+integration. The CSV uses the columns:
 
-### SentinelOne — Custom IOC list
+```csv
+hash,type,malware,source,first_seen
+```
 
-Import `consolidated/malicious_hashes.csv` via:
-`Singularity Console → Visibility → IOCs → Import`
+### SIEM (Splunk, Elastic)
 
-### Splunk / Elastic SIEM
-
-Ingest `consolidated/master_iocs.json` as a lookup table or use the raw feed
-files as threat intelligence sources.
-
-### OpenCTI (Phase 3)
-
-Upload `consolidated/stix_bundle.json` via the OpenCTI UI or TAXII push
-connector. All STIX 2.1 Indicator objects map cleanly to OpenCTI's schema.
-
----
+Ingest `consolidated/ioc_master.json` via scheduled lookup or API pull.
 
 ## Validation Logic
 
-`validate.py` filters out:
+`validate.py` filters out malformed or low-value data, including:
 
-- Private / RFC 1918 IP addresses (10.x, 172.16.x, 192.168.x, loopback, link-local)
-- Known-benign IPs (public DNS resolvers: 8.8.8.8, 1.1.1.1, etc.)
-- Known-benign domain suffixes (google.com, microsoft.com, cloudflare.com, etc.)
-- Malformed domains, URLs, hashes, and placeholder values
-- Hash strings of all-zeros or all-`f`s
-
----
+- private/reserved IP ranges and common public resolver IPs
+- known benign infrastructure domains
+- malformed domains, URLs, hashes, and CVE identifiers
+- placeholder hash values
 
 ## Roadmap
 
-- **Phase 3** — Deploy OpenCTI with Docker Compose, migrate feed connectors
-- **Phase 4** — TAXII 2.1 server endpoint, REST API, MISP sync
-- **Phase 5** — Confidence scoring, IOC aging/expiry, GreyNoise enrichment, MITRE ATT&CK tagging
+- [x] Phase 1 — Feed research & architecture
+- [x] Phase 2 — GitHub-based IOC collection
+- [ ] Phase 3 — OpenCTI deployment with STIX/TAXII
+- [ ] Phase 4 — Distribution APIs & integrations
+- [ ] Phase 5 — Enrichment, scoring & MITRE ATT&CK tagging

@@ -15,12 +15,11 @@ Fetches:
 import json
 import logging
 import os
-import sys
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 from typing import Any, Optional
 
 import requests
+from config import FEEDS_DIR, HEADERS, TIMEOUT, now_iso
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -29,15 +28,6 @@ logging.basicConfig(
     datefmt="%Y-%m-%dT%H:%M:%SZ",
 )
 log = logging.getLogger("fetch_otx")
-
-# ── Paths ─────────────────────────────────────────────────────────────────────
-ROOT = Path(__file__).resolve().parent.parent
-FEEDS_DIR = ROOT / "feeds"
-FEEDS_DIR.mkdir(parents=True, exist_ok=True)
-
-# ── Constants ──────────────────────────────────────────────────────────────────
-TIMEOUT = 30
-NOW_ISO = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 OTX_BASE_URL = "https://otx.alienvault.com/api/v1"
 
@@ -58,11 +48,6 @@ OTX_TYPE_MAP = {
     "Mutex": "mutex",
     "Yara": "yara",
 }
-
-HEADERS = {
-    "User-Agent": "ThreatIntel-Collector/1.0 (github-actions; contact: security@example.com)"
-}
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # OTX API client (thin wrapper)
@@ -113,7 +98,7 @@ class OTXClient:
 # IOC extraction from pulses
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _extract_iocs_from_pulse(pulse: dict) -> list[dict[str, Any]]:
+def _extract_iocs_from_pulse(pulse: dict, fetched_at: str) -> list[dict[str, Any]]:
     """Flatten all indicators from a single OTX pulse into IOC records."""
     pulse_id = pulse.get("id", "")
     pulse_name = pulse.get("name", "")
@@ -150,7 +135,7 @@ def _extract_iocs_from_pulse(pulse: dict) -> list[dict[str, Any]]:
                 "last_seen": pulse_modified,
                 "description": indicator.get("description", ""),
                 "confidence": 75,  # community-sourced; lower than vendor feeds
-                "fetched_at": NOW_ISO,
+                "fetched_at": fetched_at,
             }
         )
     return iocs
@@ -169,6 +154,7 @@ def fetch_otx(
     Fetch OTX subscribed pulses modified in the last *days_back* days and
     return a flat list of normalised IOC records.
     """
+    fetched_at = now_iso()
     client = OTXClient(api_key)
 
     modified_since = (
@@ -193,7 +179,7 @@ def fetch_otx(
 
     iocs: list[dict[str, Any]] = []
     for pulse in pulses:
-        iocs.extend(_extract_iocs_from_pulse(pulse))
+        iocs.extend(_extract_iocs_from_pulse(pulse, fetched_at))
 
     # Persist
     out_path = FEEDS_DIR / "otx_pulses.json"

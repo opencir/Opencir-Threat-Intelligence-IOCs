@@ -1,0 +1,334 @@
+[
+  {
+    "type": "domain",
+    "value": "mein-lonos-cloude.de",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-03-26",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-03-26",
+    "description": "Actor-controlled ClickFix landing page used in a MintsLoader campaign"
+  },
+  {
+    "type": "domain",
+    "value": "derko-meru.online",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-03-26",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-03-26",
+    "description": "MintsLoader C2"
+  },
+  {
+    "type": "domain",
+    "value": "tesra.shop",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-04-02",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-04-02",
+    "description": "Domain used in ClickFix command (entered intoRundialog) in a Lumma Stealer malvertising campaign"
+  },
+  {
+    "type": "domain",
+    "value": "cqsf.live",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-05-14",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-05-14",
+    "description": "Domain used in ClickFix command (entered intoRundialog) in the Latrodectus drive-by campaign"
+  },
+  {
+    "type": "domain",
+    "value": "access-ssa-gov.es",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-06-02",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-06-02",
+    "description": "ClickFix landing page used in a phishing campaign impersonating Social Security Administration (SSA)"
+  },
+  {
+    "type": "domain",
+    "value": "binancepizza.info",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-05-22",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-05-22",
+    "description": "ClickFix landing page"
+  },
+  {
+    "type": "domain",
+    "value": "panel-spectrum.net",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-05-30",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-05-30",
+    "description": "ClickFix landing page used in a Atomic macOS Stealer (AMOS) campaign"
+  },
+  {
+    "type": "url",
+    "value": "access-ssa-gov.es/ClientSetup.exe",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-06-02",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-06-02",
+    "description": "URL used in ClickFix command (entered intoRundialog) in the SSA phishing campaign"
+  },
+  {
+    "type": "url",
+    "value": "applemacios.com/vv/install.sh",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-05-30",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-05-30",
+    "description": "URL used in ClickFix command (entered in theBashshell) in the AMOS campaign"
+  },
+  {
+    "type": "url",
+    "value": "applemacios.com/vv/update",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-05-30",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-05-30",
+    "description": "URL used in the AMOS campaign to download the AMOS payload"
+  },
+  {
+    "type": "url",
+    "value": "guildmerger.co/verify/eminem",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-03-27",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-03-27",
+    "description": "ClickFix landing page used in OBSCURE#BAT campaign"
+  },
+  {
+    "type": "url",
+    "value": "files.catbox.moe/snenal.bat",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-03-27",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-03-27",
+    "description": "URL used in ClickFix command (entered intoRundialog) in the OBSCURE#BAT campaign"
+  },
+  {
+    "type": "ip",
+    "value": "185.234.72.186",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-02-24",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-02-24",
+    "description": "IP address used in OBSCURE#BAT campaign for C2"
+  },
+  {
+    "type": "ip",
+    "value": "45.94.31.176",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-03-27",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-03-27",
+    "description": "IP address used in OBSCURE#BAT campaign for C2"
+  },
+  {
+    "type": "ip",
+    "value": "3.138.123.13",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-05-06",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-05-06",
+    "description": "IP address used in ClickFix command (entered intoRundialog) in the Lampion phishing campaign"
+  },
+  {
+    "type": "ip",
+    "value": "16.171.23.221",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-05-06",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-05-06",
+    "description": "IP address used in Lampion malware campaign to download additional payloads"
+  },
+  {
+    "type": "ip",
+    "value": "3.23.103.13",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-05-06",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-05-06",
+    "description": "IP address used in Lampion malware campaign for C2"
+  },
+  {
+    "type": "ip",
+    "value": "83.242.96.159",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-05-06",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-05-06",
+    "description": "IP address used in Lampion malware campaign for C2"
+  },
+  {
+    "type": "ip",
+    "value": "5.8.9.77",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-05-06",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique",
+    "last_seen": "2025-05-06",
+    "description": "IP address used in Lampion malware campaign for C2"
+  },
+  {
+    "type": "domain",
+    "value": "applemacios.com",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-08-21T09:00:00",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique"
+  },
+  {
+    "type": "domain",
+    "value": "guildmerger.co",
+    "source": "microsoft-threat-intel",
+    "confidence": "high",
+    "tags": [
+      "threat-intelligence",
+      "microsoft"
+    ],
+    "first_seen": "2025-08-21T09:00:00",
+    "fetched_at": "2026-04-13T03:31:53Z",
+    "article_url": "https://www.microsoft.com/en-us/security/blog/2025/08/21/think-before-you-clickfix-analyzing-the-clickfix-social-engineering-technique/",
+    "article_title": "Think before you Click(Fix): Analyzing the ClickFix social engineering technique"
+  }
+]

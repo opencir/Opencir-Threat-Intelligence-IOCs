@@ -45,9 +45,9 @@ jobs:
           pip install -r requirements.txt
 
       # ── 3. Collect feeds (parallel-ish via background processes) ─────────────
-      - name: Collect Abuse.ch feeds
-        run: python scripts/fetch_abusech.py
-        continue-on-error: true   # partial failure shouldn't abort the whole run
+      - name: Collect Microsoft Threat Intelligence blog
+        run: python scripts/fetch_msft.py
+        continue-on-error: true
 
       - name: Collect CISA KEV catalog
         run: python scripts/fetch_cisa.py
@@ -59,20 +59,24 @@ jobs:
         run: python scripts/fetch_otx.py
         continue-on-error: true
 
-      # ── 4. Consolidate ───────────────────────────────────────────────────────
+      # ── 4. Validate ──────────────────────────────────────────────────────────
+      - name: Validate feed data
+        run: python scripts/validate.py
+
+      # ── 5. Consolidate ───────────────────────────────────────────────────────
       - name: Consolidate and deduplicate IOCs
         run: python scripts/consolidate.py
 
-      # ── 5. Show stats ────────────────────────────────────────────────────────
+      # ── 6. Show stats ────────────────────────────────────────────────────────
       - name: Print run statistics
         run: |
           echo "=== Run Statistics ==="
-          cat consolidated/run_stats.json | python -m json.tool
+          python -m json.tool consolidated/run_stats.json
           echo ""
           echo "=== File sizes ==="
           ls -lh consolidated/
 
-      # ── 6. Commit & push ─────────────────────────────────────────────────────
+      # ── 7. Commit & push ─────────────────────────────────────────────────────
       - name: Commit updated IOCs
         run: |
           git config --global user.name  "ioc-bot[actions]"
@@ -91,7 +95,7 @@ jobs:
             git push
           fi
 
-      # ── 7. Create summary ─────────────────────────────────────────────────────
+      # ── 8. Create summary ─────────────────────────────────────────────────────
       - name: Write job summary
         if: always()
         run: |

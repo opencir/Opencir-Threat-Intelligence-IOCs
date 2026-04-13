@@ -16,10 +16,10 @@ We store:
 import json
 import logging
 from datetime import datetime, timezone
-from pathlib import Path
 from typing import Any
 
 import requests
+from config import FEEDS_DIR, HEADERS, TIMEOUT, now_iso
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -29,22 +29,9 @@ logging.basicConfig(
 )
 log = logging.getLogger("fetch_cisa")
 
-# ── Paths ─────────────────────────────────────────────────────────────────────
-ROOT = Path(__file__).resolve().parent.parent
-FEEDS_DIR = ROOT / "feeds"
-FEEDS_DIR.mkdir(parents=True, exist_ok=True)
-
-# ── Constants ──────────────────────────────────────────────────────────────────
-TIMEOUT = 30
-NOW_ISO = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-
 CISA_KEV_URL = (
     "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
 )
-
-HEADERS = {
-    "User-Agent": "ThreatIntel-Collector/1.0 (github-actions; contact: security@example.com)"
-}
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -56,6 +43,7 @@ def fetch_cisa_kev() -> list[dict[str, Any]]:
     Download the CISA KEV JSON catalog and normalise entries into our
     standard IOC schema (type=cve).
     """
+    fetched_at = now_iso()
     log.info("Fetching CISA KEV catalog …")
     resp = requests.get(CISA_KEV_URL, headers=HEADERS, timeout=TIMEOUT)
     resp.raise_for_status()
@@ -92,7 +80,7 @@ def fetch_cisa_kev() -> list[dict[str, Any]]:
                 "known_ransomware": vuln.get("knownRansomwareCampaignUse", "Unknown"),
                 "notes": vuln.get("notes", ""),
                 "confidence": 100,  # CISA-confirmed exploitation
-                "fetched_at": NOW_ISO,
+                "fetched_at": fetched_at,
                 "catalog_version": catalog_version,
             }
         )

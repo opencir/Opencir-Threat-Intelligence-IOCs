@@ -1,0 +1,13 @@
+{
+  "run_at": "2026-04-13T03:39:17Z",
+  "total_raw": 21,
+  "total_valid": 21,
+  "total_deduped": 21,
+  "filtered": 0,
+  "duplicates_removed": 0,
+  "by_type": {
+    "domain": 9,
+    "url": 5,
+    "ip": 7
+  }
+}

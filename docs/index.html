@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Threat Intel IOC Hub — Microsoft Security Blog</title>
+  <meta name="description" content="Automated IOC collection from Microsoft Threat Intelligence. Download blocklists for firewalls, DNS, proxies, EDR, and SIEM/OpenCTI." />
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --accent: #1f6feb;
+      --accent-hover: #388bfd;
+      --green: #3fb950;
+      --yellow: #d29922;
+      --red: #f85149;
+      --purple: #bc8cff;
+      --orange: #e3b341;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --code-bg: #1c2128;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 24px 32px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    header h1 { font-size: 1.4rem; font-weight: 700; color: var(--text); }
+    header h1 span { color: var(--accent-hover); }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+    }
+    .badge-green { background: rgba(63,185,80,.15); color: var(--green); border: 1px solid rgba(63,185,80,.3); }
+    .badge-blue  { background: rgba(31,111,235,.15); color: var(--accent-hover); border: 1px solid rgba(31,111,235,.3); }
+    .badge-yellow{ background: rgba(210,153,34,.15); color: var(--orange); border: 1px solid rgba(210,153,34,.3); }
+
+    /* ── Main layout ── */
+    main { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+    section { margin-bottom: 48px; }
+    h2 { font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    h3 { font-size: 0.95rem; font-weight: 600; color: var(--muted); margin-bottom: 8px; }
+
+    /* ── Stat cards ── */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      padding: 20px; text-align: center;
+    }
+    .stat-card .num { font-size: 2rem; font-weight: 700; }
+    .stat-card .label { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+    .c-ip     { color: var(--red); }
+    .c-domain { color: var(--accent-hover); }
+    .c-url    { color: var(--purple); }
+    .c-hash   { color: var(--orange); }
+    .c-total  { color: var(--green); }
+
+    /* ── Download cards ── */
+    .feed-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .feed-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+      padding: 20px; display: flex; flex-direction: column; gap: 12px;
+    }
+    .feed-card h3 { font-size: 1rem; color: var(--text); margin-bottom: 0; }
+    .feed-card p { font-size: 0.83rem; color: var(--muted); flex: 1; }
+    .feed-card .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      padding: 2px 8px; border-radius: 12px; font-size: 0.72rem; font-weight: 600;
+      background: var(--code-bg); color: var(--muted); border: 1px solid var(--border);
+    }
+    .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 6px; font-size: 0.82rem; font-weight: 600;
+      text-decoration: none; cursor: pointer; transition: background .15s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; border: 1px solid rgba(255,255,255,.1); }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary { background: var(--code-bg); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent-hover); }
+    .btn svg { width: 14px; height: 14px; }
+
+    /* ── IOC Table ── */
+    .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+    thead { background: var(--code-bg); }
+    th { padding: 10px 14px; text-align: left; font-weight: 600; color: var(--muted); white-space: nowrap; }
+    td { padding: 9px 14px; border-top: 1px solid var(--border); vertical-align: top; }
+    tr:hover td { background: rgba(255,255,255,.02); }
+    .ioc-val { font-family: 'SF Mono', 'Fira Code', monospace; word-break: break-all; }
+    .type-badge { padding: 2px 8px; border-radius: 10px; font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
+    .t-ip     { background: rgba(248,81,73,.15);  color: var(--red); }
+    .t-domain { background: rgba(56,139,253,.15); color: var(--accent-hover); }
+    .t-url    { background: rgba(188,140,255,.15);color: var(--purple); }
+    .t-hash   { background: rgba(227,179,65,.15); color: var(--orange); }
+
+    /* ── Integration code blocks ── */
+    .code-block {
+      background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px;
+      padding: 16px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.82rem;
+      color: #79c0ff; overflow-x: auto; position: relative;
+    }
+    .code-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 6px; font-family: inherit; }
+    .integration-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+    .integration-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+    .integration-card h3 { font-size: 0.9rem; margin-bottom: 10px; color: var(--text); }
+
+    /* ── Filter bar ── */
+    .filter-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+    .filter-btn {
+      padding: 5px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 600;
+      border: 1px solid var(--border); background: var(--code-bg); color: var(--muted);
+      cursor: pointer; transition: all .15s;
+    }
+    .filter-btn.active, .filter-btn:hover { border-color: var(--accent); color: var(--accent-hover); background: rgba(31,111,235,.1); }
+    .filter-input {
+      flex: 1; min-width: 200px; padding: 6px 12px; border-radius: 6px;
+      background: var(--code-bg); border: 1px solid var(--border); color: var(--text);
+      font-size: 0.83rem; outline: none;
+    }
+    .filter-input:focus { border-color: var(--accent); }
+
+    /* ── Footer ── */
+    footer { text-align: center; padding: 32px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.8rem; }
+    footer a { color: var(--accent-hover); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      header { padding: 16px; }
+      main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<header>
+  <div>
+    <h1>🛡️ Threat Intel <span>IOC Hub</span></h1>
+    <div style="margin-top:6px; display:flex; gap:8px; flex-wrap:wrap;">
+      <span class="badge badge-green">● Live</span>
+      <span class="badge badge-blue">Source: Microsoft Security Blog</span>
+      <span class="badge badge-yellow" id="last-updated">Updated: —</span>
+    </div>
+  </div>
+  <a href="https://github.com/kuck6666/threat-intel-iocs" class="btn btn-secondary" target="_blank">
+    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+    GitHub Repo
+  </a>
+</header>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<main>
+
+  <!-- Stats -->
+  <section>
+    <h2>📊 Feed Statistics</h2>
+    <div class="stat-grid" id="stat-grid">
+      <div class="stat-card"><div class="num c-total" id="stat-total">—</div><div class="label">Total IOCs</div></div>
+      <div class="stat-card"><div class="num c-ip"     id="stat-ip">—</div><div class="label">IP Addresses</div></div>
+      <div class="stat-card"><div class="num c-domain" id="stat-domain">—</div><div class="label">Domains</div></div>
+      <div class="stat-card"><div class="num c-url"    id="stat-url">—</div><div class="label">URLs</div></div>
+      <div class="stat-card"><div class="num c-hash"   id="stat-hash">—</div><div class="label">File Hashes</div></div>
+      <div class="stat-card"><div class="num" style="color:var(--muted)" id="stat-sources">—</div><div class="label">Articles</div></div>
+    </div>
+  </section>
+
+  <!-- Download Feeds -->
+  <section>
+    <h2>⬇️ Download Feeds</h2>
+    <div class="feed-grid">
+
+      <div class="feed-card">
+        <h3>🔴 Malicious IPs</h3>
+        <p>IPv4/IPv6 addresses confirmed as C2 servers or malicious hosts. Import as an External Dynamic List (EDL) into firewalls.</p>
+        <div class="tags">
+          <span class="tag">Palo Alto EDL</span>
+          <span class="tag">Fortinet</span>
+          <span class="tag">pfSense</span>
+          <span class="tag">iptables</span>
+        </div>
+        <div class="btn-group">
+          <a class="btn btn-primary" href="https://raw.githubusercontent.com/kuck6666/threat-intel-iocs/main/consolidated/malicious_ips.txt" target="_blank">⬇ Plain TXT</a>
+          <a class="btn btn-secondary" href="https://github.com/kuck6666/threat-intel-iocs/blob/main/consolidated/malicious_ips.txt" target="_blank">View</a>
+        </div>
+      </div>
+
+      <div class="feed-card">
+        <h3>🔵 Malicious Domains</h3>
+        <p>Fully qualified domain names used in phishing, malware distribution, and C2. Import into DNS sinkholes or web proxies.</p>
+        <div class="tags">
+          <span class="tag">Pi-hole</span>
+          <span class="tag">Bind9 RPZ</span>
+          <span class="tag">Squid Proxy</span>
+          <span class="tag">Zscaler</span>
+        </div>
+        <div class="btn-group">
+          <a class="btn btn-primary" href="https://raw.githubusercontent.com/kuck6666/threat-intel-iocs/main/consolidated/malicious_domains.txt" target="_blank">⬇ Plain TXT</a>
+          <a class="btn btn-secondary" href="https://github.com/kuck6666/threat-intel-iocs/blob/main/consolidated/malicious_domains.txt" target="_blank">View</a>
+        </div>
+      </div>
+
+      <div class="feed-card">
+        <h3>🟣 Malicious URLs</h3>
+        <p>Full URLs used in ClickFix lures, malware delivery, and credential harvesting. Block at the web gateway.</p>
+        <div class="tags">
+          <span class="tag">Palo Alto URL Filter</span>
+          <span class="tag">Bluecoat</span>
+          <span class="tag">Web Gateway</span>
+        </div>
+        <div class="btn-group">
+          <a class="btn btn-primary" href="https://raw.githubusercontent.com/kuck6666/threat-intel-iocs/main/consolidated/malicious_urls.txt" target="_blank">⬇ Plain TXT</a>
+          <a class="btn btn-secondary" href="https://github.com/kuck6666/threat-intel-iocs/blob/main/consolidated/malicious_urls.txt" target="_blank">View</a>
+        </div>
+      </div>
+
+      <div class="feed-card">
+        <h3>🟠 File Hashes (CSV)</h3>
+        <p>MD5/SHA1/SHA256 hashes of malware samples. Import directly into CrowdStrike Falcon or SentinelOne custom IOC lists.</p>
+        <div class="tags">
+          <span class="tag">CrowdStrike</span>
+          <span class="tag">SentinelOne</span>
+          <span class="tag">Defender</span>
+        </div>
+        <div class="btn-group">
+          <a class="btn btn-primary" href="https://raw.githubusercontent.com/kuck6666/threat-intel-iocs/main/consolidated/malicious_hashes.csv" target="_blank">⬇ CSV</a>
+          <a class="btn btn-secondary" href="https://github.com/kuck6666/threat-intel-iocs/blob/main/consolidated/malicious_hashes.csv" target="_blank">View</a>
+        </div>
+      </div>
+
+      <div class="feed-card">
+        <h3>🟢 Master JSON</h3>
+        <p>Full structured dataset with all IOC types, metadata, descriptions, confidence scores, and source provenance. Use for SIEM ingestion.</p>
+        <div class="tags">
+          <span class="tag">Splunk</span>
+          <span class="tag">Elastic SIEM</span>
+          <span class="tag">Microsoft Sentinel</span>
+        </div>
+        <div class="btn-group">
+          <a class="btn btn-primary" href="https://raw.githubusercontent.com/kuck6666/threat-intel-iocs/main/consolidated/ioc_master.json" target="_blank">⬇ JSON</a>
+          <a class="btn btn-secondary" href="https://github.com/kuck6666/threat-intel-iocs/blob/main/consolidated/ioc_master.json" target="_blank">View</a>
+        </div>
+      </div>
+
+      <div class="feed-card">
+        <h3>⚡ STIX 2.1 Bundle</h3>
+        <p>OASIS STIX 2.1 Indicator objects for every IOC. Import into OpenCTI, MISP, Cortex XSOAR, or any TAXII-compatible platform.</p>
+        <div class="tags">
+          <span class="tag">OpenCTI</span>
+          <span class="tag">MISP</span>
+          <span class="tag">Cortex XSOAR</span>
+          <span class="tag">TAXII</span>
+        </div>
+        <div class="btn-group">
+          <a class="btn btn-primary" href="https://raw.githubusercontent.com/kuck6666/threat-intel-iocs/main/consolidated/stix_bundle.json" target="_blank">⬇ STIX JSON</a>
+          <a class="btn btn-secondary" href="https://github.com/kuck6666/threat-intel-iocs/blob/main/consolidated/stix_bundle.json" target="_blank">View</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- IOC Table -->
+  <section>
+    <h2>🔍 IOC Explorer</h2>
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterTable('all', this)">All</button>
+      <button class="filter-btn" onclick="filterTable('ip', this)">IP</button>
+      <button class="filter-btn" onclick="filterTable('domain', this)">Domain</button>
+      <button class="filter-btn" onclick="filterTable('url', this)">URL</button>
+      <button class="filter-btn" onclick="filterTable('hash', this)">Hash</button>
+      <input class="filter-input" id="search-input" type="search" placeholder="Search IOC, description, or tag…" oninput="searchTable(this.value)" />
+    </div>
+    <div class="table-wrap">
+      <table id="ioc-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Indicator</th>
+            <th>Description</th>
+            <th>First Seen</th>
+            <th>Source Article</th>
+          </tr>
+        </thead>
+        <tbody id="ioc-tbody">
+          <tr><td colspan="5" style="text-align:center; color:var(--muted); padding:32px;">Loading IOCs…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Integration Examples -->
+  <section>
+    <h2>🔌 Integration Examples</h2>
+    <div class="integration-grid">
+
+      <div class="integration-card">
+        <h3>🔥 Palo Alto — External Dynamic List (EDL)</h3>
+        <div class="code-label">Objects → External Dynamic Lists → Add URL:</div>
+        <div class="code-block">https://raw.githubusercontent.com/kuck6666/threat-intel-iocs/main/consolidated/malicious_ips.txt</div>
+      </div>
+
+      <div class="integration-card">
+        <h3>🌐 Pi-hole — Custom Blocklist</h3>
+        <div class="code-label">Settings → Adlists → Add:</div>
+        <div class="code-block">https://raw.githubusercontent.com/kuck6666/threat-intel-iocs/main/consolidated/malicious_domains.txt</div>
+      </div>
+
+      <div class="integration-card">
+        <h3>⚡ OpenCTI — Import STIX Bundle</h3>
+        <div class="code-label">Data → Import → Upload STIX 2.1 file or use URL:</div>
+        <div class="code-block">https://raw.githubusercontent.com/kuck6666/threat-intel-iocs/main/consolidated/stix_bundle.json</div>
+      </div>
+
+      <div class="integration-card">
+        <h3>📊 Splunk — Threat Intel Lookup</h3>
+        <div class="code-label">| inputlookup or scheduled search:</div>
+        <div class="code-block">| makeresults
+| eval url="https://raw.githubusercontent.com/kuck6666/threat-intel-iocs/main/consolidated/ioc_master.json"
+| map search="| inputlookup $url$"</div>
+      </div>
+
+      <div class="integration-card">
+        <h3>🐍 Python — Fetch &amp; Parse</h3>
+        <div class="code-label">Quick integration snippet:</div>
+        <div class="code-block">import requests
+url = "https://raw.githubusercontent.com/kuck6666/threat-intel-iocs/main/consolidated/ioc_master.json"
+iocs = requests.get(url).json()["iocs"]
+ips = [x["value"] for x in iocs if x["type"] == "ip"]</div>
+      </div>
+
+      <div class="integration-card">
+        <h3>🛡️ MISP — Feed Import</h3>
+        <div class="code-label">Sync Actions → Add Feed (type: MISP, free text, or STIX):</div>
+        <div class="code-block">Feed URL:
+https://raw.githubusercontent.com/kuck6666/threat-intel-iocs/main/consolidated/stix_bundle.json
+
+Format: STIX 2.1</div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Data sourced from <a href="https://www.microsoft.com/en-us/security/blog/topic/threat-intelligence/" target="_blank">Microsoft Security Blog — Threat Intelligence</a>. For defensive use only. Updated automatically every 6 hours via GitHub Actions.</p>
+  <p style="margin-top:8px;"><a href="https://github.com/kuck6666/threat-intel-iocs" target="_blank">github.com/kuck6666/threat-intel-iocs</a> · MIT License</p>
+</footer>
+
+<!-- ══════════════ SCRIPT ══════════════ -->
+<script>
+const RAW_BASE = "https://raw.githubusercontent.com/kuck6666/threat-intel-iocs/main";
+
+let allIOCs = [];
+let activeFilter = "all";
+let searchTerm = "";
+
+async function loadData() {
+  try {
+    const [masterRes, statsRes] = await Promise.all([
+      fetch(RAW_BASE + "/consolidated/ioc_master.json"),
+      fetch(RAW_BASE + "/consolidated/run_stats.json")
+    ]);
+
+    if (masterRes.ok) {
+      const master = await masterRes.json();
+      allIOCs = master.iocs || [];
+      document.getElementById("last-updated").textContent = "Updated: " + (master.generated_at || "—").replace("T", " ").replace("Z", " UTC");
+      renderTable();
+    }
+
+    if (statsRes.ok) {
+      const stats = await statsRes.json();
+      document.getElementById("stat-total").textContent  = stats.total_deduped ?? "—";
+      document.getElementById("stat-ip").textContent     = stats.by_type?.ip ?? 0;
+      document.getElementById("stat-domain").textContent = stats.by_type?.domain ?? 0;
+      document.getElementById("stat-url").textContent    = stats.by_type?.url ?? 0;
+      document.getElementById("stat-hash").textContent   = stats.by_type?.hash ?? 0;
+    }
+
+    // Count unique article sources
+    const articles = new Set(allIOCs.map(i => i.article_url).filter(Boolean));
+    document.getElementById("stat-sources").textContent = articles.size || 1;
+
+  } catch (e) {
+    document.getElementById("ioc-tbody").innerHTML =
+      `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:32px;">
+        ⚠️ Could not load live data. <a href="${RAW_BASE}/consolidated/ioc_master.json" style="color:var(--accent-hover)">Download JSON directly</a>
+      </td></tr>`;
+  }
+}
+
+function typeClass(t) {
+  return { ip: "t-ip", domain: "t-domain", url: "t-url", hash: "t-hash" }[t] || "";
+}
+
+function renderTable() {
+  const tbody = document.getElementById("ioc-tbody");
+  const filtered = allIOCs.filter(ioc => {
+    const matchType = activeFilter === "all" || ioc.type === activeFilter;
+    const q = searchTerm.toLowerCase();
+    const matchSearch = !q || [ioc.value, ioc.description, ioc.type, ...(ioc.tags || [])].some(f => (f || "").toLowerCase().includes(q));
+    return matchType && matchSearch;
+  });
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:32px;">No IOCs match the current filter.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(ioc => {
+    const articleLink = ioc.article_url
+      ? `<a href="${ioc.article_url}" target="_blank" style="color:var(--accent-hover);font-size:0.78rem;" title="${ioc.article_title || ''}">${(ioc.article_title || ioc.article_url).substring(0, 45)}${(ioc.article_title || '').length > 45 ? '…' : ''}</a>`
+      : `<span style="color:var(--muted)">—</span>`;
+    return `<tr data-type="${ioc.type}">
+      <td><span class="type-badge ${typeClass(ioc.type)}">${ioc.type.toUpperCase()}</span></td>
+      <td class="ioc-val">${escHtml(ioc.value)}</td>
+      <td style="color:var(--muted);font-size:0.82rem">${escHtml(ioc.description || "")}</td>
+      <td style="color:var(--muted);white-space:nowrap;font-size:0.8rem">${ioc.first_seen || "—"}</td>
+      <td>${articleLink}</td>
+    </tr>`;
+  }).join("");
+}
+
+function filterTable(type, btn) {
+  activeFilter = type;
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderTable();
+}
+
+function searchTable(val) {
+  searchTerm = val;
+  renderTable();
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+loadData();
+</script>
+</body>
+</html>

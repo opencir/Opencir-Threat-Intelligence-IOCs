@@ -164,11 +164,16 @@ def is_valid_domain(value: str) -> bool:
 
 
 def is_valid_url(value: str) -> bool:
-    """Return True if *value* is a syntactically valid HTTP/HTTPS URL with a routable host."""
+    """Return True if *value* is a syntactically valid HTTP/HTTPS URL with a routable host.
+    Accepts schemeless URLs (e.g. 'example.com/path') by prepending 'https://'."""
     if not value:
         return False
+    # Prepend scheme if missing so urlparse works correctly
+    normalised = value.strip()
+    if not normalised.startswith(("http://", "https://")):
+        normalised = "https://" + normalised
     try:
-        parsed = urlparse(value)
+        parsed = urlparse(normalised)
     except Exception:
         return False
     if parsed.scheme not in ("http", "https"):
@@ -287,8 +292,12 @@ def normalise_hash(value: str) -> str:
 
 
 def normalise_url(value: str) -> str:
-    """Lowercase scheme/host and strip trailing whitespace from a URL."""
-    parsed = urlparse(value.strip())
+    """Lowercase scheme/host, strip trailing whitespace, and ensure scheme prefix."""
+    clean = value.strip()
+    # Add https:// if scheme is missing
+    if not clean.startswith(("http://", "https://")):
+        clean = "https://" + clean
+    parsed = urlparse(clean)
     if not parsed.scheme or not parsed.netloc:
         return value.strip()
     hostname = (parsed.hostname or "").lower()

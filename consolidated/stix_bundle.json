@@ -1,0 +1,533 @@
+{
+  "type": "bundle",
+  "id": "bundle--249ebbbe-843f-4d76-80e7-72dc76635dc1",
+  "spec_version": "2.1",
+  "created": "2026-04-13T03:39:17Z",
+  "objects": [
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--e5c49921-775d-4e4e-a926-968b634779b3",
+      "created": "2025-03-26",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "DOMAIN: mein-lonos-cloude.de",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[domain-name:value = 'mein-lonos-cloude.de']",
+      "pattern_type": "stix",
+      "valid_from": "2025-03-26",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--eab9c565-cc6c-41ed-912c-cebbb6de7780",
+      "created": "2025-03-26",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "DOMAIN: derko-meru.online",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[domain-name:value = 'derko-meru.online']",
+      "pattern_type": "stix",
+      "valid_from": "2025-03-26",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--87e8fa65-9004-408c-82f9-81d9682b1a9d",
+      "created": "2025-04-02",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "DOMAIN: tesra.shop",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[domain-name:value = 'tesra.shop']",
+      "pattern_type": "stix",
+      "valid_from": "2025-04-02",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--2f0c38b4-cf1f-4872-80cd-5e793f529e90",
+      "created": "2025-05-14",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "DOMAIN: cqsf.live",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[domain-name:value = 'cqsf.live']",
+      "pattern_type": "stix",
+      "valid_from": "2025-05-14",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--fcc39daa-f0cf-41f3-aa85-919d8364bcbe",
+      "created": "2025-06-02",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "DOMAIN: access-ssa-gov.es",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[domain-name:value = 'access-ssa-gov.es']",
+      "pattern_type": "stix",
+      "valid_from": "2025-06-02",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--0b8017ad-292e-44b7-853e-f3529f605623",
+      "created": "2025-05-22",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "DOMAIN: binancepizza.info",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[domain-name:value = 'binancepizza.info']",
+      "pattern_type": "stix",
+      "valid_from": "2025-05-22",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--c87771e6-6bed-403c-bb5d-5f2a3a847068",
+      "created": "2025-05-30",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "DOMAIN: panel-spectrum.net",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[domain-name:value = 'panel-spectrum.net']",
+      "pattern_type": "stix",
+      "valid_from": "2025-05-30",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--5972bf47-ce85-48c5-ab6a-13545543a767",
+      "created": "2025-06-02",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "URL: https://access-ssa-gov.es/ClientSetup.exe",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[url:value = 'https://access-ssa-gov.es/ClientSetup.exe']",
+      "pattern_type": "stix",
+      "valid_from": "2025-06-02",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--b2cab30e-1d12-44f8-b9f5-f05be59f11ce",
+      "created": "2025-05-30",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "URL: https://applemacios.com/vv/install.sh",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[url:value = 'https://applemacios.com/vv/install.sh']",
+      "pattern_type": "stix",
+      "valid_from": "2025-05-30",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--608e9cf9-6371-405c-9674-0d2b8f1301aa",
+      "created": "2025-05-30",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "URL: https://applemacios.com/vv/update",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[url:value = 'https://applemacios.com/vv/update']",
+      "pattern_type": "stix",
+      "valid_from": "2025-05-30",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--be38420d-3ee2-4ad6-a4d9-c5a5d89ce85a",
+      "created": "2025-03-27",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "URL: https://guildmerger.co/verify/eminem",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[url:value = 'https://guildmerger.co/verify/eminem']",
+      "pattern_type": "stix",
+      "valid_from": "2025-03-27",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--ec7bff8d-bf2b-4228-9776-d5ecda22e397",
+      "created": "2025-03-27",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "URL: https://files.catbox.moe/snenal.bat",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[url:value = 'https://files.catbox.moe/snenal.bat']",
+      "pattern_type": "stix",
+      "valid_from": "2025-03-27",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--d4e2d575-9759-445c-85c9-0f5b4fd8cdda",
+      "created": "2025-02-24",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "IP: 185.234.72.186",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[ipv4-addr:value = '185.234.72.186']",
+      "pattern_type": "stix",
+      "valid_from": "2025-02-24",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a28fbf31-810a-4f76-8225-17c65ea1973c",
+      "created": "2025-03-27",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "IP: 45.94.31.176",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[ipv4-addr:value = '45.94.31.176']",
+      "pattern_type": "stix",
+      "valid_from": "2025-03-27",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--6bb10175-fb66-420f-9d7e-fd9921d2db4d",
+      "created": "2025-05-06",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "IP: 3.138.123.13",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[ipv4-addr:value = '3.138.123.13']",
+      "pattern_type": "stix",
+      "valid_from": "2025-05-06",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--7d3191c3-3d54-4e0e-befe-1b187ed0cbc8",
+      "created": "2025-05-06",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "IP: 16.171.23.221",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[ipv4-addr:value = '16.171.23.221']",
+      "pattern_type": "stix",
+      "valid_from": "2025-05-06",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--def63d4b-8c85-4c81-87c6-59d6ed30fc3f",
+      "created": "2025-05-06",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "IP: 3.23.103.13",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[ipv4-addr:value = '3.23.103.13']",
+      "pattern_type": "stix",
+      "valid_from": "2025-05-06",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--03892a18-fafd-41b8-a042-b991e0923755",
+      "created": "2025-05-06",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "IP: 83.242.96.159",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[ipv4-addr:value = '83.242.96.159']",
+      "pattern_type": "stix",
+      "valid_from": "2025-05-06",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--24f52077-2644-4b81-a5b8-4d5b55f81132",
+      "created": "2025-05-06",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "IP: 5.8.9.77",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[ipv4-addr:value = '5.8.9.77']",
+      "pattern_type": "stix",
+      "valid_from": "2025-05-06",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--ccd5bb2b-994d-4d81-9b49-2da9f0aaacbf",
+      "created": "2025-08-21T09:00:00",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "DOMAIN: applemacios.com",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[domain-name:value = 'applemacios.com']",
+      "pattern_type": "stix",
+      "valid_from": "2025-08-21T09:00:00",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--b868ecb9-e5e5-4153-a646-2f6058c927f9",
+      "created": "2025-08-21T09:00:00",
+      "modified": "2026-04-13T03:39:17Z",
+      "name": "DOMAIN: guildmerger.co",
+      "description": "",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[domain-name:value = 'guildmerger.co']",
+      "pattern_type": "stix",
+      "valid_from": "2025-08-21T09:00:00",
+      "confidence": "high",
+      "labels": [
+        "threat-intelligence",
+        "microsoft"
+      ],
+      "external_references": [
+        {
+          "source_name": "microsoft-threat-intel"
+        }
+      ]
+    }
+  ]
+}

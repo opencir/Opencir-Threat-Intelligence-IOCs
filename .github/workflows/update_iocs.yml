@@ -17,6 +17,7 @@ concurrency:
 
 permissions:
   contents: write   # needed to push the updated feed files
+  pages: write      # needed for GitHub Pages deployment
 
 jobs:
   collect-and-consolidate:
@@ -82,8 +83,8 @@ jobs:
           git config --global user.name  "ioc-bot[actions]"
           git config --global user.email "ioc-bot@users.noreply.github.com"
 
-          # Stage feed data and consolidated outputs
-          git add feeds/ consolidated/
+          # Stage feed data, consolidated outputs, and docs page
+          git add feeds/ consolidated/ docs/
 
           # Only commit if there are actual changes
           if git diff --cached --quiet; then

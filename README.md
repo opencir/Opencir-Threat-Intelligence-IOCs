@@ -13,17 +13,58 @@ Automated collection, consolidation, and distribution of Indicators of Compromis
 | URLs | Full URL | Web gateway blocking |
 
 ## Feed Sources
+Indicators of compromise
+Indicator	Type	Description	First seen	Last seen
+https://www.microsoft.com/en-us/security/blog/content-type/research/
 
-| Source | Feed | IOC Types | Update Frequency |
-|--------|------|-----------|-----------------|
-| [Abuse.ch Feodo Tracker](https://feodotracker.abuse.ch/) | Botnet C2 IPs | IPs | Every 5 min |
-| [Abuse.ch URLhaus](https://urlhaus.abuse.ch/) | Malware distribution URLs | URLs, Domains | Every 5 min |
-| [Abuse.ch MalwareBazaar](https://bazaar.abuse.ch/) | Malware samples | Hashes | Continuous |
-| [Abuse.ch ThreatFox](https://threatfox.abuse.ch/) | IOCs from malware | IPs, Domains, Hashes | Continuous |
-| [AlienVault OTX](https://otx.alienvault.com/) | Community threat intel | All types | Continuous |
-| [CISA KEV](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) | Exploited CVEs | CVEs | Weekly |
+
 
 ## Repository Structure
+filter by 
+Topic
+Threat intelligence
+(409)
+Incident response
+(34)
+AI and agents
+(11)
+Endpoint security
+(8)
+Actionable threat insights
+(8)
+Threat trends
+(5)
+Security operations
+(5)
+Cloud security
+(5)
+SIEM and XDR
+(3)
+Internet of Things (IoT) security
+(3)
+Identity and access management
+(3)
+Email security
+(3)
+Zero Trust
+(2)
+Risk management
+(2)
+Analyst reports
+(2)
+Small and medium business
+(1)
+Office of the CISO
+(1)
+Multifactor authentication
+(1)
+Defending against advanced tactics
+(1)
+Data protection
+(1)
+Compliance
+(1)
+
 
 ```
 threat-intel-iocs/

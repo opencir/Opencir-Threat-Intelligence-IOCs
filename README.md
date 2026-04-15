@@ -20,6 +20,20 @@ Compromise (IOCs) from public threat intelligence feeds.
 | [AlienVault OTX](https://otx.alienvault.com/) | Community threat intel | All types | Every 6 hours |
 | [CISA KEV](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) | Exploited CVEs | CVEs | Every 6 hours |
 
+Here's a comprehensive reference — starting with what's visible in the screenshot, then expanding to the full ecosystem of threat intelligence and IOC sources used by the community.Here's a breakdown of what's in the screenshot and the broader ecosystem:
+
+**From your screenshot**, the tool appears to monitor six categories — Government (CISA, CERT Bund, JPCERT, Cyber.mil), News Outlets (THN, TechPoint, Dark Reading), Security Blogs (ZDNet, Trend Micro, and a researcher blog), Vulnerability DBs (NVD, MalwareBazaar, Qualys), Vendor Advisories (Microsoft, AWS, Cisco, Oracle), and Social Media (X, YouTube, Mastodon, Reddit).
+
+**Beyond the screenshot**, the most commonly referenced sources in the community for threat hunting and fresh IOCs are:
+
+The **abuse.ch ecosystem** (ThreatFox, URLhaus, MalwareBazaar) is probably the most used free community IOC source. **AlienVault OTX** is another staple for pulling structured threat pulses. **VirusTotal** and **Any.run** are standard for file/URL enrichment.
+
+For **blog-quality research with embedded IOCs**, the heavy hitters are Microsoft Security Blog (the URL you mentioned is a great example), Mandiant/Google TAG, Palo Alto Unit 42, Cisco Talos, SentinelOne Labs, and Elastic Security Labs — these routinely publish full campaigns with hashes, IPs, and YARA rules attached.
+
+For **APT tracking** specifically, Malpedia and the MITRE ATT&CK framework are essential reference points alongside Recorded Future and CrowdStrike's adversary intelligence.
+
+The **#threatintel** hashtag on X/Twitter is genuinely useful for catching IOCs hours before they hit formal feeds, though quality varies by researcher.
+
 ## Repository Structure
 
 ```

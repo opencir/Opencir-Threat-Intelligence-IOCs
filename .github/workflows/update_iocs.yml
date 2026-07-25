@@ -54,12 +54,6 @@ jobs:
         run: python scripts/fetch_cisa.py
         continue-on-error: true
 
-      - name: Collect AlienVault OTX pulses
-        env:
-          OTX_API_KEY: ${{ secrets.OTX_API_KEY }}
-        run: python scripts/fetch_otx.py
-        continue-on-error: true
-
       # ── 4. Validate ──────────────────────────────────────────────────────────
       - name: Validate feed data
         run: python scripts/validate.py

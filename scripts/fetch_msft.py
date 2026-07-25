@@ -24,7 +24,7 @@ IOC record schema:
     type          : ip | domain | url | hash | cve
     value         : normalised indicator value
     source        : "microsoft-threat-intel"
-    confidence    : "high"
+    confidence    : 75 (int, 0-100 scale)
     tags          : ["threat-intelligence", "microsoft"]
     first_seen    : ISO-8601 publish date of the source article (UTC)
     fetched_at    : ISO-8601 timestamp when this script ran (UTC)
@@ -172,7 +172,7 @@ def _make_ioc(
         "type":          itype,
         "value":         value,
         "source":        "microsoft-threat-intel",
-        "confidence":    "high",
+        "confidence":    75,
         "tags":          ["threat-intelligence", "microsoft"],
         "first_seen":    first_seen or meta.get("published") or meta["fetched_at"],
         "fetched_at":    meta["fetched_at"],

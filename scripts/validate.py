@@ -314,6 +314,36 @@ def normalise_url(value: str) -> str:
     return parsed._replace(scheme=parsed.scheme.lower(), netloc=netloc).geturl()
 
 
+_CONFIDENCE_LEVELS: dict[str, int] = {
+    "confirmed": 100,
+    "high": 75,
+    "medium": 50,
+    "low": 25,
+}
+
+
+def normalise_confidence(value: Any) -> int:
+    """Coerce a confidence score to an int on the 0-100 scale.
+
+    Feeds report confidence inconsistently (some as ints, others as
+    qualitative labels like "high"); collapse both onto one scale so
+    downstream comparisons (e.g. max()) never mix str and int.
+    """
+    if isinstance(value, bool):
+        return 100 if value else 0
+    if isinstance(value, (int, float)):
+        return int(value)
+    if isinstance(value, str):
+        mapped = _CONFIDENCE_LEVELS.get(value.strip().lower())
+        if mapped is not None:
+            return mapped
+        try:
+            return int(float(value.strip()))
+        except ValueError:
+            return 0
+    return 0
+
+
 def normalise_ioc(ioc: dict[str, Any]) -> dict[str, Any]:
     """Return a copy of *ioc* with the value field normalised."""
     ioc_type = ioc.get("type", "").lower()
@@ -325,9 +355,9 @@ def normalise_ioc(ioc: dict[str, Any]) -> dict[str, Any]:
         "url": normalise_url,
     }
     normaliser = normalisers.get(ioc_type)
-    if normaliser:
-        return {**ioc, "value": normaliser(value)}
-    return ioc
+    result = {**ioc, "value": normaliser(value)} if normaliser else dict(ioc)
+    result["confidence"] = normalise_confidence(ioc.get("confidence", 0))
+    return result
 
 
 def validate_feed_directory(feeds_dir: Path) -> dict[str, Any]:

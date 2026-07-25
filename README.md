@@ -17,7 +17,6 @@ Compromise (IOCs) from public threat intelligence feeds.
 | Source | Feed | IOC Types | Update Frequency |
 |---|---|---|---|
 | [Microsoft Threat Intelligence](https://www.microsoft.com/en-us/security/blog/topic/threat-intelligence/?sort-by=newest-oldest) | Threat intelligence blog IOCs | IPs, Domains, Hashes, URLs | Every 6 hours |
-| [AlienVault OTX](https://otx.alienvault.com/) | Community threat intel | All types | Every 6 hours |
 | [CISA KEV](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) | Exploited CVEs | CVEs | Every 6 hours |
 
 Here's a comprehensive reference — starting with what's visible in the screenshot, then expanding to the full ecosystem of threat intelligence and IOC sources used by the community.Here's a breakdown of what's in the screenshot and the broader ecosystem:
@@ -40,7 +39,6 @@ The **#threatintel** hashtag on X/Twitter is genuinely useful for catching IOCs 
 threat-intel-iocs/
 ├── feeds/
 │   ├── msft_threat_intel.json
-│   ├── otx_pulses.json
 │   └── cisa_kev.json
 ├── consolidated/
 │   ├── malicious_ips.txt
@@ -54,7 +52,6 @@ threat-intel-iocs/
 ├── scripts/
 │   ├── config.py
 │   ├── fetch_msft.py
-│   ├── fetch_otx.py
 │   ├── fetch_cisa.py
 │   ├── consolidate.py
 │   └── validate.py
@@ -72,11 +69,8 @@ threat-intel-iocs/
 pip install -r requirements.txt
 
 # Fetch from all feeds
-export OTX_API_KEY=<your_otx_key>           # optional unless fetching OTX
-
 python scripts/fetch_msft.py
 python scripts/fetch_cisa.py
-python scripts/fetch_otx.py      # Requires OTX_API_KEY env var
 
 # Optional validation summary
 python scripts/validate.py
@@ -85,16 +79,10 @@ python scripts/validate.py
 python scripts/consolidate.py
 ```
 
-### Environment Variables
-
-| Variable | Required | Description |
-|---|---|---|
-| `OTX_API_KEY` | For OTX feed | Free API key from otx.alienvault.com |
-
 ### GitHub Actions
 
 The workflow in `.github/workflows/update_iocs.yml` runs every 6 hours
-automatically. Set `OTX_API_KEY` as a repository secret.
+automatically.
 
 ## Output Formats for Integration
 

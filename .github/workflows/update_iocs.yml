@@ -2,8 +2,8 @@ name: Update IOC Feeds
 
 on:
   schedule:
-    # Run every 6 hours at :05 past the hour (stagger to avoid rate limits)
-    - cron: "5 */6 * * *"
+    # Run monthly on the 1st at 00:05 UTC
+    - cron: "5 0 1 * *"
   workflow_dispatch:
     inputs:
       debug_mode:

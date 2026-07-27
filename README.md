@@ -16,8 +16,8 @@ Compromise (IOCs) from public threat intelligence feeds.
 
 | Source | Feed | IOC Types | Update Frequency |
 |---|---|---|---|
-| [Microsoft Threat Intelligence](https://www.microsoft.com/en-us/security/blog/topic/threat-intelligence/?sort-by=newest-oldest) | Threat intelligence blog IOCs | IPs, Domains, Hashes, URLs | Every 6 hours |
-| [CISA KEV](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) | Exploited CVEs | CVEs | Every 6 hours |
+| [Microsoft Threat Intelligence](https://www.microsoft.com/en-us/security/blog/topic/threat-intelligence/?sort-by=newest-oldest) | Threat intelligence blog IOCs | IPs, Domains, Hashes, URLs | Monthly |
+| [CISA KEV](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) | Exploited CVEs | CVEs | Monthly |
 
 Here's a comprehensive reference — starting with what's visible in the screenshot, then expanding to the full ecosystem of threat intelligence and IOC sources used by the community.Here's a breakdown of what's in the screenshot and the broader ecosystem:
 
@@ -81,7 +81,7 @@ python scripts/consolidate.py
 
 ### GitHub Actions
 
-The workflow in `.github/workflows/update_iocs.yml` runs every 6 hours
+The workflow in `.github/workflows/update_iocs.yml` runs monthly
 automatically.
 
 ## Output Formats for Integration

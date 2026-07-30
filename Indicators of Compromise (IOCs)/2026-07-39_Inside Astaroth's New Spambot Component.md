@@ -32,4 +32,4 @@ This document lists Indicators of Compromise (IOCs) observed for the Astaroth an
 - Add SHA256s to your sample repositories and configure AV/EDR tooling to match exactly.
 
 ## Source / provenance
-- Original repo entry: https://github.com/opencir/Opencir-Threat-Intelligence-IOCs/blob/main/Indicators%20of%20Compromise%20(IOCs)/2026-07-39_Inside%20Astaroth's%20New%20Spambot%20Component.md
+- Original repo entry: https://www.crowdstrike.com/en-us/blog/inside-astaroths-new-spambot-component/

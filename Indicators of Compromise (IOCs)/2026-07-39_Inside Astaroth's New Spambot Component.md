@@ -1,6 +1,7 @@
 # Inside Astaroth's New Spambot Component — IOCs
 
 Source: public blog analysis
+Original repo entry: https://www.crowdstrike.com/en-us/blog/inside-astaroths-new-spambot-component/
 Purpose: Legitimate threat-intel collection for building IOC databases and firewall blocking rules.
 
 ## Summary
@@ -25,11 +26,3 @@ This document lists Indicators of Compromise (IOCs) observed for the Astaroth an
 
 ---
 
-## Notes & handling recommendations
-- Per your request, no de-obfuscated hostnames or URLs are present in this file. All network indicators remain obfuscated to prevent accidental linking or crawling.
-- The `docsmoonstudioclayworks[.]onlin` entry appears truncated in the original source. Treat it as incomplete and verify against the original sample before taking any blocking action.
-- When ingesting these IOCs into internal tooling that requires canonical hostnames, perform de-obfuscation inside a controlled environment — do not publish de-obfuscated values in public documentation.
-- Add SHA256s to your sample repositories and configure AV/EDR tooling to match exactly.
-
-## Source / provenance
-- Original repo entry: https://www.crowdstrike.com/en-us/blog/inside-astaroths-new-spambot-component/

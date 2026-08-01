@@ -1,16 +1,16 @@
 {
-  "run_at": "2026-07-26T19:24:38Z",
-  "total_raw": 2382,
-  "total_valid": 2294,
-  "total_deduped": 2283,
+  "run_at": "2026-08-01T02:57:35Z",
+  "total_raw": 2383,
+  "total_valid": 2295,
+  "total_deduped": 2284,
   "filtered": 88,
   "duplicates_removed": 11,
   "by_type": {
-    "cve": 1685,
-    "domain": 292,
-    "url": 78,
-    "ip": 53,
-    "hash": 171,
+    "cve": 1688,
+    "domain": 289,
+    "url": 74,
+    "ip": 56,
+    "hash": 173,
     "email": 4
   }
 }

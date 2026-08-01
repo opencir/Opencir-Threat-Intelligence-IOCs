@@ -89,6 +89,7 @@ hash,type,malware,source,first_seen
 8cef760d11d24fc2e9bbd9f770dca5105854f7ece3b0e6948d7c8b7fdd1765ea,sha256,,microsoft-threat-intel,Amadey 5.73
 8f32456359f209a63adfd24b94235e1727382ac7f7bb7f2bcaf754e721925b64,sha256,,microsoft-threat-intel,StealC
 8fd5b8db10458ace7e4ed335eb0c66527e1928ad87a3c688595804f72b205e8c,sha256,,microsoft-threat-intel,2026-04-16T08:00:00
+918fa52ae45ed60ba7cc8bdc99c3cbe9ab92e0375ec31fc05d0d4513be11c593,sha256,,microsoft-threat-intel,2026-07-03
 91ec2ede66c7b4e6d4c8a25ffad4670d5fd7ff1a2d266528548950df2a8a927a,sha256,,microsoft-threat-intel,2026-03-31T06:43:05
 92ff08773995ebc8d55ec4b8e1a225d0d1e51efa4ef88b8849d0071230c9645a,sha256,,microsoft-threat-intel,2026-04-01T14:00:00
 9383572a30ae5b76fadd0700fbd7a1aa7b05d0b6c8f9cdaef9b30a3e1f65d57d,sha256,,microsoft-threat-intel,Amadey 5.86
@@ -126,6 +127,7 @@ b7f46b192cd83a1d2487cb048cca645f6e8855b9673d500d50bbdb04eebc6bea,sha256,,microso
 b9993a8ad0518849416798cf29668256ccb96598fc4423501ccab5312812653a,sha256,,microsoft-threat-intel,b9993a8ad0518849416798cf29668256ccb96598fc4423501ccab5312812653a
 bd6805782df15e53581096b99bd6bbb81f4d4a5e2d2b30954df63175a4075be9,sha256,,microsoft-threat-intel,Campaign payload (Wave 1)
 bdd5da81ac34d9faa2a5118d4ed8f492239734be02146cd24a0e34270a48a455,sha256,,microsoft-threat-intel,NTLM relay Python script
+be99857449d2856dd5a84e21c8a3d5e0e01456adb44062ddec5a6b4970d8d42c,sha256,,microsoft-threat-intel,2026-07-10
 bfa149694ec6411c23936311a999163ade54d6f38e2f4b0e3cfb8cb67bd7cfaa,sha256,,microsoft-threat-intel,payload.gz (gzipped Bun stage-2)
 bfaeb987faa6de2b5a5eb63b1233d055215b09b0349a9394f2175fd7cdf385e4,sha256,,microsoft-threat-intel,2026-07-15T18:36:21
 c1f278f88275e07cc03bd390fe1cbeedd55933110c6fd16de4187f4c4aaf42b9,sha256,,microsoft-threat-intel,Decrypted Kernel Module

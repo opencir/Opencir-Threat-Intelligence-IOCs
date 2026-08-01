@@ -7,7 +7,6 @@ http://45.94.47.204/api/
 http://92.246.136.14/contact
 http://aab.sportsontheweb.net/x.php
 http://attacker.example/websocket-interactive
-http://audit.checkmarx.cx
 http://bluegraintours.com
 http://bluescry.com/01f96fd710e905ca2326.php
 http://cdntestconnect.com/ed54b97a570943999715.php
@@ -15,9 +14,7 @@ http://dash.awaydouble.org/0v2auth
 http://goodpanelforgoodjob.com/hg8jjfSr5hy/index.php
 http://host.domain.local:5985/wsman”
 http://microsoft-telemetry.at/cvdfnaFJBmC0/index.php
-http://models.litellm.cloud
 http://paralegalmustang.icu/script.sh
-http://plug-tab-protective-relay.trycloudflare.com
 http://polse.us/62ea47cac2534aa18f74.php
 http://rebustan.top/gd7djkDveE2/index.php
 http://roger99699.xyz/425f1faf4b214434b8a3.php
@@ -25,7 +22,6 @@ http://secure.controlpanel.asia/330311481fe14ab99814.php
 http://sfrclak.com:8000/6202033
 http://spasopro.at/Lsge63sd3/index.php
 http://svclsc.com/ms/index.php
-http://tdtqy-oyaaa-aaaae-af2dq-cai.raw.icp0.io
 https://access-ssa-gov.es/ClientSetup.exe
 https://aka.ms/AIIRplaybook
 https://applemacios.com/vv/install.sh
@@ -64,7 +60,6 @@ https://pixeldrain.com/api/file/3v92oJiL
 https://qjywvkbl.degassing-mould.digital
 https://resilientlimb.icu/script.sh
 https://round5on.digital/script.sh
-https://scan.aquasecurtiy.org
 https://share.google/TOKEN
 https://t.me/ax03bot
 https://t90141296286.p.clickup-attachments.com/t90141296286/fb39c3a9-3161-40ad-847b-0683e0409d6f/Financial_report.bat
@@ -74,5 +69,6 @@ https://www.engagelab.com/docs/
 https://www.gartner.com/en/newsroom/press-releases/2025-03-03-gartner-identifiesthe-top-cybersecuri…
 https://www.imperva.com/learn/application-security/web-shell/
 https://www.iru.com/blog/atomic-stealer-amos-returns
+https://www.youtube-nocookie.com/embed/ACx7NxQW9uo?feature=oembed
 https://yygp4pdh.apexharvestor.digital
 https://zg5mkr7q.apexharvestor.digital

@@ -9,7 +9,6 @@ aforvm.com
 aluminiostramuntana.com
 apple-mac-fix-hidden.medium.com
 applemacios.com
-aquasecurtiy.org
 arkypc.com
 auramatrixa.com
 avafex.com
@@ -121,12 +120,12 @@ kinghoruswe.info
 kiptownim.info
 kofeynayagush.com
 korovkamu.com
-kubernetes.io
 lakhov.com
 lbarticle.com
 lestresot.info
 lookinlip.info
 lyhizqy2js2eh6ufngkbzntouiikdek5zsdj3qwa22b4z6knpqorgiad.onion
+m365-owa.com
 m939k6d7.r.us-west-2.awstrack.me
 mac-storage-guide.squarespace.com
 macclean.craft.me
@@ -145,9 +144,10 @@ mikulatur.com
 milbiorb.com
 minemine.gleeze.com
 ministrew.info
-models.litellm.cloud
 molokotarelka.com
 montagelips.info
+ms365-device.com
+ms365-live.com
 msft.net
 na.businesshellosign.de
 neescil.top
@@ -159,6 +159,7 @@ octopixeldate.com
 octopox.com
 oob.moika.tech
 ouilov.com
+owa-ms365.com
 packages.npm.org
 pan.rongtv.xyz
 pan.ssffaa19.xyz
@@ -193,7 +194,6 @@ pipipoopochek6.com
 pissispissman.com
 pla7ina.cfd
 play67.cc
-plug-tab-protective-relay.trycloudflare.com
 poeooeowwo777.com
 prejointl.info
 prism-matrixs.com
@@ -230,7 +230,6 @@ safedocphoto.info
 safephoto-vault.info
 safevault-hub.info
 saramoftah.com
-scan.aquasecurtiy.org
 seagalnssteavens.com
 sec-safe-dc.info
 secure-imagehub.info
@@ -239,7 +238,6 @@ shinypogk4jjniry5qi7247tznop6mxdrdte2k6pdu5cyo43vdzmrwid.onion
 signspace.cloud
 sinjiabo-1398259625.cos.ap-singapore.myqcloud.com
 snapkeep.info
-socket.dev
 softwareupdate.app
 start-download.gleeze.com
 stclegion.com
@@ -249,7 +247,6 @@ swift-sh.com
 systemupdate.app
 t.m-kosche.com
 t90141296286.p.clickup-attachments.com
-tdtqy-oyaaa-aaaae-af2dq-cai.raw.icp0.io
 teams.onweblive.org
 terafolt.com
 termsliva.com

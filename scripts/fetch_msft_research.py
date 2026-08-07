@@ -96,16 +96,12 @@ def defang(value: str, ioc_type: str) -> str:
     canonical = re.sub(r"\bhttps\[:\]//", "https://", canonical, flags=re.IGNORECASE)
     canonical = re.sub(r"\bhttp\[:\]//", "http://", canonical, flags=re.IGNORECASE)
     canonical = _refang(canonical)
-    if itype == "domain" and "@" in canonical:
+    if "@" in canonical and itype in {"domain", "email"}:
         local, sep, domain = canonical.rpartition("@")
         return f"{local}{sep}{_defang_dotted(domain)}" if sep else canonical
 
     if itype in {"domain", "ip"}:
         return _defang_dotted(canonical)
-
-    if itype == "email":
-        local, sep, domain = canonical.rpartition("@")
-        return f"{local}{sep}{_defang_dotted(domain)}" if sep else canonical
 
     if itype != "url":
         return canonical

@@ -10,13 +10,13 @@
 
 | # | Type | Value | Description | First Seen | Last Seen |
 |---|------|-------|-------------|------------|-----------|
-| 1 | ip | `23.254.164.92` | Primary C2 server | Primary C2 server | Primary C2 server |
-| 2 | ip | `23.254.164.123` | Secondary C2 address (from deobfuscated strings) | Secondary C2 address (from deobfuscated strings) | Secondary C2 address (from deobfuscated strings) |
-| 3 | url | `https[:]//23.254.164.92:8000/update/49890878` | Payload download endpoint | Payload download endpoint | Payload download endpoint |
-| 4 | domain | `teams.onweblive.org` | Post Compromise PowerShell backdoor delivery domain | Post Compromise PowerShell backdoor delivery domain | Post Compromise PowerShell backdoor delivery domain |
-| 5 | url | `https[:]//teams.onweblive.org/api/update/8555575039/4` | Post Compromise PowerShell backdoor download endpoint | Post Compromise PowerShell backdoor download endpoint | Post Compromise PowerShell backdoor download endpoint |
-| 6 | domain | `maskasd.com` | Post Compromise C2 beacon domain | Post Compromise C2 beacon domain | Post Compromise C2 beacon domain |
-| 7 | url | `https[:]//maskasd.com/8555575039` | Post Compromise C2 beacon endpoint | Post Compromise C2 beacon endpoint | Post Compromise C2 beacon endpoint |
+| 1 | ip | `23[.]254[.]164[.]92` | Primary C2 server | Primary C2 server | Primary C2 server |
+| 2 | ip | `23[.]254[.]164[.]123` | Secondary C2 address (from deobfuscated strings) | Secondary C2 address (from deobfuscated strings) | Secondary C2 address (from deobfuscated strings) |
+| 3 | url | `https[://]23[.]254[.]164[.]92:8000/update/49890878` | Payload download endpoint | Payload download endpoint | Payload download endpoint |
+| 4 | domain | `teams[.]onweblive[.]org` | Post Compromise PowerShell backdoor delivery domain | Post Compromise PowerShell backdoor delivery domain | Post Compromise PowerShell backdoor delivery domain |
+| 5 | url | `https[://]teams[.]onweblive[.]org/api/update/8555575039/4` | Post Compromise PowerShell backdoor download endpoint | Post Compromise PowerShell backdoor download endpoint | Post Compromise PowerShell backdoor download endpoint |
+| 6 | domain | `maskasd[.]com` | Post Compromise C2 beacon domain | Post Compromise C2 beacon domain | Post Compromise C2 beacon domain |
+| 7 | url | `https[://]maskasd[.]com/8555575039` | Post Compromise C2 beacon endpoint | Post Compromise C2 beacon endpoint | Post Compromise C2 beacon endpoint |
 | 8 | hash | `B122A9873BEDF145AE2A7FD024B5F309007DBB025149F4DC4AC3F7E4F32A36A4` | setup.cjs (malicious postinstall dropper) | setup.cjs (malicious postinstall dropper) | setup.cjs (malicious postinstall dropper) |
 | 9 | hash | `AE70DD4F6BC0D1C8C2848E4E6B51934626C4818DCB5AF99D080DDBD7DC337185` | easy-day-js-1.11.22.tgz (weaponized tarball) | easy-day-js-1.11.22.tgz (weaponized tarball) | easy-day-js-1.11.22.tgz (weaponized tarball) |
 | 10 | hash | `4A8860240E4231C3A74C81949BE655A28E096A7D72F38FBE84E5B37636B98417` | easy-day-js-1.11.21.tgz (clean bait tarball) | easy-day-js-1.11.21.tgz (clean bait tarball) | easy-day-js-1.11.21.tgz (clean bait tarball) |

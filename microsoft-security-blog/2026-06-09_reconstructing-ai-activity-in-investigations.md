@@ -1,4 +1,4 @@
-# Reconstructing AI activity in investigations 
+# Reconstructing AI activity in investigations
 
 **Source:** <https://www.microsoft.com/en-us/security/blog/2026/06/09/reconstructing-ai-activity-investigations/>
 **Published:** 2026-06-09
@@ -10,4 +10,4 @@
 
 | # | Type | Value | Description | First Seen | Last Seen |
 |---|------|-------|-------------|------------|-----------|
-| 1 | url | `https://aka.ms/AIIRplaybook` |  | 2026-06-09T10:35:06 |  |
+| 1 | url | `https[://]aka[.]ms/AIIRplaybook` |  | 2026-06-09 |  |

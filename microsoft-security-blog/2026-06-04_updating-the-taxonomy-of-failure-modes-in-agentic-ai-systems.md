@@ -1,4 +1,4 @@
-# Updating the taxonomy of failure modes in agentic AI systems: What a year of red teaming taught us 
+# Updating the taxonomy of failure modes in agentic AI systems: What a year of red teaming taught us
 
 **Source:** <https://www.microsoft.com/en-us/security/blog/2026/06/04/updating-taxonomy-failure-modes-agentic-ai-systems-year-red-teaming-taught-us/>
 **Published:** 2026-06-04
@@ -10,4 +10,4 @@
 
 | # | Type | Value | Description | First Seen | Last Seen |
 |---|------|-------|-------------|------------|-----------|
-| 1 | cve | `CVE-2026-25253` |  | 2026-06-04T12:14:42 |  |
+| 1 | cve | `CVE-2026-25253` |  | 2026-06-04 |  |

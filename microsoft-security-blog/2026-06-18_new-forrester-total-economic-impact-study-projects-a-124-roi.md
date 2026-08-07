@@ -10,4 +10,4 @@
 
 | # | Type | Value | Description | First Seen | Last Seen |
 |---|------|-------|-------------|------------|-----------|
-| 1 | url | `https://www.gartner.com/en/newsroom/press-releases/2025-03-03-gartner-identifiesthe-top-cybersecuri…` |  | 2026-06-18T12:36:08 |  |
+| 1 | url | `https[://]www[.]gartner[.]com/en/newsroom/press-releases/2025-03-03-gartner-identifiesthe-top-cybersecuri…` |  | 2026-06-18 |  |

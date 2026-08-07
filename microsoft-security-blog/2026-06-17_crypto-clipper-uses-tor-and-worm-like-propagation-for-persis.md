@@ -26,13 +26,13 @@
 | 14 | hash | `7787a9a7d8ae393aa32f257d083903c4dc9b97a1e5b0458c4cd480d4f3cb5b05` | Crypto Clipper Worm | Crypto Clipper Worm | Crypto Clipper Worm |
 | 15 | hash | `f3b54984caca95fd496bcfe5d7db1611b08d2f5b7d250b43b430e5d76393f9e0` | Crypto Clipper Worm | Crypto Clipper Worm | Crypto Clipper Worm |
 | 16 | hash | `20db98af3037b197c8a846dbf17b87fc6f049c3e0d9a188f9b9a74d3916dd5e1` | Crypto Clipper Worm | Crypto Clipper Worm | Crypto Clipper Worm |
-| 17 | domain | `cgky6bn6ux5wvlybtmm3z255igt52ljml2ngnc5qp3cnw5jlglamisad.onion` | C2 domain | C2 domain | C2 domain |
-| 18 | domain | `gfoqsewps57xcyxoedle2gd53o6jne6y5nq5eh25muksqwzutzq7b3ad.onion` | C2 domain | C2 domain | C2 domain |
-| 19 | domain | `he5vnov645txpcv57el2theky2elesn24ebvgwfoewlpftksxp4fnxad.onion` | C2 domain | C2 domain | C2 domain |
-| 20 | domain | `lyhizqy2js2eh6ufngkbzntouiikdek5zsdj3qwa22b4z6knpqorgiad.onion` | C2 domain | C2 domain | C2 domain |
-| 21 | domain | `j3bv7g27oramhbxxuv6gl3dcyfmf44qnvju3offdyrap7hurfprq74qd.onion` | C2 domain | C2 domain | C2 domain |
-| 22 | domain | `shinypogk4jjniry5qi7247tznop6mxdrdte2k6pdu5cyo43vdzmrwid.onion` | C2 domain | C2 domain | C2 domain |
-| 23 | domain | `7goms4byw26kkbaanz5a5u5234gusot7rp5imzc3ozh66wwcvmcudjid.onion` | C2 domain | C2 domain | C2 domain |
-| 24 | domain | `facebookwkhpilnemxj7asaniu7vnjjbiltxjqhye3mhbshg7kx5tfyd.onion` | C2 domain | C2 domain | C2 domain |
-| 25 | domain | `wt26llpl5k6gok3vnaxmucwgzv2wk3l7nuibbh25clghrtus3p5ctsid.onion` | C2 domain | C2 domain | C2 domain |
-| 26 | domain | `ijzn3sicrcy7guixkzjkib4ukbiilwc3xhnmby4mcbccnsd7j2rekvqd.onion` | C2 domain | C2 domain | C2 domain |
+| 17 | domain | `cgky6bn6ux5wvlybtmm3z255igt52ljml2ngnc5qp3cnw5jlglamisad[.]onion` | C2 domain | C2 domain | C2 domain |
+| 18 | domain | `gfoqsewps57xcyxoedle2gd53o6jne6y5nq5eh25muksqwzutzq7b3ad[.]onion` | C2 domain | C2 domain | C2 domain |
+| 19 | domain | `he5vnov645txpcv57el2theky2elesn24ebvgwfoewlpftksxp4fnxad[.]onion` | C2 domain | C2 domain | C2 domain |
+| 20 | domain | `lyhizqy2js2eh6ufngkbzntouiikdek5zsdj3qwa22b4z6knpqorgiad[.]onion` | C2 domain | C2 domain | C2 domain |
+| 21 | domain | `j3bv7g27oramhbxxuv6gl3dcyfmf44qnvju3offdyrap7hurfprq74qd[.]onion` | C2 domain | C2 domain | C2 domain |
+| 22 | domain | `shinypogk4jjniry5qi7247tznop6mxdrdte2k6pdu5cyo43vdzmrwid[.]onion` | C2 domain | C2 domain | C2 domain |
+| 23 | domain | `7goms4byw26kkbaanz5a5u5234gusot7rp5imzc3ozh66wwcvmcudjid[.]onion` | C2 domain | C2 domain | C2 domain |
+| 24 | domain | `facebookwkhpilnemxj7asaniu7vnjjbiltxjqhye3mhbshg7kx5tfyd[.]onion` | C2 domain | C2 domain | C2 domain |
+| 25 | domain | `wt26llpl5k6gok3vnaxmucwgzv2wk3l7nuibbh25clghrtus3p5ctsid[.]onion` | C2 domain | C2 domain | C2 domain |
+| 26 | domain | `ijzn3sicrcy7guixkzjkib4ukbiilwc3xhnmby4mcbccnsd7j2rekvqd[.]onion` | C2 domain | C2 domain | C2 domain |

@@ -87,11 +87,19 @@ def defang(value: str, ioc_type: str) -> str:
         return value
 
     itype = (ioc_type or "").lower()
-    canonical = re.sub(r"\bhxxps\[:\]//", "https://", value, flags=re.IGNORECASE)
+    canonical = re.sub(r"\bhxxps\[://\]", "https://", value, flags=re.IGNORECASE)
+    canonical = re.sub(r"\bhxxp\[://\]", "http://", canonical, flags=re.IGNORECASE)
+    canonical = re.sub(r"\bhttps\[://\]", "https://", canonical, flags=re.IGNORECASE)
+    canonical = re.sub(r"\bhttp\[://\]", "http://", canonical, flags=re.IGNORECASE)
+    canonical = re.sub(r"\bhxxps\[:\]//", "https://", canonical, flags=re.IGNORECASE)
     canonical = re.sub(r"\bhxxp\[:\]//", "http://", canonical, flags=re.IGNORECASE)
     canonical = re.sub(r"\bhttps\[:\]//", "https://", canonical, flags=re.IGNORECASE)
     canonical = re.sub(r"\bhttp\[:\]//", "http://", canonical, flags=re.IGNORECASE)
     canonical = _refang(canonical)
+    if itype == "domain" and "@" in canonical:
+        local, sep, domain = canonical.rpartition("@")
+        return f"{local}{sep}{_defang_dotted(domain)}" if sep else canonical
+
     if itype in {"domain", "ip"}:
         return _defang_dotted(canonical)
 
@@ -435,6 +443,7 @@ def fetch_all(max_pages: int = MAX_INDEX_PAGES) -> list[dict]:
             published=art["published"],
             fetched_at=fetched_at,
         )
+        time.sleep(REQUEST_DELAY)
 
         # Override source label for research blog and add tags
         for ioc in iocs:
@@ -451,7 +460,6 @@ def fetch_all(max_pages: int = MAX_INDEX_PAGES) -> list[dict]:
                 log.info("  Removed %s (0 IOCs)", md_path.name)
             else:
                 log.info("  Skipped %s (0 IOCs)", md_path.name)
-            time.sleep(REQUEST_DELAY)
             continue
 
         output_iocs = [
@@ -471,8 +479,6 @@ def fetch_all(max_pages: int = MAX_INDEX_PAGES) -> list[dict]:
             "ioc_count": len(output_iocs),
             "filename":  md_path.name,
         })
-
-        time.sleep(REQUEST_DELAY)
 
     # Write index README
     _write_index(index_meta, OUTPUT_DIR)

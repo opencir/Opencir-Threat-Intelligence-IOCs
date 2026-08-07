@@ -11,7 +11,7 @@
 | # | Type | Value | Description | First Seen | Last Seen |
 |---|------|-------|-------------|------------|-----------|
 | 1 | domain | `9i6pokerdepot[.]com` | Sending domain; DKIM-signed by the operator | 2026-06-15 | 2026-06-15 |
-| 2 | domain | `customer[.]service@9i6pokerdepot[.]com` | Campaign sender address | 2026-06-15 | 2026-06-15 |
+| 2 | domain | `customer.service@9i6pokerdepot[.]com` | Campaign sender address | 2026-06-15 | 2026-06-15 |
 | 3 | domain | `t90141296286[.]p[.]clickup-attachments[.]com` | ClickUp attachment subdomain hosting the stage 2 BAT dropper | 2026-06-15 | 2026-06-15 |
 | 4 | url | `https[://]t90141296286[.]p[.]clickup-attachments[.]com/t90141296286/fb39c3a9-3161-40ad-847b-0683e0409d6f/Financial_report.bat` | Stage 2 BAT dropper download URL | 2026-06-15 | 2026-06-15 |
 | 5 | url | `https[://]pixeldrain[.]com/api/file/3v92oJiL` | Final installer payload download URL | 2026-06-15 | 2026-06-15 |

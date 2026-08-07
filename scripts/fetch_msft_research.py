@@ -22,6 +22,7 @@ Usage:
 """
 
 import argparse
+import html
 import json
 import logging
 import re
@@ -106,7 +107,7 @@ def _discover_via_api(session: requests.Session, max_pages: int) -> list[dict[st
         for post in posts:
             articles.append({
                 "url":       post.get("link", ""),
-                "title":     post.get("title", {}).get("rendered", ""),
+                "title":     html.unescape(post.get("title", {}).get("rendered", "")),
                 "published": post.get("date", ""),
             })
 
@@ -186,10 +187,9 @@ def _discover_via_html(session: requests.Session, max_pages: int) -> list[dict[s
         if next_link and next_link.get("href"):
             nh: str = next_link["href"]
             next_url = nh if nh.startswith("http") else ("https://www.microsoft.com" + nh)
-            # Avoid circular pagination
-            if next_url == (RESEARCH_URL if page == 1 else next_url):
-                if page > 1:
-                    next_url = None
+            # Avoid circular pagination (next link wrapping back to base URL)
+            if next_url == RESEARCH_URL:
+                next_url = None
         else:
             # Try paged URL pattern
             if page < max_pages:
@@ -296,6 +296,38 @@ def _write_index(articles_meta: list[dict], out_dir: Path) -> None:
     (out_dir / "README.md").write_text("\n".join(lines), encoding="utf-8")
 
 
+# Known placeholder/example values to exclude from IOC output
+_FALSE_POSITIVE_VALUES: frozenset[str] = frozenset({
+    "127.0.0.1", "0.0.0.0", "localhost", "evil.com", "example.com",
+    "attacker.example", "attacker.com", "victim.com", "test.com",
+    "http://localhost", "http://127.0.0.1", "https://evil.com",
+    "http://evil.com", "https://example.com", "http://example.com",
+    # With port
+    "http://localhost:3000", "http://127.0.0.1:8080",
+})
+
+# Known legitimate domains that should never be treated as IOCs
+_FALSE_POSITIVE_DOMAINS: tuple[str, ...] = (
+    "whitehouse.gov", "cisa.gov", "nist.gov", "nvd.nist.gov",
+    "nsa.gov", "fbi.gov", "dhs.gov",
+)
+
+
+def _filter_false_positives(iocs: list[dict]) -> list[dict]:
+    """Remove known placeholder/benign values that are not real IOCs."""
+    result = []
+    for ioc in iocs:
+        # Strip ASCII and Unicode quote/punctuation from both ends before comparing
+        val = ioc.get("value", "").lower().strip("\"'\u201c\u201d\u2018\u2019.,;")
+        if val in _FALSE_POSITIVE_VALUES:
+            continue
+        if ioc.get("type") in ("domain", "url"):
+            if any(val == d or val.endswith("." + d) for d in _FALSE_POSITIVE_DOMAINS):
+                continue
+        result.append(ioc)
+    return result
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 def fetch_all(max_pages: int = MAX_INDEX_PAGES) -> list[dict]:
     fetched_at = now_iso()
@@ -331,12 +363,13 @@ def fetch_all(max_pages: int = MAX_INDEX_PAGES) -> list[dict]:
             fetched_at=fetched_at,
         )
 
-        # Override source label for research blog
+        # Override source label for research blog and add tags
         for ioc in iocs:
             ioc["source"] = "microsoft-security-research"
-            if "microsoft-security-research" not in ioc.get("tags", []):
-                ioc.setdefault("tags", [])
-                ioc["tags"] = list({*ioc["tags"], "research", "microsoft-security-blog"})
+            ioc["tags"] = list({*ioc.get("tags", []), "research", "microsoft-security-blog"})
+
+        # Filter out known false positives
+        iocs = _filter_false_positives(iocs)
 
         all_iocs.extend(iocs)
 

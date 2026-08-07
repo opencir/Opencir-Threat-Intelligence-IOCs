@@ -18,5 +18,5 @@
 | 6 | hash | `440b5385d3838e3f6bc21220caa83b65cd5f3618daea676f271c3671650ce9a3` | Crucio | Crucio | Crucio |
 | 7 | hash | `12c39f052f030a77c0cd531df86ad3477f46d1287b8b98b625d1dcf89385d721` | FlockWiper | FlockWiper | FlockWiper |
 | 8 | hash | `db41e0da7ab3305be8d9720769c6950b4dc1c1984ef857d3310eb873a0fc7674` | FlockWiper | FlockWiper | FlockWiper |
-| 9 | ip | `185.182.193.21` | GigaWiper C2 | GigaWiper C2 | GigaWiper C2 |
-| 10 | ip | `212.8.248.104` | GigaWiper C2 | GigaWiper C2 | GigaWiper C2 |
+| 9 | ip | `185[.]182[.]193[.]21` | GigaWiper C2 | GigaWiper C2 | GigaWiper C2 |
+| 10 | ip | `212[.]8[.]248[.]104` | GigaWiper C2 | GigaWiper C2 | GigaWiper C2 |

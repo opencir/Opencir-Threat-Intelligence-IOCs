@@ -10,7 +10,7 @@
 
 | # | Type | Value | Description | First Seen | Last Seen |
 |---|------|-------|-------------|------------|-----------|
-| 1 | ip | `138.226.246.94` | Used by the Klue integration to call Salesforce API to perform CRM queries on June 11. Previously disclosed by Klue in their notification about the breach. | Used by the Klue integration to call Salesforce API to perform CRM queries on June 11. Previously disclosed by Klue in their notification about the breach. | Used by the Klue integration to call Salesforce API to perform CRM queries on June 11. Previously disclosed by Klue in their notification about the breach. |
-| 2 | ip | `212.86.125.24` |  | IP address | IP address |
-| 3 | ip | `213.111.148.90` |  | IP address | IP address |
-| 4 | ip | `94.154.32.160` |  | IP address | IP address |
+| 1 | ip | `138[.]226[.]246[.]94` | Used by the Klue integration to call Salesforce API to perform CRM queries on June 11. Previously disclosed by Klue in their notification about the breach. | Used by the Klue integration to call Salesforce API to perform CRM queries on June 11. Previously disclosed by Klue in their notification about the breach. | Used by the Klue integration to call Salesforce API to perform CRM queries on June 11. Previously disclosed by Klue in their notification about the breach. |
+| 2 | ip | `212[.]86[.]125[.]24` |  | IP address | IP address |
+| 3 | ip | `213[.]111[.]148[.]90` |  | IP address | IP address |
+| 4 | ip | `94[.]154[.]32[.]160` |  | IP address | IP address |

@@ -70,6 +70,84 @@ def _slugify(text: str, max_len: int = 60) -> str:
     return slug[:max_len]
 
 
+def _article_markdown_path(article: dict[str, str], out_dir: Path) -> Path:
+    """Return the expected Markdown path for a scraped article."""
+    published = article.get("published", "")[:10] or "undated"
+    return out_dir / f"{published}_{_slugify(article['title'])}.md"
+
+
+def _defang_dotted(value: str) -> str:
+    """Defang dotted domains/IPs without altering non-dotted values."""
+    return value.replace(".", "[.]") if "." in value else value
+
+
+def defang(value: str, ioc_type: str) -> str:
+    """Defang IOC values for safe publication in Markdown and JSON outputs."""
+    if not value:
+        return value
+
+    itype = (ioc_type or "").lower()
+    canonical = re.sub(r"\bhxxps\[://\]", "https://", value, flags=re.IGNORECASE)
+    canonical = re.sub(r"\bhxxp\[://\]", "http://", canonical, flags=re.IGNORECASE)
+    canonical = re.sub(r"\bhttps\[://\]", "https://", canonical, flags=re.IGNORECASE)
+    canonical = re.sub(r"\bhttp\[://\]", "http://", canonical, flags=re.IGNORECASE)
+    canonical = re.sub(r"\bhxxps\[:\]//", "https://", canonical, flags=re.IGNORECASE)
+    canonical = re.sub(r"\bhxxp\[:\]//", "http://", canonical, flags=re.IGNORECASE)
+    canonical = re.sub(r"\bhttps\[:\]//", "https://", canonical, flags=re.IGNORECASE)
+    canonical = re.sub(r"\bhttp\[:\]//", "http://", canonical, flags=re.IGNORECASE)
+    canonical = _refang(canonical)
+    if "@" in canonical and itype in {"domain", "email"}:
+        local, sep, domain = canonical.rpartition("@")
+        return f"{local}{sep}{_defang_dotted(domain)}"
+
+    if itype in {"domain", "ip"}:
+        return _defang_dotted(canonical)
+
+    if itype != "url":
+        return canonical
+
+    match = re.match(
+        r"^(?:(?P<scheme>[a-z][a-z0-9+\-.]*):\/\/)?(?P<authority>[^\/?#]+)(?P<rest>[\/?#].*)?$",
+        canonical,
+        flags=re.IGNORECASE,
+    )
+    if not match:
+        return canonical.replace("://", "[://]", 1)
+
+    scheme = match.group("scheme") or ""
+    authority = match.group("authority") or ""
+    rest = match.group("rest") or ""
+
+    auth = ""
+    hostport = authority
+    if "@" in authority:
+        auth, hostport = authority.rsplit("@", 1)
+        auth += "@"
+
+    host = hostport
+    port = ""
+    wrapped = False
+    if hostport.startswith("[") and "]" in hostport:
+        end = hostport.index("]")
+        host = hostport[1:end]
+        port = hostport[end + 1:]
+        wrapped = True
+    elif ":" in hostport:
+        maybe_host, maybe_port = hostport.rsplit(":", 1)
+        if maybe_port.isdigit():
+            host = maybe_host
+            port = f":{maybe_port}"
+
+    defanged_host = _defang_dotted(host)
+    if wrapped:
+        defanged_host = f"[{defanged_host}]"
+
+    defanged_authority = f"{auth}{defanged_host}{port}"
+    if not scheme:
+        return f"{defanged_authority}{rest}"
+    return f"{scheme}[://]{defanged_authority}{rest}"
+
+
 # ── Article discovery: WordPress REST API ─────────────────────────────────────
 def _discover_via_api(session: requests.Session, max_pages: int) -> list[dict[str, str]]:
     """
@@ -218,10 +296,7 @@ def _write_markdown(
     url       = article["url"]
     published = article.get("published", "")[:10]  # YYYY-MM-DD
 
-    slug      = _slugify(title)
-    date_pfx  = published or "undated"
-    filename  = f"{date_pfx}_{slug}.md"
-    out_path  = out_dir / filename
+    out_path  = _article_markdown_path(article, out_dir)
 
     lines: list[str] = [
         f"# {title}",
@@ -244,8 +319,8 @@ def _write_markdown(
             "|---|------|-------|-------------|------------|-----------|",
         ]
         for i, ioc in enumerate(iocs, 1):
-            val   = ioc.get("value", "")
             itype = ioc.get("type", "")
+            val   = ioc.get("value", "")
             desc  = ioc.get("description", "")
             fs    = ioc.get("first_seen", "")
             ls    = ioc.get("last_seen", "")
@@ -289,6 +364,8 @@ def _write_index(articles_meta: list[dict], out_dir: Path) -> None:
         title  = meta.get("title", "")
         url    = meta.get("url", "")
         count  = meta.get("ioc_count", 0)
+        if count <= 0:
+            continue
         fname  = meta.get("filename", "")
         lines.append(f"| {date} | [{title}]({url}) | {count} | [{fname}]({fname}) |")
 
@@ -362,6 +439,7 @@ def fetch_all(max_pages: int = MAX_INDEX_PAGES) -> list[dict]:
             published=art["published"],
             fetched_at=fetched_at,
         )
+        time.sleep(REQUEST_DELAY)
 
         # Override source label for research blog and add tags
         for ioc in iocs:
@@ -371,20 +449,32 @@ def fetch_all(max_pages: int = MAX_INDEX_PAGES) -> list[dict]:
         # Filter out known false positives
         iocs = _filter_false_positives(iocs)
 
-        all_iocs.extend(iocs)
+        if not iocs:
+            md_path = _article_markdown_path(art, OUTPUT_DIR)
+            if md_path.exists():
+                md_path.unlink()
+                log.info("  Removed %s (0 IOCs)", md_path.name)
+            else:
+                log.info("  Skipped %s (0 IOCs)", md_path.name)
+            continue
 
-        md_path = _write_markdown(art, iocs, OUTPUT_DIR)
-        log.info("  Wrote %s (%d IOCs)", md_path.name, len(iocs))
+        output_iocs = [
+            {**ioc, "value": defang(ioc.get("value", ""), ioc.get("type", ""))}
+            for ioc in iocs
+        ]
+
+        all_iocs.extend(output_iocs)
+
+        md_path = _write_markdown(art, output_iocs, OUTPUT_DIR)
+        log.info("  Wrote %s (%d IOCs)", md_path.name, len(output_iocs))
 
         index_meta.append({
             "title":     art["title"],
             "url":       art["url"],
             "published": art.get("published", ""),
-            "ioc_count": len(iocs),
+            "ioc_count": len(output_iocs),
             "filename":  md_path.name,
         })
-
-        time.sleep(REQUEST_DELAY)
 
     # Write index README
     _write_index(index_meta, OUTPUT_DIR)

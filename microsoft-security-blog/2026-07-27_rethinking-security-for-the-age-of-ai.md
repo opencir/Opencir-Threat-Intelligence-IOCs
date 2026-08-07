@@ -10,4 +10,4 @@
 
 | # | Type | Value | Description | First Seen | Last Seen |
 |---|------|-------|-------------|------------|-----------|
-| 1 | url | `https://www.youtube-nocookie.com/embed/ACx7NxQW9uo?feature=oembed` |  | 2026-07-27T09:40:00 |  |
+| 1 | url | `https[://]www[.]youtube-nocookie[.]com/embed/ACx7NxQW9uo?feature=oembed` |  | 2026-07-27 |  |

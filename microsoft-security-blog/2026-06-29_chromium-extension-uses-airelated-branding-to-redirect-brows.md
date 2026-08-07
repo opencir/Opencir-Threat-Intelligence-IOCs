@@ -10,5 +10,5 @@
 
 | # | Type | Value | Description | First Seen | Last Seen |
 |---|------|-------|-------------|------------|-----------|
-| 1 | domain | `perplexity-ai.online` | Typosquatted domain used for search redirection | Typosquatted domain used for search redirection | Typosquatted domain used for search redirection |
-| 2 | url | `extension.tilda.ws/perplexityai` | Installation onboarding page | Installation onboarding page | Installation onboarding page |
+| 1 | domain | `perplexity-ai[.]online` | Typosquatted domain used for search redirection | Typosquatted domain used for search redirection | Typosquatted domain used for search redirection |
+| 2 | url | `extension[.]tilda[.]ws/perplexityai` | Installation onboarding page | Installation onboarding page | Installation onboarding page |

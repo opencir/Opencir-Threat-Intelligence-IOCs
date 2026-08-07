@@ -98,7 +98,7 @@ def defang(value: str, ioc_type: str) -> str:
     canonical = _refang(canonical)
     if "@" in canonical and itype in {"domain", "email"}:
         local, sep, domain = canonical.rpartition("@")
-        return f"{local}{sep}{_defang_dotted(domain)}" if sep else canonical
+        return f"{local}{sep}{_defang_dotted(domain)}"
 
     if itype in {"domain", "ip"}:
         return _defang_dotted(canonical)

@@ -7,10 +7,17 @@ Compromise (IOCs) from public threat intelligence feeds.
 
 | Type | Format | Use Case |
 |---|---|---|
-| IP Addresses | IPv4/IPv6 | Firewall blocklists (C2 servers, malicious hosts) |
-| File Hashes | MD5, SHA1, SHA256 | EDR blocking (CrowdStrike, SentinelOne) |
+| IP Addresses | IPv4/IPv6 | Firewall blocklists / EDL (C2 servers, malicious hosts) |
 | Domains | FQDN | DNS sinkholing, proxy blocking |
-| URLs | Full URL | Web gateway blocking |
+| URLs | Full URL (http/https) | Secure web gateway blocking |
+| File Hashes | MD5, SHA1, SHA256, SHA512 | EDR blocking (CrowdStrike, SentinelOne custom IOC upload) |
+| CVEs | `CVE-YYYY-NNNN+` | Vulnerability watchlist, patch prioritization |
+| Email Addresses | `user@domain.tld` | Phishing sender blocklist, mail gateway rules |
+| CIDR Ranges | `a.b.c.d/n` | Bulk blocklisting of malicious hosting ranges |
+| Mutexes | string | Host-based detection engineering |
+| YARA Rule Names | string | Detection engineering reference |
+
+All types are validated and defanged per [`skill/-IOCs-collection-skills.md`](skill/-IOCs-collection-skills.md); private/reserved IPs, known-benign infrastructure, and placeholder values are filtered before publish (see `scripts/validate.py`).
 
 ## Feed Sources
 

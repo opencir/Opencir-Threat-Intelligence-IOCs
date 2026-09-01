@@ -1,169 +1,172 @@
 hash,type,malware,source,first_seen
-0020d23b0f9c5e6851a7f737af73fd143175ee47054931166369edd93338538a,sha256,,microsoft-threat-intel,Crypto Clipper Worm
-0215f734867bd71c57ff5c524d8cc670be5b4f1861b2c390cf46d18784a53624,sha256,,microsoft-threat-intel,StealC
-04ec44f2618460f5c77c5e56014a512cc03a123c9c5b6b6b1273e2a1681ac2e1,sha256,,microsoft-threat-intel,PE payload (xmnrwv9l.exe) — Same hash in both waves
+0020d23b0f9c5e6851a7f737af73fd143175ee47054931166369edd93338538a,sha256,,"microsoft-security-research,microsoft-threat-intel",Crypto Clipper Worm
+0215f734867bd71c57ff5c524d8cc670be5b4f1861b2c390cf46d18784a53624,sha256,,"microsoft-security-research,microsoft-threat-intel",StealC
+04ec44f2618460f5c77c5e56014a512cc03a123c9c5b6b6b1273e2a1681ac2e1,sha256,,"microsoft-security-research,microsoft-threat-intel",PE payload (xmnrwv9l.exe) — Same hash in both waves
 05e1761b535537287e7b72d103a29c4453742725600f59a34a4831eafc0b8e53,sha256,,microsoft-threat-intel,2026-04-16T08:00:00
 062bb28765fbaa11f8cc341fa16e2c7f942a122d929cb41f4a0f755b4429f246,sha256,,microsoft-threat-intel,autorun.dll loaded by legit EXE via DLL sideloading
-06a2888c1f07119873ccb051221bd8717281494b33585f4242556e6e5e227969,sha256,,microsoft-threat-intel,Campaign payload (Wave 1)
+06a2888c1f07119873ccb051221bd8717281494b33585f4242556e6e5e227969,sha256,,"microsoft-security-research,microsoft-threat-intel",Campaign payload (Wave 1)
 078163d5c16f64caa5a14784323fd51451b8c831c73396b967b4e35e6879937b,sha256,,microsoft-threat-intel,PsExec binary
 07c6234b02017ffee2a1740c66e84d1ad2d37f214825169c30c50a0bc2904321,sha256,,microsoft-threat-intel,2026-03-31T06:43:05
-082d733db0687dcd768104972b065d4b58cb1e6043688c6c20fa3702337f36ab,sha256,,microsoft-threat-intel,2026-07-15T18:36:21
-0a26238f6c516de5885457c93042531aa59bc206a9537cebf5267cedc6c68531,sha256,,microsoft-threat-intel,2026-04-24
+082d733db0687dcd768104972b065d4b58cb1e6043688c6c20fa3702337f36ab,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-07-15
+0a26238f6c516de5885457c93042531aa59bc206a9537cebf5267cedc6c68531,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-04-24
 0cefeb6210b7103fd32b996beff518c9b6e1691a97bb1cda7f5fb57905c4be96,sha256,,microsoft-threat-intel,2026-03-01
-100407796028bf3649752d9d2a67a0e4394d752eb8de86daa42920e814f3fae8,sha256,,microsoft-threat-intel,Crypto Clipper Worm
-11420d6d693bf8b19195e6b98fedd03b9bcbc770b6988bc64cb788bfabe1a49d,sha256,,microsoft-threat-intel,2026-04-14
+100407796028bf3649752d9d2a67a0e4394d752eb8de86daa42920e814f3fae8,sha256,,"microsoft-security-research,microsoft-threat-intel",Crypto Clipper Worm
+11420d6d693bf8b19195e6b98fedd03b9bcbc770b6988bc64cb788bfabe1a49d,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-04-14
 11af4566539ad3224e968194c7a9ad7b596460d8f6e423fc62d1ea5fc0724326,sha256,,microsoft-threat-intel,2026-03-21
-1246c5b89ab668c1137f377507bc3e266a98e93248382aa026610ae1e764a497,sha256,,microsoft-threat-intel,Amadey 5.65
-12c39f052f030a77c0cd531df86ad3477f46d1287b8b98b625d1dcf89385d721,sha256,,microsoft-threat-intel,FlockWiper
+1246c5b89ab668c1137f377507bc3e266a98e93248382aa026610ae1e764a497,sha256,,"microsoft-security-research,microsoft-threat-intel",Amadey 5.65
+12c39f052f030a77c0cd531df86ad3477f46d1287b8b98b625d1dcf89385d721,sha256,,"microsoft-security-research,microsoft-threat-intel",FlockWiper
 15a730d22f25f87a081bb2723393e6695d2aab38c0eafe9d7058e36f4f589220,sha256,,microsoft-threat-intel,2026-03-31T06:43:05
 16562974deec80e41ef57a71a6de8c03ceb393005fb1432f8d9d82c61294ef8c,sha256,,microsoft-threat-intel,autorun.dll loaded by legit EXE via DLL sideloading
 1735fcb8989c99bc8b9741f2a7dbf9ab42b7855e8e9a395c21f11450c35ebb0c,sha256,,microsoft-threat-intel,2026-03-31T06:43:05
 1b2555b09ac62164638f47c8272beb6b0f97186e37d3a54cb84c723ff7a2eee5,sha256,,microsoft-threat-intel,autorun.dll loaded by legit EXE via DLL sideloading
-1c693bcdaf1da636eb21c274b21cc2f6c52c62ddd514700783eee83fe13acb0a,sha256,,microsoft-threat-intel,Campaign payload (Wave 1)
-1d1bf5e8c1539d2f05b1429235b8f4990f87036774be95157b315a7803dd5526,sha256,,microsoft-threat-intel,Second stage Powershell Script
+1c693bcdaf1da636eb21c274b21cc2f6c52c62ddd514700783eee83fe13acb0a,sha256,,"microsoft-security-research,microsoft-threat-intel",Campaign payload (Wave 1)
+1d1bf5e8c1539d2f05b1429235b8f4990f87036774be95157b315a7803dd5526,sha256,,"microsoft-security-research,microsoft-threat-intel",Second stage Powershell Script
 1f726b67223067f6cdc9ff5f14f32c3853e7472cebe954a53134a7bae91329f0,sha256,,microsoft-threat-intel,2026-03-31T06:43:05
-1f8daffec5945a13a1e9231f4a76655d4c7ef4560d0c64ca3abfe48f38297cbd,sha256,,microsoft-threat-intel,Campaign payload (Wave 1)
+1f8daffec5945a13a1e9231f4a76655d4c7ef4560d0c64ca3abfe48f38297cbd,sha256,,"microsoft-security-research,microsoft-threat-intel",Campaign payload (Wave 1)
 2075fd1a1362d188290910a8c55cf30c11ed5955c04af410c481410f538da419,sha256,,microsoft-threat-intel,2026-04-16T08:00:00
-20db98af3037b197c8a846dbf17b87fc6f049c3e0d9a188f9b9a74d3916dd5e1,sha256,,microsoft-threat-intel,Crypto Clipper Worm
-221c45a790dec2a296af57969e1165a16f8f49733aeab64c0bbd768d9943badf,sha256,,microsoft-threat-intel,protocol.cjs
+20db98af3037b197c8a846dbf17b87fc6f049c3e0d9a188f9b9a74d3916dd5e1,sha256,,"microsoft-security-research,microsoft-threat-intel",Crypto Clipper Worm
+221c45a790dec2a296af57969e1165a16f8f49733aeab64c0bbd768d9943badf,sha256,,"microsoft-security-research,microsoft-threat-intel",protocol.cjs
 22b38dad7da097ea03aa28d0614164cd25fafeb1383dbc15047e34c8050f6f67,sha256,,microsoft-threat-intel,Gentlemen ransomware encryptor
 22b82421363026940a565d4ffbb7ce4e7798cdc5f53dda9d3229eb8ef3e0289a,sha256,,microsoft-threat-intel,Initial VBS Script from WhatsApp
-23c1e673f315dafa14b73034a90dd3d393a984451ff6601b8be8142be6487b43,sha256,,microsoft-threat-intel,Crypto Clipper Worm
+23c1e673f315dafa14b73034a90dd3d393a984451ff6601b8be8142be6487b43,sha256,,"microsoft-security-research,microsoft-threat-intel",Crypto Clipper Worm
 241a50befcf5c1aa6dab79664e2ba9cb373cc351cb9de9c3699fd2ecb2afab05,sha256,,microsoft-threat-intel,Payload
-24b9ee242f21a73b55f7bb3297eafb33c60840907386b542ed79fc6b72365168,sha256,,microsoft-threat-intel,24b9ee242f21a73b55f7bb3297eafb33c60840907386b542ed79fc6b72365168
-25270cc429ada8028b5b33220ed412c47907ecceea7377d608fac5af01bed56a,sha256,,microsoft-threat-intel,2026-04-26
-25e121e3b7d300c0d0075b33e5eca39a3e6a659fb9cfee52b70ef71686628f1b,sha256,,microsoft-threat-intel,index.js (from @redhat-cloud-services/chrome-2.3.4)
-2a0f053855da59b3b56812e580d7baeba59fc9493694722aa9e3f121ee3363f1,sha256,,microsoft-threat-intel,StealC
-2e5fd01b7949a45937b853eabcf4b03195614cf84338dcaaa97240d1c5301ddc,sha256,,microsoft-threat-intel,Campaign payload (Wave 1)
+24b9ee242f21a73b55f7bb3297eafb33c60840907386b542ed79fc6b72365168,sha256,,"microsoft-security-research,microsoft-threat-intel",24b9ee242f21a73b55f7bb3297eafb33c60840907386b542ed79fc6b72365168
+25270cc429ada8028b5b33220ed412c47907ecceea7377d608fac5af01bed56a,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-04-26
+25e121e3b7d300c0d0075b33e5eca39a3e6a659fb9cfee52b70ef71686628f1b,sha256,,"microsoft-security-research,microsoft-threat-intel",index.js (from @redhat-cloud-services/chrome-2.3.4)
+2a0f053855da59b3b56812e580d7baeba59fc9493694722aa9e3f121ee3363f1,sha256,,"microsoft-security-research,microsoft-threat-intel",StealC
+2e5fd01b7949a45937b853eabcf4b03195614cf84338dcaaa97240d1c5301ddc,sha256,,"microsoft-security-research,microsoft-threat-intel",Campaign payload (Wave 1)
 2ee93ccbcd49ed94c65dcf52e7dcb8f0fa0a443ca24c0e0c7f79152efba657b7,sha256,,microsoft-threat-intel,autorun.dll loaded by legit EXE via DLL sideloading
-30cef3d3d956e83e2c50579cfbe57a49159cccbcc8b0b0422f27d55e1c401ad9,sha256,,microsoft-threat-intel,Amadey 5.77
-34014776d3d3ff11bc4439b02fd7ac0f02a887eb3a052eeafff236e2f6db8ad1,sha256,,microsoft-threat-intel,2026-07-15T18:36:21
-35a6bc44b176a050fd6824904b7604f0f45b0fdfa26bf9500b9e05973b387cfd,sha256,,microsoft-threat-intel,Crypto Clipper Worm
-396cac9e457ec54ff6d3f6311cb5cc1da8054d019ce3ffa1de5741506c7a4ea4,sha256,,microsoft-threat-intel,Index.js (from redhat-cloud-services/remediations-client)
-3c30deb6556a94cfb84ae51798f4aecfae8c7358e55fdb321c5f2376579631cd,sha256,,microsoft-threat-intel,GigaWiper standalone wiper
+30cef3d3d956e83e2c50579cfbe57a49159cccbcc8b0b0422f27d55e1c401ad9,sha256,,"microsoft-security-research,microsoft-threat-intel",Amadey 5.77
+34014776d3d3ff11bc4439b02fd7ac0f02a887eb3a052eeafff236e2f6db8ad1,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-07-15
+35a6bc44b176a050fd6824904b7604f0f45b0fdfa26bf9500b9e05973b387cfd,sha256,,"microsoft-security-research,microsoft-threat-intel",Crypto Clipper Worm
+396cac9e457ec54ff6d3f6311cb5cc1da8054d019ce3ffa1de5741506c7a4ea4,sha256,,"microsoft-security-research,microsoft-threat-intel",Index.js (from redhat-cloud-services/remediations-client)
+3c30deb6556a94cfb84ae51798f4aecfae8c7358e55fdb321c5f2376579631cd,sha256,,"microsoft-security-research,microsoft-threat-intel",GigaWiper standalone wiper
 3e6fcace412827b14d4af9fc7ca1b8867f75f40c589f3fdca50e988466f00279,sha256,,microsoft-threat-intel,2026-04-16T08:00:00
-3f66634f103b80412d1d670b91befab2a74425d2ea76d904c4a7ffae2ae94b44,sha256,,microsoft-threat-intel,Campaign payload (Wave 1)
-43455f1ff4a623b783da670d052eb77eaaacb0c66a9f1e8508f802bf22e8129e,sha256,,microsoft-threat-intel,Amadey 5.60
+3f66634f103b80412d1d670b91befab2a74425d2ea76d904c4a7ffae2ae94b44,sha256,,"microsoft-security-research,microsoft-threat-intel",Campaign payload (Wave 1)
+43455f1ff4a623b783da670d052eb77eaaacb0c66a9f1e8508f802bf22e8129e,sha256,,"microsoft-security-research,microsoft-threat-intel",Amadey 5.60
 436cfce71290c2fc2f2c362541db68ced6847c66a73b55487e5e5c73b0636c85,sha256,,microsoft-threat-intel,Decrypted Worker Module
-440b5385d3838e3f6bc21220caa83b65cd5f3618daea676f271c3671650ce9a3,sha256,,microsoft-threat-intel,Crucio
-49cc0e0c3ec060fb354cacee244d4f297aaefb6db66e67a21262d6c4d2eae1bd,sha256,,microsoft-threat-intel,Campaign payload (Wave 1)
-4a8860240e4231c3a74c81949be655a28e096a7d72f38fbe84e5b37636b98417,sha256,,microsoft-threat-intel,easy-day-js-1.11.21.tgz (clean bait tarball)
+440b5385d3838e3f6bc21220caa83b65cd5f3618daea676f271c3671650ce9a3,sha256,,"microsoft-security-research,microsoft-threat-intel",Crucio
+49cc0e0c3ec060fb354cacee244d4f297aaefb6db66e67a21262d6c4d2eae1bd,sha256,,"microsoft-security-research,microsoft-threat-intel",Campaign payload (Wave 1)
+4a8860240e4231c3a74c81949be655a28e096a7d72f38fbe84e5b37636b98417,sha256,,"microsoft-security-research,microsoft-threat-intel",easy-day-js-1.11.21.tgz (clean bait tarball)
 4a927d031919fd6bd88d3c8a917214b54bca00f8ddc80ecfe4d230663dda7465,sha256,,microsoft-threat-intel,Custom scanning tool
-50eae63d3e24be9ca8803f4b5a0408aef97ee3fab7af018d8c2dde7c359edd65,sha256,,microsoft-threat-intel,Downloader and backdoor PowerShell script
+50eae63d3e24be9ca8803f4b5a0408aef97ee3fab7af018d8c2dde7c359edd65,sha256,,"microsoft-security-research,microsoft-threat-intel",Downloader and backdoor PowerShell script
 522fdfaff44797b9180f36c654f77baf5cdeaab861bbf372ccfc1a5bd920d62e,sha256,,microsoft-threat-intel,Payload
-5455341ed1bbe75a664fca2dd0794c508e1874f75360253a7ff5bc119bc92d80,sha256,,microsoft-threat-intel,2026-04-12
-56d722b0331bf0aaa86bb37483486c6dff6ad9427fc473ed7c3226c21a9bdd23,sha256,,microsoft-threat-intel,2026-04-26
+5455341ed1bbe75a664fca2dd0794c508e1874f75360253a7ff5bc119bc92d80,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-04-12
+54dc7ea54a1317cca0e890a2770630cf7fa6c97813e0cb9d2caa93012b350668,sha256,,microsoft-security-research,setup.mjs(npm tarball preinstall loader)
+56d722b0331bf0aaa86bb37483486c6dff6ad9427fc473ed7c3226c21a9bdd23,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-04-26
 57b3188e24782c27fdf72493ce599537efd3187d03b80f8afe733c72d68c5517,sha256,,microsoft-threat-intel,gowitness scanner
 57bf1c25b7a12d28174e871574d78b4724d575952c48ca094573c19bdcbb935f,sha256,,microsoft-threat-intel,2026-03-31T06:43:05
 5ba7de7d5115789b952d9b1c6cff440c9128f438de933ff9044a68fff8496d19,sha256,,microsoft-threat-intel,2025-09-15
 5cd4280b7b5a655b611702b574b0b48cd46d7729c9bbdfa907ca0afa55971662,sha256,,microsoft-threat-intel,2026-03-31T06:43:05
-5db1ecbbb2c90c51d81bda138d4300b90ea5eb2885cce1bd921d692214aecbc6,sha256,,microsoft-threat-intel,2026-04-14
+5db1ecbbb2c90c51d81bda138d4300b90ea5eb2885cce1bd921d692214aecbc6,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-04-14
 5e581f22f56883ee13358f73fabab00fcf9313a053210eb12ac18e66098346e5,sha256,,microsoft-threat-intel,2026-04-16T08:00:00
 5eaaf281883f01fb2062c5c102e8ff037db7111ba9585b27b3d285f416794548,sha256,,microsoft-threat-intel,2026-03-31T06:43:05
 5f457c492773b832054d007ba94d2e89c22dac8458dc9dc1b1d91896777c0c9f,sha256,,microsoft-threat-intel,2026-04-16T08:00:00
-5f5b25b2e35d404034d0d60975cf1ffbc6f141761ec3f4f15d6f7c6213a056f6,sha256,,microsoft-threat-intel,Amadey 5.80
+5f5b25b2e35d404034d0d60975cf1ffbc6f141761ec3f4f15d6f7c6213a056f6,sha256,,"microsoft-security-research,microsoft-threat-intel",Amadey 5.80
 5fbbca2d72840feb86b6ef8a1abb4fe2f225d84228a714391673be2719c73ac7,sha256,,microsoft-threat-intel,2026-04-16T08:00:00
 613ebc1e89409c909b2ff6ae21635bdfea6d4e118d67216f2c570ba537b216bd,sha256,,microsoft-threat-intel,2026-03-31T06:43:05
 617b67a8e1210e4fc87c92d1d1da45a2f311c08d26e89b12307cf583c900d101,sha256,,microsoft-threat-intel,2026-04-01T14:00:00
 630dfd5ab55b9f897b54c289941303eb9b0e07f58ca5e925a0fa40f12e752653,sha256,,microsoft-threat-intel,2026-03-31T06:43:05
-633d4cbd496b1094495da89a64f5e6c31a0f6d4d1488411db5b0cba1cfe42001,sha256,,microsoft-threat-intel,GigaWiper backdoor
-63565f15a99769bbcd527a4d53e5cc259d80e1254463ef9c878c2074685558ae,sha256,,microsoft-threat-intel,Campaign payload (Wave 1)
+633d4cbd496b1094495da89a64f5e6c31a0f6d4d1488411db5b0cba1cfe42001,sha256,,"microsoft-security-research,microsoft-threat-intel",GigaWiper backdoor
+63565f15a99769bbcd527a4d53e5cc259d80e1254463ef9c878c2074685558ae,sha256,,"microsoft-security-research,microsoft-threat-intel",Campaign payload (Wave 1)
 638788afc4f1b5860a328312caf5895abd5f5632d28a4f2a85b09076e270d15d,sha256,,microsoft-threat-intel,preinstall.js (Gen-1 stager)
-6580de3b74fd635a1d7a887b8f6e5b0c9ac9e90d6e20466ad41489203119cca9,sha256,,microsoft-threat-intel,Campaign payload (Wave 1)
-67fc5cf395e28294bbb91ed0e954fdf2e80ebd9119022a115a42c286dc8bacf5,sha256,,microsoft-threat-intel,Crypto Clipper Worm
+6580de3b74fd635a1d7a887b8f6e5b0c9ac9e90d6e20466ad41489203119cca9,sha256,,"microsoft-security-research,microsoft-threat-intel",Campaign payload (Wave 1)
+67fc5cf395e28294bbb91ed0e954fdf2e80ebd9119022a115a42c286dc8bacf5,sha256,,"microsoft-security-research,microsoft-threat-intel",Crypto Clipper Worm
 69077fcf940fc5852fb32beed15636756ebc04ac971b7ed71d36251e7ea70a20,sha256,,microsoft-threat-intel,autorun.dll loaded by legit EXE via DLL sideloading
 69908f05b436bd97baae56296bf9b9e734486516f9bb9938c2b8752e152315d4,sha256,,microsoft-threat-intel,hpbprndiLOC.dll– Kazuar Loader
-6e78713b75bd34828d49896176627f7face7aa9036cd874f2e02d9f23a9a9c71,sha256,,microsoft-threat-intel,6e78713b75bd34828d49896176627f7face7aa9036cd874f2e02d9f23a9a9c71
+6e78713b75bd34828d49896176627f7face7aa9036cd874f2e02d9f23a9a9c71,sha256,,"microsoft-security-research,microsoft-threat-intel",6e78713b75bd34828d49896176627f7face7aa9036cd874f2e02d9f23a9a9c71
 6eb31006ca318a21eb619d008226f08e287f753aec9042269203290462eaa00d,sha256,,microsoft-threat-intel,Decrypted Bridge Module
 7035c2abeb617e828dfda1b119b8544fa9ae15a1d263d18bc5506acaf381f496,sha256,,microsoft-threat-intel,SimpleRunPE.exe binary transferred by the attacker to the device during established ScreenConnect session
 710a9d2653c8bd3689e451778dab9daec0de4c4c75f900788ccf23ef254b122a,sha256,,microsoft-threat-intel,Kerbrute tool
-7630debd35cac6b7d58c4427695579b3e3a8b1cc462f523234cd6c698882a68c,sha256,,microsoft-threat-intel,Crypto Clipper Worm
-7787a9a7d8ae393aa32f257d083903c4dc9b97a1e5b0458c4cd480d4f3cb5b05,sha256,,microsoft-threat-intel,Crypto Clipper Worm
+7630debd35cac6b7d58c4427695579b3e3a8b1cc462f523234cd6c698882a68c,sha256,,"microsoft-security-research,microsoft-threat-intel",Crypto Clipper Worm
+7787a9a7d8ae393aa32f257d083903c4dc9b97a1e5b0458c4cd480d4f3cb5b05,sha256,,"microsoft-security-research,microsoft-threat-intel",Crypto Clipper Worm
 77d92efe7af3547f71fd41d4a884872d66b1be9499eaa637e91eac866911694d,sha256,,microsoft-threat-intel,setup.mjs (Gen-2 stager)
-791efb555eefb7215e96659a1353a97416743b66bdd72705493129c64057d40e,sha256,,microsoft-threat-intel,2026-04-20
+791efb555eefb7215e96659a1353a97416743b66bdd72705493129c64057d40e,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-04-20
 7ca42f1f23dbdc9427c9f135815bb74708a7494ea78df1fbc0fc348ba2a161ae,sha256,,microsoft-threat-intel,Payload
-8351d251cf0b5a0bd82242deaa0a14e3e1394418d55c0f4259dac4303b79fc0c,sha256,,microsoft-threat-intel,8351d251cf0b5a0bd82242deaa0a14e3e1394418d55c0f4259dac4303b79fc0c
-83e970feb3f10692c164f6889f7a026f135c2433e5bf8e662a6e63a3b81267b7,sha256,,microsoft-threat-intel,Campaign payload (Wave 1)
-8610d4fb0ec5b525071c2aaec4df0f8fcbb3673aba58a7e1959fc44e83c0e2ca,sha256,,microsoft-threat-intel,2026-04-24
-89934cb1494cf0327f0ab82fe644c74caf687814379cad116bd7adaca74c1028,sha256,,microsoft-threat-intel,Campaign payload (Wave 1)
-8cef760d11d24fc2e9bbd9f770dca5105854f7ece3b0e6948d7c8b7fdd1765ea,sha256,,microsoft-threat-intel,Amadey 5.73
-8f32456359f209a63adfd24b94235e1727382ac7f7bb7f2bcaf754e721925b64,sha256,,microsoft-threat-intel,StealC
+8351d251cf0b5a0bd82242deaa0a14e3e1394418d55c0f4259dac4303b79fc0c,sha256,,"microsoft-security-research,microsoft-threat-intel",8351d251cf0b5a0bd82242deaa0a14e3e1394418d55c0f4259dac4303b79fc0c
+83e970feb3f10692c164f6889f7a026f135c2433e5bf8e662a6e63a3b81267b7,sha256,,"microsoft-security-research,microsoft-threat-intel",Campaign payload (Wave 1)
+8610d4fb0ec5b525071c2aaec4df0f8fcbb3673aba58a7e1959fc44e83c0e2ca,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-04-24
+89934cb1494cf0327f0ab82fe644c74caf687814379cad116bd7adaca74c1028,sha256,,"microsoft-security-research,microsoft-threat-intel",Campaign payload (Wave 1)
+8cef760d11d24fc2e9bbd9f770dca5105854f7ece3b0e6948d7c8b7fdd1765ea,sha256,,"microsoft-security-research,microsoft-threat-intel",Amadey 5.73
+8f32456359f209a63adfd24b94235e1727382ac7f7bb7f2bcaf754e721925b64,sha256,,"microsoft-security-research,microsoft-threat-intel",StealC
 8fd5b8db10458ace7e4ed335eb0c66527e1928ad87a3c688595804f72b205e8c,sha256,,microsoft-threat-intel,2026-04-16T08:00:00
-918fa52ae45ed60ba7cc8bdc99c3cbe9ab92e0375ec31fc05d0d4513be11c593,sha256,,microsoft-threat-intel,2026-07-03
+918fa52ae45ed60ba7cc8bdc99c3cbe9ab92e0375ec31fc05d0d4513be11c593,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-07-03
 91ec2ede66c7b4e6d4c8a25ffad4670d5fd7ff1a2d266528548950df2a8a927a,sha256,,microsoft-threat-intel,2026-03-31T06:43:05
 92ff08773995ebc8d55ec4b8e1a225d0d1e51efa4ef88b8849d0071230c9645a,sha256,,microsoft-threat-intel,2026-04-01T14:00:00
-9383572a30ae5b76fadd0700fbd7a1aa7b05d0b6c8f9cdaef9b30a3e1f65d57d,sha256,,microsoft-threat-intel,Amadey 5.86
+9383572a30ae5b76fadd0700fbd7a1aa7b05d0b6c8f9cdaef9b30a3e1f65d57d,sha256,,"microsoft-security-research,microsoft-threat-intel",Amadey 5.86
 95e893e7cdde19d7d16ff5a5074d0b369abd31c1a30962656133caa8153e8d63,sha256,,microsoft-threat-intel,2026-04-16T08:00:00
 9632d7e4a87ec12fdd05ed3532f7564526016b78972b2cd49a610354d672523c,sha256,,microsoft-threat-intel,2026-04-06T09:00:00
-9706a192e2c1a1faaf0a521daf31c2af60ff4590e3f47bbb4abc227f42af0683,sha256,,microsoft-threat-intel,GigaWiper backdoor
-97448688b292bfec6d83b153588076fe59b111c35ac4e42a916238df16a71e2f,sha256,,microsoft-threat-intel,PHOTO-215746435.png.lnk(Wave 2)
-977b33a9b481cf714946b7d386865cd5d284312aa5ecfa0546c197b1003e1bde,sha256,,microsoft-threat-intel,StealC
+9706a192e2c1a1faaf0a521daf31c2af60ff4590e3f47bbb4abc227f42af0683,sha256,,"microsoft-security-research,microsoft-threat-intel",GigaWiper backdoor
+97448688b292bfec6d83b153588076fe59b111c35ac4e42a916238df16a71e2f,sha256,,"microsoft-security-research,microsoft-threat-intel",PHOTO-215746435.png.lnk(Wave 2)
+977b33a9b481cf714946b7d386865cd5d284312aa5ecfa0546c197b1003e1bde,sha256,,"microsoft-security-research,microsoft-threat-intel",StealC
 97ccc28808d2c21b83f24835744af754920a992e57216d2cbc8315664905b0e2,sha256,,microsoft-threat-intel,2026-04-16T08:00:00
 980bf65c703edae7b28a752207a84b80332be0dae4ee87f00928f82a011ab0ce,sha256,,microsoft-threat-intel,2026-04-16T08:00:00
-98825c0c7764f45c891275b2f038ea559e84b340df30b41c2cc77b8d4215c6c8,sha256,,microsoft-threat-intel,Campaign payload (Wave 1)
-98e504cc7125b79eda5491f40b998605a05f4cd968b961aab4cce7beb074fefe,sha256,,microsoft-threat-intel,Amadey 5.78
-99231deb373997364381d1eb513d2d42231d418c3a2db9007c5af9bd56ab9371,sha256,,microsoft-threat-intel,2026-04-26
-99507f18c4e61fdb109805404bf6a79ea8ce2fddc590ce48d717e97516ab7e8d,sha256,,microsoft-threat-intel,Amadey 5.70
-9b2e65db653ca8575c9b10eefb9a80c6006404812c2ec212bf5675e3c690233b,sha256,,microsoft-threat-intel,2026-07-15T18:36:21
+98825c0c7764f45c891275b2f038ea559e84b340df30b41c2cc77b8d4215c6c8,sha256,,"microsoft-security-research,microsoft-threat-intel",Campaign payload (Wave 1)
+98e504cc7125b79eda5491f40b998605a05f4cd968b961aab4cce7beb074fefe,sha256,,"microsoft-security-research,microsoft-threat-intel",Amadey 5.78
+99231deb373997364381d1eb513d2d42231d418c3a2db9007c5af9bd56ab9371,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-04-26
+99507f18c4e61fdb109805404bf6a79ea8ce2fddc590ce48d717e97516ab7e8d,sha256,,"microsoft-security-research,microsoft-threat-intel",Amadey 5.70
+9b2e65db653ca8575c9b10eefb9a80c6006404812c2ec212bf5675e3c690233b,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-07-15
 9d2da07aa6e7db3fbc36b36f0cfd74f78d5815f5ba55d0f0405cdd668bd13767,sha256,,microsoft-threat-intel,Payload
-9d90f54ae36c6c5435d5b8bed40faf54cc91f6db28574a6310b5ffaeb0362e96,sha256,,microsoft-threat-intel,Crypto Clipper Worm
-9f10e3b6e5745784f26d18c38ce01fba054b19749c17260978ac11472564aee2,sha256,,microsoft-threat-intel,IMG-386443483.png.lnk(Wave 2)
+9d90f54ae36c6c5435d5b8bed40faf54cc91f6db28574a6310b5ffaeb0362e96,sha256,,"microsoft-security-research,microsoft-threat-intel",Crypto Clipper Worm
+9f10e3b6e5745784f26d18c38ce01fba054b19749c17260978ac11472564aee2,sha256,,"microsoft-security-research,microsoft-threat-intel",IMG-386443483.png.lnk(Wave 2)
+9fc2570b7cef51c1b8df116d144d11ff4096357be7d2c4c6367cfc2509cf1bcc,sha256,,microsoft-security-research,Math_*.js
 9ff07c9fafa9c03fdf69e4abf6806aa7c938b5480e7e258f227db0719ecd6386,sha256,,microsoft-threat-intel,SimpleRunPE.exe binary transferred by the attacker to the device during established ScreenConnect session
 a05400000843fbad6b28d2b76fc201c3d415a72d88d8dc548fafd8bae073c640,sha256,,microsoft-threat-intel,2026-04-16T08:00:00
 a2b9e0887751c3d775adc547f6c76fea3b4a554793059c00082c1c38956badc8,sha256,,microsoft-threat-intel,2026-03-31T06:43:05
 a460d00ef93c8ce70d32e48e55781af66a53328fc2dde45519be196c265de074,sha256,,microsoft-threat-intel,autorun.dll loaded by legit EXE via DLL sideloading
 a68dd1e6a6e35ec3771e1f94fe796f55dfe65a2b94560516ff4ac189390dfa1c,sha256,,microsoft-threat-intel,Malicious payload JavaScript file
 a773bf0d400986f9bcd001c84f2e1a0b614c14d9088f3ba23ddc0c75539dc9e0,sha256,,microsoft-threat-intel,Initial VBS Script from WhatsApp
-a7abf1d9d6686af1cefcd60b17a312e7eb8cfe267def1ec34aeab6128c811630,sha256,,microsoft-threat-intel,Crypto Clipper Worm
-ae70dd4f6bc0d1c8c2848e4e6b51934626c4818dcb5af99d080ddbd7dc337185,sha256,,microsoft-threat-intel,easy-day-js-1.11.22.tgz (weaponized tarball)
-b122a9873bedf145ae2a7fd024b5f309007dbb025149f4dc4ac3f7e4f32a36a4,sha256,,microsoft-threat-intel,setup.cjs (malicious postinstall dropper)
-b270bdf8e2274ea1af0a6eed74d8f10e5fe61012d6cc226a43cc7cc7fd9f6292,sha256,,microsoft-threat-intel,b270bdf8e2274ea1af0a6eed74d8f10e5fe61012d6cc226a43cc7cc7fd9f6292
-b2777b73a4c33ac6a409d475057843be6b5d32262ef28a1f1ff5bb52e3834c5f,sha256,,microsoft-threat-intel,Crypto Clipper Worm
+a7abf1d9d6686af1cefcd60b17a312e7eb8cfe267def1ec34aeab6128c811630,sha256,,"microsoft-security-research,microsoft-threat-intel",Crypto Clipper Worm
+ae70dd4f6bc0d1c8c2848e4e6b51934626c4818dcb5af99d080ddbd7dc337185,sha256,,"microsoft-security-research,microsoft-threat-intel",easy-day-js-1.11.22.tgz (weaponized tarball)
+b122a9873bedf145ae2a7fd024b5f309007dbb025149f4dc4ac3f7e4f32a36a4,sha256,,"microsoft-security-research,microsoft-threat-intel",setup.cjs (malicious postinstall dropper)
+b270bdf8e2274ea1af0a6eed74d8f10e5fe61012d6cc226a43cc7cc7fd9f6292,sha256,,"microsoft-security-research,microsoft-threat-intel",b270bdf8e2274ea1af0a6eed74d8f10e5fe61012d6cc226a43cc7cc7fd9f6292
+b2777b73a4c33ac6a409d475057843be6b5d32262ef28a1f1ff5bb52e3834c5f,sha256,,"microsoft-security-research,microsoft-threat-intel",Crypto Clipper Worm
 b4592cea69699b2c0737d4e19cff7dca17b5baf5a238cd6da950a37e9986f216,sha256,,microsoft-threat-intel,Shell script to automate network scanning using Nmap
-b5a3346082ac566b4494e6175f1cd9873b64abe6c902db49bd4e8088876c9ead,sha256,,microsoft-threat-intel,2026-04-14
-b73de25c053c3225a077738a1fcbd9ca6966d7b3cd6f5494a30f0aa0eae55c7e,sha256,,microsoft-threat-intel,mastra-1.13.1.tgz (compromised CLI tarball)
-b7d1f172ff3feafe65d47fd1cbe0cc249316371ae0e1cbe3a7c741c738b3353d,sha256,,microsoft-threat-intel,Amadey 5.87
-b7f46b192cd83a1d2487cb048cca645f6e8855b9673d500d50bbdb04eebc6bea,sha256,,microsoft-threat-intel,"bjygtujc.dll(3,072 bytes, compiled .NET, Wave 2)"
-b9993a8ad0518849416798cf29668256ccb96598fc4423501ccab5312812653a,sha256,,microsoft-threat-intel,b9993a8ad0518849416798cf29668256ccb96598fc4423501ccab5312812653a
-bd6805782df15e53581096b99bd6bbb81f4d4a5e2d2b30954df63175a4075be9,sha256,,microsoft-threat-intel,Campaign payload (Wave 1)
+b5a3346082ac566b4494e6175f1cd9873b64abe6c902db49bd4e8088876c9ead,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-04-14
+b73de25c053c3225a077738a1fcbd9ca6966d7b3cd6f5494a30f0aa0eae55c7e,sha256,,"microsoft-security-research,microsoft-threat-intel",mastra-1.13.1.tgz (compromised CLI tarball)
+b7d1f172ff3feafe65d47fd1cbe0cc249316371ae0e1cbe3a7c741c738b3353d,sha256,,"microsoft-security-research,microsoft-threat-intel",Amadey 5.87
+b7f46b192cd83a1d2487cb048cca645f6e8855b9673d500d50bbdb04eebc6bea,sha256,,"microsoft-security-research,microsoft-threat-intel","bjygtujc.dll(3,072 bytes, compiled .NET, Wave 2)"
+b9993a8ad0518849416798cf29668256ccb96598fc4423501ccab5312812653a,sha256,,"microsoft-security-research,microsoft-threat-intel",b9993a8ad0518849416798cf29668256ccb96598fc4423501ccab5312812653a
+bd6805782df15e53581096b99bd6bbb81f4d4a5e2d2b30954df63175a4075be9,sha256,,"microsoft-security-research,microsoft-threat-intel",Campaign payload (Wave 1)
 bdd5da81ac34d9faa2a5118d4ed8f492239734be02146cd24a0e34270a48a455,sha256,,microsoft-threat-intel,NTLM relay Python script
-be99857449d2856dd5a84e21c8a3d5e0e01456adb44062ddec5a6b4970d8d42c,sha256,,microsoft-threat-intel,2026-07-10
+be99857449d2856dd5a84e21c8a3d5e0e01456adb44062ddec5a6b4970d8d42c,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-07-10
 bfa149694ec6411c23936311a999163ade54d6f38e2f4b0e3cfb8cb67bd7cfaa,sha256,,microsoft-threat-intel,payload.gz (gzipped Bun stage-2)
-bfaeb987faa6de2b5a5eb63b1233d055215b09b0349a9394f2175fd7cdf385e4,sha256,,microsoft-threat-intel,2026-07-15T18:36:21
+bfaeb987faa6de2b5a5eb63b1233d055215b09b0349a9394f2175fd7cdf385e4,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-07-15
 c1f278f88275e07cc03bd390fe1cbeedd55933110c6fd16de4187f4c4aaf42b9,sha256,,microsoft-threat-intel,Decrypted Kernel Module
-c5baa0c16b0074a1e94b48aa0177e9bfc23746aca8a5b42848a6685da85658b5,sha256,,microsoft-threat-intel,"qFWe908J.ps1(419 KB, Wave 2)"
+c5baa0c16b0074a1e94b48aa0177e9bfc23746aca8a5b42848a6685da85658b5,sha256,,"microsoft-security-research,microsoft-threat-intel","qFWe908J.ps1(419 KB, Wave 2)"
 c7425fbe6c3a4937934215c54027d4b67202d12ab490682fae03498870d66d06,sha256,,microsoft-threat-intel,autorun.dll loaded by legit EXE via DLL sideloading
-c7c5072df9f83f4c440a5c3bb4be1d5f6c67bbf78f196406ca20d27b43b975b8,sha256,,microsoft-threat-intel,2026-03-13
-c824630154ac4fdfce94ded01f037c305eab51e9bef3f493c60ff3184a640502,sha256,,microsoft-threat-intel,Crypto Clipper Worm
+c7c5072df9f83f4c440a5c3bb4be1d5f6c67bbf78f196406ca20d27b43b975b8,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-03-13
+c824630154ac4fdfce94ded01f037c305eab51e9bef3f493c60ff3184a640502,sha256,,"microsoft-security-research,microsoft-threat-intel",Crypto Clipper Worm
 c9e3fdd90e1661c9f90735dc14679f85985df4a7d0933c53ac3c46ec170fdcfd,sha256,,microsoft-threat-intel,2026-03-31T06:43:05
-ca4d4c4fc3e5d5cfa922b898f2d7411f03a446dddb139ba45dfd4f8f0018b64f,sha256,,microsoft-threat-intel,Amadey 5.63
-ce9ad5f6c12019f4aae5b189bd8ddf5bb09e75b06a0a587b25a855c65948c913,sha256,,microsoft-threat-intel,GigaWiper backdoor
+ca4d4c4fc3e5d5cfa922b898f2d7411f03a446dddb139ba45dfd4f8f0018b64f,sha256,,"microsoft-security-research,microsoft-threat-intel",Amadey 5.63
+ce9ad5f6c12019f4aae5b189bd8ddf5bb09e75b06a0a587b25a855c65948c913,sha256,,"microsoft-security-research,microsoft-threat-intel",GigaWiper backdoor
 cf3f8160eb5a5580e0c35054847e3ac4d01e9fe74fab8bc12bf6e8a40bf696b2,sha256,,microsoft-threat-intel,autorun.dll loaded by legit EXE via DLL sideloading
-cf9fc891ea5ca5ecd8113ef3e69f6f52ff538b6cccbdaa9559106fc72bc6da30,sha256,,microsoft-threat-intel,Crypto Clipper Worm
-d14b80cbd1a19d4ad0473a0661297f8fdf598e81ff6c4ab24e212dcad2e54b3f,sha256,,microsoft-threat-intel,Crypto Clipper Worm
-d14ba95cdce1ef7dc9ad3ac74949ca5db38b27378ee30f30a23cf26f9e875a11,sha256,,microsoft-threat-intel,"node.exe(v24.13.0-win-x64, 89.9 MB)"
-d425e4583cc6185d41e95c45eda00550045a5d1919b9a012236a4520d009dbd7,sha256,,microsoft-threat-intel,2026-07-15T18:36:21
-d43bf94f0cb0ab97c88113b7e07d1a4024d1610617b5ad05882b1dbab89e15ba,sha256,,microsoft-threat-intel,Crypto Clipper Worm
-d43c988d6f9cb355497696b580621fb1bdb7b6ed6d90f97520ecf6da5a1a41ff,sha256,,microsoft-threat-intel,Amadey 5.64
-d5a97614d5319ce9c8e01fa0b4eb06fb5b9e54fa13b23d718174a1546444123b,sha256,,microsoft-threat-intel,index.js (from @redhat-cloud-services/frontend-components-testing-1.2.4)
-d8d170af3de17bb9b217c52aaaffdf9395f35ef015a57ef676e406c121e5e223,sha256,,microsoft-threat-intel,index.js (from @redhat-cloud-services/frontend-components-advisor-components-3.8.2)
-da4b72764ae929050353f3da759c839e2a061a8b9a8dd3c3b2e909d4a8a3291c,sha256,,microsoft-threat-intel,Campaign payload (Wave 1)
+cf9fc891ea5ca5ecd8113ef3e69f6f52ff538b6cccbdaa9559106fc72bc6da30,sha256,,"microsoft-security-research,microsoft-threat-intel",Crypto Clipper Worm
+d14b80cbd1a19d4ad0473a0661297f8fdf598e81ff6c4ab24e212dcad2e54b3f,sha256,,"microsoft-security-research,microsoft-threat-intel",Crypto Clipper Worm
+d14ba95cdce1ef7dc9ad3ac74949ca5db38b27378ee30f30a23cf26f9e875a11,sha256,,"microsoft-security-research,microsoft-threat-intel","node.exe(v24.13.0-win-x64, 89.9 MB)"
+d425e4583cc6185d41e95c45eda00550045a5d1919b9a012236a4520d009dbd7,sha256,,"microsoft-security-research,microsoft-threat-intel",2026-07-15
+d43bf94f0cb0ab97c88113b7e07d1a4024d1610617b5ad05882b1dbab89e15ba,sha256,,"microsoft-security-research,microsoft-threat-intel",Crypto Clipper Worm
+d43c988d6f9cb355497696b580621fb1bdb7b6ed6d90f97520ecf6da5a1a41ff,sha256,,"microsoft-security-research,microsoft-threat-intel",Amadey 5.64
+d5a97614d5319ce9c8e01fa0b4eb06fb5b9e54fa13b23d718174a1546444123b,sha256,,"microsoft-security-research,microsoft-threat-intel",index.js (from @redhat-cloud-services/frontend-components-testing-1.2.4)
+d8d170af3de17bb9b217c52aaaffdf9395f35ef015a57ef676e406c121e5e223,sha256,,"microsoft-security-research,microsoft-threat-intel",index.js (from @redhat-cloud-services/frontend-components-advisor-components-3.8.2)
+da4b72764ae929050353f3da759c839e2a061a8b9a8dd3c3b2e909d4a8a3291c,sha256,,"microsoft-security-research,microsoft-threat-intel",Campaign payload (Wave 1)
 db2d33c4e6e4a5c2263b56e8303c343305a94dde1fc2968304ba260acbbd9f9f,sha256,,microsoft-threat-intel,autorun.dll loaded by legit EXE via DLL sideloading
-db41e0da7ab3305be8d9720769c6950b4dc1c1984ef857d3310eb873a0fc7674,sha256,,microsoft-threat-intel,FlockWiper
+db41e0da7ab3305be8d9720769c6950b4dc1c1984ef857d3310eb873a0fc7674,sha256,,"microsoft-security-research,microsoft-threat-intel",FlockWiper
 dc3b2db1608239387a36f6e19bba6816a39c93b6aa7329340343a2ab42ccd32d,sha256,,microsoft-threat-intel,2026-03-31T06:43:05
 df0136f1d64e61082e247ddb29585d709ac87e06136f848a5c5c84aa23e664a0,sha256,,microsoft-threat-intel,2026-03-31T06:43:05
 e021662a652ba95c8778b991056696ab3c9b0f60d5e23b1e6cf73c3847db6610,sha256,,microsoft-threat-intel,ScreenConnect file masquerading as a DLL
 e57ba1a4e323094ca9d747bfb3304bd12f3ea3be5e2ee785a3e656c3ab1e8086,sha256,,microsoft-threat-intel,2026-01-15
 ed8560c1ac7ceb6983ba995124d5917dc1a00288912387a6389296637d5f815c,sha256,,microsoft-threat-intel,2026-04-01T14:00:00
-f0641e053e81f0d01fa46db35a83e0a34494886503086866d956d14e81fd3e1c,sha256,,microsoft-threat-intel,index.js (from @redhat-cloud-services/hcc-kessel-mcp-0.3.4)
+f0641e053e81f0d01fa46db35a83e0a34494886503086866d956d14e81fd3e1c,sha256,,"microsoft-security-research,microsoft-threat-intel",index.js (from @redhat-cloud-services/hcc-kessel-mcp-0.3.4)
 f0668ce925f36ff7f3359b0ea47e3fa243af13cd6ad9661dfccc9ff79fb4f1cc,sha256,,microsoft-threat-intel,2026-03-19
 f0a6b89ec7eee83274cd484cea526b970a3ef28038799b0a5774bb33c5793b55,sha256,,microsoft-threat-intel,2026-03-12
-f3b54984caca95fd496bcfe5d7db1611b08d2f5b7d250b43b430e5d76393f9e0,sha256,,microsoft-threat-intel,Crypto Clipper Worm
-f622ed85ef31ad4ab973f4e74524866fe1bb44f0965ad2b2ad796cd657a05bfd,sha256,,microsoft-threat-intel,GigaWiper backdoor
-f629311734b7c6e6579f8e1d0e1e3f3bf72c9ac6c301b631ba4df7f393c41b14,sha256,,microsoft-threat-intel,Campaign payload (Wave 1)
+f3b54984caca95fd496bcfe5d7db1611b08d2f5b7d250b43b430e5d76393f9e0,sha256,,"microsoft-security-research,microsoft-threat-intel",Crypto Clipper Worm
+f622ed85ef31ad4ab973f4e74524866fe1bb44f0965ad2b2ad796cd657a05bfd,sha256,,"microsoft-security-research,microsoft-threat-intel",GigaWiper backdoor
+f629311734b7c6e6579f8e1d0e1e3f3bf72c9ac6c301b631ba4df7f393c41b14,sha256,,"microsoft-security-research,microsoft-threat-intel",Campaign payload (Wave 1)
 f7d335205b8d7b20208fb3ef93ee6dc817905dc3ae0c10a0b164f4e7d07121cd,sha256,,microsoft-threat-intel,2026-04-01T14:00:00
-f88258e21592084a2f93a572ade8f9b91c0cd0e242f5cf6121ed7bad0f7bdd1f,sha256,,microsoft-threat-intel,index.js (from @redhat-cloud-services/frontend-components-notifications-6.9.3)
+f88258e21592084a2f93a572ade8f9b91c0cd0e242f5cf6121ed7bad0f7bdd1f,sha256,,"microsoft-security-research,microsoft-threat-intel",index.js (from @redhat-cloud-services/frontend-components-notifications-6.9.3)
 fb5c97557230a27460fdab01fafcfabeaa49590bafd5b6ef30501aa9e0a51142,sha256,,microsoft-threat-intel,Malicious backdoor Python script
 fcb81618bb15edfdedfb638b4c08a2af9cac9ecfa551af135a8402bf980375cf,sha256,,microsoft-threat-intel,2026-04-01T14:00:00
 fcd0c4f9d4311de6f400cc61f476dd60ae06f8d19568dbbaa1a118e1a0ff68ab,sha256,,microsoft-threat-intel,2026-04-16T08:00:00
+fd3ca4007b225fdf8de7af4345a19179d5efa8c4bb9205f88cda806e5684b1eb,sha256,,microsoft-security-research,setup.mjs(.claudeand.vscoderepository loader)
 fe1033335a045c696c900d435119d210361966e2fb5cd1ba3382608cfa2c8e68,sha256,,microsoft-threat-intel,Gentlemen wallpaper Bitmap file

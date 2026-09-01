@@ -368,7 +368,10 @@ def validate_feed_directory(feeds_dir: Path) -> dict[str, Any]:
     by_file: dict[str, dict[str, int]] = {}
 
     for path in files:
-        data = json.loads(path.read_text())
+        raw_text = path.read_text().strip()
+        if not raw_text:
+            continue
+        data = json.loads(raw_text)
         if not isinstance(data, list):
             continue
         total_raw += len(data)

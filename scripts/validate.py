@@ -370,8 +370,13 @@ def validate_feed_directory(feeds_dir: Path) -> dict[str, Any]:
     for path in files:
         raw_text = path.read_text().strip()
         if not raw_text:
+            log.warning("Skipping empty feed file: %s", path.name)
             continue
-        data = json.loads(raw_text)
+        try:
+            data = json.loads(raw_text)
+        except json.JSONDecodeError as exc:
+            log.warning("Skipping invalid JSON feed file %s: %s", path.name, exc)
+            continue
         if not isinstance(data, list):
             continue
         total_raw += len(data)

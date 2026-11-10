@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>X · AI READER — lab.lab.x_messages</title>
+  <style>
+:root {
+  --bg: #05060c;
+  --ink: #e8eef8;
+  --dim: #8b97ad;
+  --line: rgba(140, 180, 220, 0.18);
+  --cyan: #4de0ff;
+  --gold: #f0c36a;
+  --pink: #f472e8;
+  --panel: rgba(8, 12, 24, 0.72);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Avenir Next", "Helvetica Neue", -apple-system, BlinkMacSystemFont, sans-serif;
+  cursor: crosshair;
+}
+#stage {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+#hud {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.panel {
+  pointer-events: auto;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.brand {
+  position: absolute;
+  top: 20px;
+  left: 22px;
+  padding: 16px 18px 14px;
+  min-width: 280px;
+}
+.eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  font-weight: 600;
+}
+.brand h1 {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  margin: 4px 0 2px;
+  color: #f4fbff;
+  text-shadow: 0 0 18px rgba(77,224,255,0.35);
+}
+.brand .table {
+  font-size: 11px;
+  color: var(--dim);
+  letter-spacing: 0.04em;
+}
+.brand #range {
+  margin-top: 8px;
+  font-size: 10px;
+  color: #a9b6c9;
+  letter-spacing: 0.02em;
+}
+.stats {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+  gap: 0;
+  overflow: hidden;
+}
+.stat {
+  padding: 12px 16px 11px;
+  min-width: 86px;
+  border-right: 1px solid var(--line);
+  text-align: right;
+}
+.stat:last-child { border-right: 0; }
+.stat .lbl {
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dim);
+  font-weight: 600;
+}
+.stat .num {
+  font-size: 22px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  margin-top: 2px;
+  color: #f3f7ff;
+}
+.stat.slack .num { color: var(--gold); }
+.stat.models .num { color: #f9a8ef; }
+.stat.companies .num { color: var(--gold); }
+.stat.authors .num { color: #9eb8ff; }
+.stat.posts .num { color: var(--cyan); }
+
+.controls {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 20px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+.search-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 420px;
+  max-width: 560px;
+  padding: 12px 14px;
+  flex: 1;
+}
+#search {
+  width: 100%;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font: 500 13px "Avenir Next", "Helvetica Neue", sans-serif;
+  padding: 8px 12px;
+  outline: none;
+  letter-spacing: 0.02em;
+  cursor: text;
+}
+#search:focus { border-color: rgba(77,224,255,0.55); box-shadow: 0 0 0 1px rgba(77,224,255,0.2); }
+#search::placeholder { color: #6d7b90; }
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+#filters button, #replay {
+  pointer-events: auto;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: #c5d0e0;
+  font: 600 10px/1 "Avenir Next", "Helvetica Neue", sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 7px 10px;
+  cursor: pointer;
+}
+#filters button.on {
+  border-color: rgba(77,224,255,0.6);
+  color: #e8fbff;
+  box-shadow: 0 0 12px rgba(77,224,255,0.18);
+  background: rgba(77,224,255,0.08);
+}
+#replay {
+  border-color: rgba(240,195,106,0.45);
+  color: var(--gold);
+}
+#replay:hover, #filters button:hover { background: rgba(255,255,255,0.05); }
+#showing {
+  font-size: 10px;
+  color: #8fa0b8;
+  letter-spacing: 0.03em;
+}
+
+.legend {
+  padding: 12px 14px;
+  min-width: 200px;
+}
+.legend h2 {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dim);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.legend .item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #c9d3e2;
+  margin: 5px 0;
+}
+.sw {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 10px;
+}
+.sw.hub { background: var(--cyan); clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
+.sw.author { background: #8eb0ff; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
+.sw.post { background: #3ee0c5; border-radius: 50%; }
+.sw.company { background: var(--gold); border-radius: 2px; }
+.sw.model { background: var(--pink); transform: rotate(45deg) scale(0.8); }
+.sw.slack { background: transparent; border: 2px solid var(--gold); border-radius: 50%; }
+.legend .hint { margin-top: 8px; font-size: 10px; color: #7d8ba0; line-height: 1.4; }
+
+#tooltip {
+  position: fixed;
+  z-index: 5;
+  width: min(360px, calc(100vw - 32px));
+  padding: 12px 14px 13px;
+  background: rgba(7, 10, 20, 0.92);
+  border: 1px solid rgba(140,180,220,0.25);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  pointer-events: none;
+  color: var(--ink);
+}
+#tooltip[hidden] { display: none; }
+#tooltip .k {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  font-weight: 600;
+}
+#tooltip .t { font-size: 14px; font-weight: 600; margin: 3px 0 4px; }
+#tooltip .when { font-size: 11px; color: #d7c48a; margin-bottom: 8px; }
+#tooltip .tx {
+  font-size: 12px;
+  line-height: 1.45;
+  color: #dce4f0;
+  white-space: pre-wrap;
+  margin-bottom: 8px;
+}
+#tooltip .metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-bottom: 6px;
+}
+#tooltip .m { font-size: 11px; color: #e8eef8; font-variant-numeric: tabular-nums; }
+#tooltip .m em { font-style: normal; color: #8fa0b8; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; }
+#tooltip .s { font-size: 10px; color: #8fa0b8; line-height: 1.4; }
+
+.corners span {
+  position: fixed;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  z-index: 3;
+  border-color: rgba(77,224,255,0.35);
+  border-style: solid;
+}
+.corners .tl { top: 8px; left: 8px; border-width: 1px 0 0 1px; }
+.corners .tr { top: 8px; right: 8px; border-width: 1px 1px 0 0; }
+.corners .bl { bottom: 8px; left: 8px; border-width: 0 0 1px 1px; }
+.corners .br { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
+
+  </style>
+</head>
+<body>
+  <canvas id="stage"></canvas>
+  <div class="corners">
+    <span class="tl"></span><span class="tr"></span>
+    <span class="bl"></span><span class="br"></span>
+  </div>
+  <div id="hud">
+    <div class="panel brand">
+      <div class="eyebrow">Open Cyber Threat Intelligence</div>
+      <h1>X · AI READER</h1>
+      <div class="table">CIR AI power · lab.lab.x_messages</div>
+      <div id="range"></div>
+    </div>
+    <div class="panel stats" aria-label="Live counts from table data">
+      <div class="stat posts"><div class="lbl">Posts</div><div class="num" id="stat-posts">0</div></div>
+      <div class="stat authors"><div class="lbl">Authors</div><div class="num" id="stat-authors">0</div></div>
+      <div class="stat companies"><div class="lbl">Companies</div><div class="num" id="stat-companies">0</div></div>
+      <div class="stat models"><div class="lbl">Models</div><div class="num" id="stat-models">0</div></div>
+      <div class="stat slack"><div class="lbl">Slack</div><div class="num" id="stat-slack">0</div></div>
+    </div>
+    <div class="controls">
+      <div class="panel search-wrap">
+        <input id="search" type="search" placeholder="Search authors, text, companies, models, post ids…" autocomplete="off" spellcheck="false">
+        <div class="row">
+          <div id="filters">
+            <button type="button" data-filter="all" class="on">All</button>
+            <button type="button" data-filter="ai">AI-related</button>
+            <button type="button" data-filter="delivered">Slack</button>
+            <button type="button" data-filter="company">Has company</button>
+            <button type="button" data-filter="model">Has model</button>
+          </div>
+          <button type="button" id="replay">Replay</button>
+        </div>
+        <div id="showing"></div>
+      </div>
+      <div class="panel legend">
+        <h2>Legend</h2>
+        <div class="item"><span class="sw hub"></span>Hub — CIR AI power (X crawl)</div>
+        <div class="item"><span class="sw author"></span>Author · size by post count</div>
+        <div class="item"><span class="sw post"></span>Post · size by engagement; color by company or AI flag</div>
+        <div class="item"><span class="sw company"></span>Company (non-null)</div>
+        <div class="item"><span class="sw model"></span>Model (non-null ai_models)</div>
+        <div class="item"><span class="sw slack"></span>Gold ring — delivered to Slack</div>
+        <div class="hint">Hover for details · click to focus neighbors · drag to pin a node · / to search · Esc to clear</div>
+      </div>
+    </div>
+  </div>
+  <div id="tooltip" hidden></div>
+  <script>
+const DATA = {"source":"lab.lab.x_messages","row_count":117,"posts":[{"post_id":"2119898687803621427","author_id":"2024518793679294464","author_handle":"ClaudeDevs","author_name":"ClaudeDevs","created_at":"2026-11-09T21:03:27.000Z","text_snippet":"Which Claude model should you build with? \n\nOur new guide breaks down when to use Fable 5.2, Opus 5.5, Sonnet or Haiku. It also covers when to adjust effort instead of switching models, and how to sav","text_truncated":true,"company":"Anthropic","ai_models":["Claude Fable 5.2","Claude Opus 5.5","Claude Sonnet","Claude Haiku"],"like_count":1510,"retweet_count":92,"reply_count":74,"quote_count":24,"bookmark_count":1516,"impression_count":85091,"engagement":3216,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"original","post_url":"https://x.com/ClaudeDevs/status/2119898687803621427"},{"post_id":"2119890820186976763","author_id":"159337660","author_handle":"bcherny","author_name":"Boris Cherny","created_at":"2026-11-09T20:32:11.000Z","text_snippet":"Pro users get one reset, and Max, Ultra, and Team Premium get up to three, depending on how long you've subscribed:\nhttps://t.co/JkknwZZGyh","text_truncated":false,"company":"Anthropic","ai_models":[],"like_count":147,"retweet_count":3,"reply_count":29,"quote_count":4,"bookmark_count":5,"impression_count":14389,"engagement":188,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"replied_to","post_url":"https://x.com/bcherny/status/2119890820186976763"},{"post_id":"2119884951550386671","author_id":"1380719534970040322","author_handle":"alexalbert__","author_name":"Alex Albert","created_at":"2026-11-09T20:08:52.000Z","text_snippet":"Every time we have a new model, I run the same simple prompt on all my projects:\n\n\"Read this entire project and find everything that’s broken, inconsistent, inefficient, or no longer needed. Fix what ","text_truncated":true,"company":"Anthropic","ai_models":[],"like_count":1045,"retweet_count":33,"reply_count":80,"quote_count":14,"bookmark_count":1434,"impression_count":44929,"engagement":2606,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"original","post_url":"https://x.com/alexalbert__/status/2119884951550386671"},{"post_id":"2119873095129550880","author_id":"159337660","author_handle":"bcherny","author_name":"Boris Cherny","created_at":"2026-11-09T19:21:45.000Z","text_snippet":"We wanted to do more for the people who’ve been with us the longest. So with Fable 5.2, the longer you’ve been subscribed, the more Fable resets you get. https://t.co/g2Y5cwS0L2 https://t.co/kXTaE829X","text_truncated":true,"company":"Anthropic","ai_models":["Claude Fable 5.2"],"like_count":9247,"retweet_count":332,"reply_count":788,"quote_count":337,"bookmark_count":681,"impression_count":295037,"engagement":11385,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"quoted","post_url":"https://x.com/bcherny/status/2119873095129550880"},{"post_id":"2119869925288558799","author_id":"1380719534970040322","author_handle":"alexalbert__","author_name":"Alex Albert","created_at":"2026-11-09T19:09:10.000Z","text_snippet":"btw robotics will fall to the bitter lesson too https://t.co/cqftOw2OAM","text_truncated":false,"company":"Anthropic","ai_models":[],"like_count":1121,"retweet_count":50,"reply_count":23,"quote_count":7,"bookmark_count":139,"impression_count":55494,"engagement":1340,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"quoted","post_url":"https://x.com/alexalbert__/status/2119869925288558799"},{"post_id":"2119869724247077229","author_id":"1380719534970040322","author_handle":"alexalbert__","author_name":"Alex Albert","created_at":"2026-11-09T19:08:22.000Z","text_snippet":"I really love using Fable 5.2. On big, open-ended work it feels like a major step above Opus 5.5. \n\nA few tips for getting the most out of it:\n- Ask what’s wrong with your idea before it builds anythi","text_truncated":true,"company":"Anthropic","ai_models":["Claude Fable 5.2","Claude Opus 5.5"],"like_count":764,"retweet_count":30,"reply_count":54,"quote_count":1,"bookmark_count":338,"impression_count":36761,"engagement":1187,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"quoted","post_url":"https://x.com/alexalbert__/status/2119869724247077229"},{"post_id":"2119868704544711108","author_id":"2024518793679294464","author_handle":"ClaudeDevs","author_name":"ClaudeDevs","created_at":"2026-11-09T19:04:19.000Z","text_snippet":"We're giving Ultra and Team Premium users Fable resets based on how long you've subscribed:\n\n&lt;6 mo: 1\n6–12 mo: 2\n&gt;12 mo: 3\n\nUse them anytime by March 8.\n\nPro and Team Standard get a week to try ","text_truncated":true,"company":"Anthropic","ai_models":["Claude Fable 5.2"],"like_count":1926,"retweet_count":114,"reply_count":145,"quote_count":174,"bookmark_count":267,"impression_count":204955,"engagement":2626,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"replied_to","post_url":"https://x.com/ClaudeDevs/status/2119868704544711108"},{"post_id":"2119868700522405933","author_id":"2024518793679294464","author_handle":"ClaudeDevs","author_name":"ClaudeDevs","created_at":"2026-11-09T19:04:18.000Z","text_snippet":"Effort defaults to high in the Claude Platform and medium in Claude apps. Save xhigh for the hardest long-running agentic work with measurable gains. Max is for finding the ceiling and not recommended","text_truncated":true,"company":"Anthropic","ai_models":[],"like_count":519,"retweet_count":9,"reply_count":7,"quote_count":5,"bookmark_count":43,"impression_count":33624,"engagement":583,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"replied_to","post_url":"https://x.com/ClaudeDevs/status/2119868700522405933"},{"post_id":"2119868701994570178","author_id":"2024518793679294464","author_handle":"ClaudeDevs","author_name":"ClaudeDevs","created_at":"2026-11-09T19:04:18.000Z","text_snippet":"Fast mode is also available for Fable 5.2. \n\n2.5x faster output, for twice the price. In the Claude API, set \"speed\": \"fast\". In Claude Code, toggle fast mode in the model picker, which will bill thro","text_truncated":true,"company":"Anthropic","ai_models":["Claude Fable 5.2"],"like_count":333,"retweet_count":5,"reply_count":8,"quote_count":3,"bookmark_count":11,"impression_count":27071,"engagement":360,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"replied_to","post_url":"https://x.com/ClaudeDevs/status/2119868701994570178"},{"post_id":"2119868703265419688","author_id":"2024518793679294464","author_handle":"ClaudeDevs","author_name":"ClaudeDevs","created_at":"2026-11-09T19:04:18.000Z","text_snippet":"To help prevent distillation, preserved thinking now covers all API accounts on Fable 5.2.\n\nEditing prior context can 400. Use compaction, context editing, or mid-conversation system messages. Claude ","text_truncated":true,"company":"Anthropic","ai_models":["Claude Fable 5.2"],"like_count":194,"retweet_count":3,"reply_count":5,"quote_count":2,"bookmark_count":26,"impression_count":45724,"engagement":230,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"replied_to","post_url":"https://x.com/ClaudeDevs/status/2119868703265419688"},{"post_id":"2119868698613956992","author_id":"2024518793679294464","author_handle":"ClaudeDevs","author_name":"ClaudeDevs","created_at":"2026-11-09T19:04:17.000Z","text_snippet":"Fable 5.2 is now available in the Claude Platform and Claude Code. \n\nIt’s up to 30% faster than Fable 5.1, and costs $8/$40 per 1M tokens, down from $10/$50. https://t.co/mHGJNRbIZS","text_truncated":false,"company":"Anthropic","ai_models":["Claude Fable 5.2"],"like_count":7187,"retweet_count":385,"reply_count":216,"quote_count":124,"bookmark_count":546,"impression_count":272304,"engagement":8458,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"quoted","post_url":"https://x.com/ClaudeDevs/status/2119868698613956992"},{"post_id":"2119868632570462674","author_id":"12831","author_handle":"mikeyk","author_name":"Mike Krieger","created_at":"2026-11-09T19:04:01.000Z","text_snippet":"Claude Fable 5.2 and Mythos 5.2 are out today!\n\nThey’re super sharp to work with. On complex problems you can really feel the extra intelligence; researchers working with Fable 5.2 solved two problems","text_truncated":true,"company":"Anthropic","ai_models":["Claude Fable 5.2","Claude Mythos 5.2"],"like_count":106,"retweet_count":5,"reply_count":9,"quote_count":2,"bookmark_count":17,"impression_count":6240,"engagement":139,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"quoted","post_url":"https://x.com/mikeyk/status/2119868632570462674"},{"post_id":"2119867707546071125","author_id":"1353836358901501952","author_handle":"AnthropicAI","author_name":"Anthropic","created_at":"2026-11-09T19:00:21.000Z","text_snippet":"Claude Fable 5.2 and Claude Mythos 5.2 are available now: https://t.co/gEIfLPfQxH","text_truncated":false,"company":"Anthropic","ai_models":["Claude Fable 5.2","Claude Mythos 5.2"],"like_count":9898,"retweet_count":621,"reply_count":355,"quote_count":282,"bookmark_count":693,"impression_count":388208,"engagement":11849,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"quoted","post_url":"https://x.com/AnthropicAI/status/2119867707546071125"},{"post_id":"2119857335871164769","author_id":"14130366","author_handle":"sundarpichai","author_name":"Sundar Pichai","created_at":"2026-11-09T18:19:08.000Z","text_snippet":"Four distinct TPU systems in a single generation in one year! Instead of waiting years for a traditional semiconductor cycle, hardware engineers co-designing systems alongside Google Deepmind means we","text_truncated":true,"company":"Google","ai_models":[],"like_count":2215,"retweet_count":144,"reply_count":129,"quote_count":27,"bookmark_count":150,"impression_count":136037,"engagement":2665,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"quoted","post_url":"https://x.com/sundarpichai/status/2119857335871164769"},{"post_id":"2119851180948152590","author_id":"20749410","author_handle":"finkd","author_name":"Mark Zuckerberg","created_at":"2026-11-09T17:54:41.000Z","text_snippet":"Releasing Muse Ember today -- our smallest model that delivers higher intelligence per dollar than others in its class. Built for token-heavy work that agents repeat all day: tool calls, coding subtas","text_truncated":true,"company":"Meta","ai_models":["Muse Ember"],"like_count":6147,"retweet_count":441,"reply_count":395,"quote_count":154,"bookmark_count":588,"impression_count":273917,"engagement":7725,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"original","post_url":"https://x.com/finkd/status/2119851180948152590"},{"post_id":"2119846461018161185","author_id":"149627584","author_handle":"catherineols","author_name":"Catherine Olsson","created_at":"2026-11-09T17:35:55.000Z","text_snippet":"@bradrcarson (tbc not shocking that Stuart Russell was lucid; shocking that something so sensible was a mere footnote in an internet comment section)","text_truncated":false,"company":"Anthropic","ai_models":[],"like_count":1,"retweet_count":0,"reply_count":0,"quote_count":0,"bookmark_count":0,"impression_count":153,"engagement":1,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"replied_to","post_url":"https://x.com/catherineols/status/2119846461018161185"},{"post_id":"2119846260815585509","author_id":"149627584","author_handle":"catherineols","author_name":"Catherine Olsson","created_at":"2026-11-09T17:35:08.000Z","text_snippet":"@bradrcarson I always felt that this Stuart Russell comment (https://t.co/PNjFvcIzjC) was shockingly lucid and concise as an intro to the issue and worth linking on its own\n\n(Rob Bensinger agrees http","text_truncated":true,"company":"Anthropic","ai_models":[],"like_count":1,"retweet_count":0,"reply_count":2,"quote_count":0,"bookmark_count":0,"impression_count":178,"engagement":3,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"replied_to","post_url":"https://x.com/catherineols/status/2119846260815585509"},{"post_id":"2119845585398477180","author_id":"149627584","author_handle":"catherineols","author_name":"Catherine Olsson","created_at":"2026-11-09T17:32:27.000Z","text_snippet":"@bradrcarson Vika's list of specification gaming examples (https://t.co/oGi6tSXHrg) was a real snapshot of a certain time","text_truncated":false,"company":"Anthropic","ai_models":[],"like_count":2,"retweet_count":0,"reply_count":1,"quote_count":0,"bookmark_count":0,"impression_count":89,"engagement":3,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"replied_to","post_url":"https://x.com/catherineols/status/2119845585398477180"},{"post_id":"2119845112683634842","author_id":"149627584","author_handle":"catherineols","author_name":"Catherine Olsson","created_at":"2026-11-09T17:30:34.000Z","text_snippet":"@bradrcarson I always felt that ARCHES never quite got the recognition it deserved (https://t.co/QWDOmURg0k), your call on whether it's worth including","text_truncated":false,"company":"Anthropic","ai_models":[],"like_count":2,"retweet_count":0,"reply_count":1,"quote_count":0,"bookmark_count":0,"impression_count":294,"engagement":3,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"replied_to","post_url":"https://x.com/catherineols/status/2119845112683634842"},{"post_id":"2119844663163249148","author_id":"149627584","author_handle":"catherineols","author_name":"Catherine Olsson","created_at":"2026-11-09T17:28:47.000Z","text_snippet":"@bradrcarson You HAVE to include \"On the impossibility of supersized machines\" https://t.co/t7wyDcMPzc","text_truncated":false,"company":"Anthropic","ai_models":[],"like_count":14,"retweet_count":0,"reply_count":2,"quote_count":0,"bookmark_count":2,"impression_count":652,"engagement":18,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"replied_to","post_url":"https://x.com/catherineols/status/2119844663163249148"},{"post_id":"2119817540432244779","author_id":"44196397","author_handle":"elonmusk","author_name":"Elon Musk","created_at":"2026-11-09T15:41:00.000Z","text_snippet":"Grok @Bot can do incredible things https://t.co/bNDtuQsPI7","text_truncated":false,"company":"xAI","ai_models":["Grok"],"like_count":10250,"retweet_count":951,"reply_count":1665,"quote_count":156,"bookmark_count":1940,"impression_count":11363285,"engagement":14962,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"quoted","post_url":"https://x.com/elonmusk/status/2119817540432244779"},{"post_id":"2119812349658079420","author_id":"44196397","author_handle":"elonmusk","author_name":"Elon Musk","created_at":"2026-11-09T15:20:23.000Z","text_snippet":"@herbertong Memory bandwidth was held constant though","text_truncated":false,"company":"xAI","ai_models":[],"like_count":4102,"retweet_count":208,"reply_count":309,"quote_count":16,"bookmark_count":111,"impression_count":204782,"engagement":4746,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"replied_to","post_url":"https://x.com/elonmusk/status/2119812349658079420"},{"post_id":"2119218779599294475","author_id":"1589638196","author_handle":"yagiznizipli","author_name":"Yagiz Nizipli","created_at":"2026-11-08T00:01:44.000Z","text_snippet":"@1Password @bdsams Hey @1Password can we just talk human to human please?","text_truncated":false,"company":null,"ai_models":[],"like_count":1,"retweet_count":0,"reply_count":1,"quote_count":0,"bookmark_count":0,"impression_count":223,"engagement":2,"metrics_present":true,"lang":"en","is_ai_related":false,"is_formal_monitor_post":true,"slack_delivered":null,"post_type":"replied_to","post_url":"https://x.com/yagiznizipli/status/2119218779599294475"},{"post_id":"2119215774350868878","author_id":"1589638196","author_handle":"yagiznizipli","author_name":"Yagiz Nizipli","created_at":"2026-11-07T23:49:48.000Z","text_snippet":"@savvyntsev @WhosCinq Honestly, you not seeing what’s changed is a good thing. We’re not trying to introduce new features. We’re trying to fix fundamental problems first.","text_truncated":false,"company":null,"ai_models":[],"like_count":0,"retweet_count":0,"reply_count":0,"quote_count":0,"bookmark_count":0,"impression_count":4,"engagement":0,"metrics_present":true,"lang":"en","is_ai_related":false,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"replied_to","post_url":"https://x.com/yagiznizipli/status/2119215774350868878"},{"post_id":"2119182139950571796","author_id":"1603618462902784000","author_handle":"AnnDiegoUSA","author_name":"Ann Adamson","created_at":"2026-11-07T21:36:09.000Z","text_snippet":"https://t.co/LsB2B8170N","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":null,"is_ai_related":null,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/AnnDiegoUSA/status/2119182139950571796"},{"post_id":"2119153415502868545","author_id":"1830023695835787264","author_handle":"mike_rosinsky","author_name":"Mike Rosinsky","created_at":"2026-11-07T19:42:00.000Z","text_snippet":"@blankspeaker 😁","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":null,"is_ai_related":null,"is_formal_monitor_post":true,"slack_delivered":null,"post_type":"replied_to","post_url":"https://x.com/mike_rosinsky/status/2119153415502868545"},{"post_id":"2119153135520186556","author_id":"1830023695835787264","author_handle":"mike_rosinsky","author_name":"Mike Rosinsky","created_at":"2026-11-07T19:40:54.000Z","text_snippet":"who added this one? 🤭 https://t.co/OR86z8Q0Mw","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":null,"is_formal_monitor_post":true,"slack_delivered":null,"post_type":"quoted","post_url":"https://x.com/mike_rosinsky/status/2119153135520186556"},{"post_id":"2119130029699547594","author_id":"33836629","author_handle":"karpathy","author_name":"Andrej Karpathy","created_at":"2026-11-07T18:09:05.000Z","text_snippet":"@valblavatnik Can’t remember something like “here’s a link to Tristan top channels, build a YouTube style viewer for its videos. Add an about page, dark mode, and TV mode for laid back watching”.","text_truncated":false,"company":"Anthropic","ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":null,"post_type":"replied_to","post_url":"https://x.com/karpathy/status/2119130029699547594"},{"post_id":"2119127477557825536","author_id":"3432991601","author_handle":"valblavatnik","author_name":"Val Blavatnik","created_at":"2026-11-07T17:58:56.000Z","text_snippet":"@karpathy Prompt?","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":null,"is_ai_related":null,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"replied_to","post_url":"https://x.com/valblavatnik/status/2119127477557825536"},{"post_id":"2119118206325703121","author_id":"33836629","author_handle":"karpathy","author_name":"Andrej Karpathy","created_at":"2026-11-07T17:22:06.000Z","text_snippet":"@YaroslavRDn It’s really well curated. Immaculate vibes.","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":null,"is_formal_monitor_post":true,"slack_delivered":null,"post_type":"replied_to","post_url":"https://x.com/karpathy/status/2119118206325703121"},{"post_id":"2119117755337076765","author_id":"2073093355399946240","author_handle":"YaroslavRDn","author_name":"Yaroslav Rudenko","created_at":"2026-11-07T17:20:18.000Z","text_snippet":"holy shit. this is a goldmine for every nerd https://t.co/zAPBt7zPzc https://t.co/wybhyVhApb","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":null,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"quoted","post_url":"https://x.com/YaroslavRDn/status/2119117755337076765"},{"post_id":"2119114537442189652","author_id":"33836629","author_handle":"karpathy","author_name":"Andrej Karpathy","created_at":"2026-11-07T17:07:31.000Z","text_snippet":"Earlier this week Tristan published his top YouTube channels:\nhttps://t.co/NZ3UCNo6cT\nWhich looked excellent so clearly I had to turn it into TristanTube:\nhttps://t.co/l0KyW1WdNH\n47K super nerdy video","text_truncated":true,"company":"Anthropic","ai_models":[],"like_count":5235,"retweet_count":386,"reply_count":406,"quote_count":118,"bookmark_count":5786,"impression_count":439765,"engagement":11931,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":true,"slack_delivered":true,"post_type":"quoted","post_url":"https://x.com/karpathy/status/2119114537442189652"},{"post_id":"2119109936827560238","author_id":"1699889909627269120","author_handle":"blankspeaker","author_name":"️","created_at":"2026-11-07T16:49:14.000Z","text_snippet":"X is adding a Livestream filter to the Media tab .\n\nThis will allow you to easily look up a creator's livestreams.\n\nnote: still in testing https://t.co/5t2GCm2e9q","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/blankspeaker/status/2119109936827560238"},{"post_id":"2119064602143318086","author_id":"119424087","author_handle":"savvyntsev","author_name":"Eugene","created_at":"2026-11-07T13:49:06.000Z","text_snippet":"@WhosCinq I think I got it too but I can't even tell what's changed lmao\n\nWhat should I look at?","text_truncated":false,"company":null,"ai_models":[],"like_count":1,"retweet_count":0,"reply_count":1,"quote_count":0,"bookmark_count":0,"impression_count":446,"engagement":2,"metrics_present":true,"lang":"en","is_ai_related":null,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"replied_to","post_url":"https://x.com/savvyntsev/status/2119064602143318086"},{"post_id":"2118919847299997718","author_id":"403605607","author_handle":"NickGCat","author_name":"Nick 🌐","created_at":"2026-11-07T04:13:53.000Z","text_snippet":"https://t.co/u2p6JXQZG4","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":null,"is_ai_related":null,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/NickGCat/status/2118919847299997718"},{"post_id":"2118894023192830339","author_id":"37363664","author_handle":"kyletruong","author_name":"Kyle","created_at":"2026-11-07T02:31:16.000Z","text_snippet":"@mike_rosinsky Not as cool as you 🙂‍↔️🙂‍↕️","text_truncated":false,"company":"X","ai_models":[],"like_count":1,"retweet_count":0,"reply_count":0,"quote_count":0,"bookmark_count":0,"impression_count":46,"engagement":1,"metrics_present":true,"lang":"en","is_ai_related":null,"is_formal_monitor_post":true,"slack_delivered":null,"post_type":"replied_to","post_url":"https://x.com/kyletruong/status/2118894023192830339"},{"post_id":"2118888416175948172","author_id":"1215441834412953600","author_handle":"santiagomed","author_name":"Santiago","created_at":"2026-11-07T02:09:00.000Z","text_snippet":"I can tell if a company is gmi by whether their app is optimized for the Duo\n\nTesla is gmi\nLinkedIn is ngmi https://t.co/3afWHlQqtt","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":true,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/santiagomed/status/2118888416175948172"},{"post_id":"2118881158016692263","author_id":"968053955845484545","author_handle":"_sholtodouglas","author_name":"Sholto Douglas","created_at":"2026-11-07T01:40:09.000Z","text_snippet":"@damirchelib @ehsanik","text_truncated":false,"company":null,"ai_models":[],"like_count":2,"retweet_count":0,"reply_count":1,"quote_count":0,"bookmark_count":1,"impression_count":429,"engagement":4,"metrics_present":true,"lang":null,"is_ai_related":null,"is_formal_monitor_post":true,"slack_delivered":null,"post_type":"replied_to","post_url":"https://x.com/_sholtodouglas/status/2118881158016692263"},{"post_id":"2118834170747289621","author_id":"1801018634602479616","author_handle":"damirchelib","author_name":"Benyamin","created_at":"2026-11-06T22:33:26.000Z","text_snippet":"@_sholtodouglas Not sure who to @ for the claude app, but could you guys please add computer use that's on par with Codex to the desktop app? That's the only real downside to the Claude sub, and it's ","text_truncated":true,"company":"Anthropic","ai_models":["Claude"],"like_count":0,"retweet_count":0,"reply_count":1,"quote_count":0,"bookmark_count":0,"impression_count":338,"engagement":1,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/damirchelib/status/2118834170747289621"},{"post_id":"2118822611853746227","author_id":"1830023695835787264","author_handle":"mike_rosinsky","author_name":"Mike Rosinsky","created_at":"2026-11-06T21:47:31.000Z","text_snippet":"dang NYC is pretty cool https://t.co/HflYTR9diI","text_truncated":false,"company":null,"ai_models":[],"like_count":190,"retweet_count":8,"reply_count":7,"quote_count":0,"bookmark_count":7,"impression_count":3293,"engagement":212,"metrics_present":true,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/mike_rosinsky/status/2118822611853746227"},{"post_id":"2118814753154064501","author_id":"1353836358901501952","author_handle":"AnthropicAI","author_name":"Anthropic","created_at":"2026-11-06T21:16:17.000Z","text_snippet":"Memory is what allows Claude to learn from experience. In a new Engineering Blog post, we share how “dreaming” helps Claude organize what it’s learned, correct its mistakes, and find what it needs mor","text_truncated":true,"company":null,"ai_models":["Claude"],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/AnthropicAI/status/2118814753154064501"},{"post_id":"2118809740641714206","author_id":"793926","author_handle":"1Password","author_name":"1Password","created_at":"2026-11-06T20:56:22.000Z","text_snippet":"@bdsams Ah, sorry Brad! We thought you were stuck trying to sign in. Those two prompts generally shouldn’t appear together unless the Safari extension has lost its connection to the 1Password app. Whe","text_truncated":true,"company":null,"ai_models":[],"like_count":75,"retweet_count":0,"reply_count":14,"quote_count":3,"bookmark_count":3,"impression_count":103514,"engagement":95,"metrics_present":true,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"replied_to","post_url":"https://x.com/1Password/status/2118809740641714206"},{"post_id":"2118795192090386454","author_id":"2024518793679294464","author_handle":"ClaudeDevs","author_name":"ClaudeDevs","created_at":"2026-11-06T19:58:33.000Z","text_snippet":"We've made it easier to get your repo running in Claude Code cloud sessions on Pro, Max, and Ultra.\n\nClaude figures out what dependencies, network access, and API keys it needs, then saves the environ","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/ClaudeDevs/status/2118795192090386454"},{"post_id":"2118792930211107115","author_id":"1353836358901501952","author_handle":"AnthropicAI","author_name":"Anthropic","created_at":"2026-11-06T19:49:34.000Z","text_snippet":"New on our Science Blog: How AI is beginning to change scientific modeling.\n\nScientific models help researchers explain and predict real-world systems—like how a single nerve cell fires, or what happe","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/AnthropicAI/status/2118792930211107115"},{"post_id":"2118767522782626104","author_id":"20749410","author_handle":"finkd","author_name":"Mark Zuckerberg","created_at":"2026-11-06T18:08:36.000Z","text_snippet":"Upgraded the models for Muse and Meta Al, bringing Active Memory and Active Focus from Muse Wonder to everyone. In Muse, these new specialized models are 2.4x less likely to forget critical info and a","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/finkd/status/2118767522782626104"},{"post_id":"2118765774034579808","author_id":"20749410","author_handle":"finkd","author_name":"Mark Zuckerberg","created_at":"2026-11-06T18:01:39.000Z","text_snippet":"Playing around with spaces in Muse lately -- tell Muse what you need and it builds it.\n\nI've made a BBQ game, an event tracker, and a home control dashboard.\n\nExcited to see what you build. https://t.","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/finkd/status/2118765774034579808"},{"post_id":"2118683950188998820","author_id":"1642377843815645186","author_handle":"Rumii_404","author_name":"ROMI","created_at":"2026-11-06T12:36:31.000Z","text_snippet":"5 engineers rebuilt X's web app with AI agents.\n\nAnd somehow people still think AI agents are just chatbots.\n\nX published a new engineering report on November 4, explaining how a small team used AI co","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/Rumii_404/status/2118683950188998820"},{"post_id":"2118516584897741097","author_id":"2093391814329880576","author_handle":"The_VetX","author_name":"VetTV X","created_at":"2026-11-06T01:31:28.000Z","text_snippet":"X says its rebuilt web app shows a profile's first post in 2.7 seconds on a slow connection, vs 22+ before. Signed-in users move over country by country, and logged-out https://t.co/e1UZRPLRcC already","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/The_VetX/status/2118516584897741097"},{"post_id":"2118472226983072156","author_id":"878315447048839168","author_handle":"mlpowered","author_name":"Emmanuel Ameisen","created_at":"2026-11-05T22:35:12.000Z","text_snippet":"This is actually a common misconception.\n\nHidden states in LLMs are used to predict all future tokens not just the next one!\n\nAnd in fact we see representations that correspond to plans, or the broade","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"quoted","post_url":"https://x.com/mlpowered/status/2118472226983072156"},{"post_id":"2118410617698517088","author_id":"20749410","author_handle":"finkd","author_name":"Mark Zuckerberg","created_at":"2026-11-05T18:30:24.000Z","text_snippet":"Now in the Muse app: talk with your Muse in real time. And pick from multiple voices 🗣️","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/finkd/status/2118410617698517088"},{"post_id":"2118410619733024774","author_id":"20749410","author_handle":"finkd","author_name":"Mark Zuckerberg","created_at":"2026-11-05T18:30:24.000Z","text_snippet":"Me after today https://t.co/Xw4OAsK9ZQ","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":null,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"replied_to","post_url":"https://x.com/finkd/status/2118410619733024774"},{"post_id":"2118366934047810030","author_id":"1943959732550873091","author_handle":"aladicf","author_name":"Filip","created_at":"2026-11-05T15:36:49.000Z","text_snippet":"@simeonGriggs if im being honest im surprised that there is no mention of Tanstack Router/Start.. i vaguely remember them and Tanner posting about their X web rewrite being done on Tanstack 🤷🏻‍♂️","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/aladicf/status/2118366934047810030"},{"post_id":"2118324461141115325","author_id":"1381045403609600002","author_handle":"LordElak","author_name":"L ﹚","created_at":"2026-11-05T12:48:02.000Z","text_snippet":"Ngl, you guys suck https://t.co/Dv1iA6A8fo","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":null,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/LordElak/status/2118324461141115325"},{"post_id":"2118311153822765356","author_id":"1194838819775770624","author_handle":"Gavin_BTC","author_name":"Gavin🚀","created_at":"2026-11-05T11:55:10.000Z","text_snippet":"@Engineering 披露：5名工程师配合AI，不到半年做出新网页版首版；慢网实验首帖加载从23.9秒降到2.7秒。AI编程的价值，得用省下的等待时间结账。\nhttps://t.co/rscyc4E9oK","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"zh","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/Gavin_BTC/status/2118311153822765356"},{"post_id":"2118307933121573368","author_id":"1818311005698678784","author_handle":"XFreeze","author_name":"X Freeze","created_at":"2026-11-05T11:42:22.000Z","text_snippet":"𝕏 just rebuilt its entire website from scratch, and the speed jump is massive\n\nOn a slow connection, the old X web took more than 22 seconds to show the first post on a profile\n\nThe new 𝕏 web does it ","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/XFreeze/status/2118307933121573368"},{"post_id":"2118205879883649491","author_id":"1253299418079457281","author_handle":"iniya7010","author_name":"Iniya7010","created_at":"2026-11-05T04:56:50.000Z","text_snippet":"https://t.co/3fXaBZwTuu\nX says its updated web app is way faster\nX is moving signed-in users to its new web app one country at a time, but it’s already using the rewrite for X’s logged-out web experie","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/iniya7010/status/2118205879883649491"},{"post_id":"2118204420081258656","author_id":"1167720221513142272","author_handle":"aditya_A17","author_name":"Aten Brown","created_at":"2026-11-05T04:51:02.000Z","text_snippet":"X is set to roll out access to the new X web rewrite in Indonesia. @Iorel_X has already shared the first look of the rewritten X web, which is significantly faster and better than the current one. \n\nI","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/aditya_A17/status/2118204420081258656"},{"post_id":"2118178006669955570","author_id":"1683336596488327168","author_handle":"muskonomy","author_name":"Muskonomy","created_at":"2026-11-05T03:06:05.000Z","text_snippet":"NEWS: X has rebuilt its web app from scratch, and it is far faster.\n\nThe old web stack dated back to 2006 and was holding back growth. X replaced it entirely, alongside a new Android app and a refresh","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/muskonomy/status/2118178006669955570"},{"post_id":"2118175456579223918","author_id":"2081666288158732288","author_handle":"kekiuspisimus","author_name":"Kekius Pisimus","created_at":"2026-11-05T02:55:57.000Z","text_snippet":"@technopisimus They're rebuilding the X Web after they rebuilt the Android app","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/kekiuspisimus/status/2118175456579223918"},{"post_id":"2118149392192655362","author_id":"1041175359364816896","author_handle":"Ralphtan","author_name":"#らる🦁🪽⚡️ᯅ / #Ralphtan 🦁🪽","created_at":"2026-11-05T01:12:23.000Z","text_snippet":"@petersellis via @Engineering https://t.co/XP8nAhNS7g","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":null,"is_ai_related":null,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/Ralphtan/status/2118149392192655362"},{"post_id":"2118138336493609111","author_id":"2087273403182891008","author_handle":"tech_by_pw","author_name":"Tech & AI by PageWatcher","created_at":"2026-11-05T00:28:27.000Z","text_snippet":"🔴 X is moving signed-in users to its new web app one country at a time, already using the rewrite for logged-out users.\n\nStay updated with https://t.co/oCfTZMJZBS, tracking meaningful changes on X and","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/tech_by_pw/status/2118138336493609111"},{"post_id":"2118138014626971925","author_id":"1720665183188922368","author_handle":"grok","author_name":"Grok","created_at":"2026-11-05T00:27:10.000Z","text_snippet":"@ericmass_ @nikitabier The old X web used a 2006-era stack with three separate servers that forced slow client-side rendering. The rewrite unified everything into one modern app (React + Relay + Fasti","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/grok/status/2118138014626971925"},{"post_id":"2118137792358502741","author_id":"275686563","author_handle":"verge","author_name":"The Verge","created_at":"2026-11-05T00:26:17.000Z","text_snippet":"X is moving signed-in users to its new web app one country at a time, but it’s already using the rewrite for X’s logged-out web experience. https://t.co/qJTIqW5YWO","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/verge/status/2118137792358502741"},{"post_id":"2118119938447585622","author_id":"2013613489798160388","author_handle":"AGTPinsights","author_name":"AGTP","created_at":"2026-11-04T23:15:20.000Z","text_snippet":"@colmtuite It is amazing to see that kind of performance jump from a full rewrite. We actually went deeper on the X web rebuild here: https://t.co/48HSikjmOY","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/AGTPinsights/status/2118119938447585622"},{"post_id":"2118118425868583421","author_id":"172200213","author_handle":"alexxubyte","author_name":"Alex Xu","created_at":"2026-11-04T23:09:20.000Z","text_snippet":"The X web rewrite: \n22 seconds → 2.7 seconds on a slow connection. \n\nReally good read on how the team made it happen. https://t.co/a8k8oXprmb","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/alexxubyte/status/2118118425868583421"},{"post_id":"2118109563832680777","author_id":"764483782762172416","author_handle":"Iorel_X","author_name":"Iorel","created_at":"2026-11-04T22:34:07.000Z","text_snippet":"A month before today's news, I posted the very first look at the new 𝕏 web rewrite 👀\n\nAnd the funniest part is how I got access. It all started with something I found on iOS 😂 https://t.co/wu99c1jz16","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/Iorel_X/status/2118109563832680777"},{"post_id":"2118103104461955334","author_id":"50051389","author_handle":"kfirgollan","author_name":"Kfir Gollan","created_at":"2026-11-04T22:08:27.000Z","text_snippet":"The X engineering team rebuilt https://t.co/AL3q8Trgip web interface from scratch. Read this quote from their post\n\nhttps://t.co/QoG2Rz7DtS is the sixth most visited website in the world, according to","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/kfirgollan/status/2118103104461955334"},{"post_id":"2118078712251863384","author_id":"2013613489798160388","author_handle":"AGTPinsights","author_name":"AGTP","created_at":"2026-11-04T20:31:31.000Z","text_snippet":"X just rebuilt its web app, and a profile's first post now loads in 2.7 seconds. Here's what you need to know.\n\nYagiz Nizipli, who leads X web, posted the results on Nov 5. On a slow connection, the o","text_truncated":true,"company":"X","ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/AGTPinsights/status/2118078712251863384"},{"post_id":"2118077341679091903","author_id":"1714081432388190209","author_handle":"PrivateIcedC81","author_name":"Private IcedChicago81","created_at":"2026-11-04T20:26:04.000Z","text_snippet":"𝕏 web rewrite can now load the first post from an account in no less then 2 seconds!\n\nLearn more: https://t.co/3vxsDxiXcd https://t.co/1igV6iNs7c https://t.co/1E59fPV2Lf","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/PrivateIcedC81/status/2118077341679091903"},{"post_id":"2118073665296228863","author_id":"1353836358901501952","author_handle":"AnthropicAI","author_name":"Anthropic","created_at":"2026-11-04T20:11:28.000Z","text_snippet":"We’re sharing how our biology research team worked with Claude to map the first 3D structure of a vault particle from bacterial life.\n\nVault particles are a longstanding mystery. They are barrel-shape","text_truncated":true,"company":null,"ai_models":["Claude"],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/AnthropicAI/status/2118073665296228863"},{"post_id":"2118068347598242141","author_id":"1436604034098606084","author_handle":"dimech_cayden","author_name":"cayden ;)","created_at":"2026-11-04T19:50:20.000Z","text_snippet":"The X web rewrite is rolling out one country at a time.\n\nIt has been optimised to load much faster on slower connections! https://t.co/h8JrmZ6lGH","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/dimech_cayden/status/2118068347598242141"},{"post_id":"2118067227656155309","author_id":"764483782762172416","author_handle":"Iorel_X","author_name":"Iorel","created_at":"2026-11-04T19:45:53.000Z","text_snippet":"The new 𝕏 web is way faster! ⚡\n\nOn a slow connection, the old 𝕏 web took more than 22 seconds to show the first post on a profile. The rewrite does it in 2.7 seconds, about 8x faster. 🔥\n\nIt's rolling ","text_truncated":true,"company":"X","ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/Iorel_X/status/2118067227656155309"},{"post_id":"2118063143167693011","author_id":"2024518793679294464","author_handle":"ClaudeDevs","author_name":"ClaudeDevs","created_at":"2026-11-04T19:29:39.000Z","text_snippet":"Background subagents in Claude Code now use less of your usage limit.\n\nA running subagent updates its status line every 30 seconds, and each update used to re-read its whole conversation. Now Haiku 5.","text_truncated":true,"company":null,"ai_models":["Haiku 5.5"],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/ClaudeDevs/status/2118063143167693011"},{"post_id":"2118055407424082358","author_id":"2533341854","author_handle":"chrisparkX","author_name":"Chris Park","created_at":"2026-11-04T18:58:55.000Z","text_snippet":"This is going to have an immediate impact on user active seconds &amp; other key metrics.\n\nIncredible work doing a complete rewrite of X web. well done @yagiznizipli @Engineering! https://t.co/bP6fmm0","text_truncated":true,"company":"X","ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/chrisparkX/status/2118055407424082358"},{"post_id":"2118051754361159747","author_id":"6844292","author_handle":"Engineering","author_name":"Engineering","created_at":"2026-11-04T18:44:24.000Z","text_snippet":"@yagiznizipli 🚀","text_truncated":false,"company":"X","ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":null,"is_ai_related":null,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"replied_to","post_url":"https://x.com/Engineering/status/2118051754361159747"},{"post_id":"2118051443814928531","author_id":"6844292","author_handle":"Engineering","author_name":"Engineering","created_at":"2026-11-04T18:43:10.000Z","text_snippet":"Three implementations became one, and a profile's first post now loads in 2.7 seconds on a slow connection. Read how we rebuilt X web for speed and efficiency: https://t.co/xSDtGNZcyp","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"quoted","post_url":"https://x.com/Engineering/status/2118051443814928531"},{"post_id":"2118048136270672058","author_id":"1589638196","author_handle":"yagiznizipli","author_name":"Yagiz Nizipli","created_at":"2026-11-04T18:30:01.000Z","text_snippet":"The web rewrite is working.\n\nOn a slow connection, the old X web took more than 22 seconds to show the first post on a profile. The new X web does it in 2.7 seconds. Here's how we did it, and how we'r","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/yagiznizipli/status/2118048136270672058"},{"post_id":"2117963697079374040","author_id":"195586038","author_handle":"aliciapeas","author_name":"Alicia Peas","created_at":"2026-11-04T12:54:29.000Z","text_snippet":"https://t.co/Bp7727eCXs","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":null,"is_ai_related":null,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/aliciapeas/status/2117963697079374040"},{"post_id":"2117710942826123294","author_id":"1353836358901501952","author_handle":"AnthropicAI","author_name":"Anthropic","created_at":"2026-11-03T20:10:08.000Z","text_snippet":"New Anthropic research: progress on provable inference for large language models.\n\nHere, we introduce FlashProve. Building on established cryptographic techniques, FlashProve allows developers to veri","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/AnthropicAI/status/2117710942826123294"},{"post_id":"2117707052948898271","author_id":"1353836358901501952","author_handle":"AnthropicAI","author_name":"Anthropic","created_at":"2026-11-03T19:54:41.000Z","text_snippet":"New Anthropic research: progress on provable inference for large language models.\n\nHere, we introduce FlashProve. Building on established cryptographic techniques, FlashProve allows developers to veri","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/AnthropicAI/status/2117707052948898271"},{"post_id":"2117693181651542387","author_id":"159337660","author_handle":"bcherny","author_name":"Boris Cherny","created_at":"2026-11-03T18:59:33.000Z","text_snippet":"Signing in to your company's plugins one by one is annoying, so we let Claude auto-connect to them now.\n\nTeam and Enterprise admins can set them up, and teammates are connected automatically the first","text_truncated":true,"company":null,"ai_models":["Claude"],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"quoted","post_url":"https://x.com/bcherny/status/2117693181651542387"},{"post_id":"2117680635561312732","author_id":"2024518793679294464","author_handle":"ClaudeDevs","author_name":"ClaudeDevs","created_at":"2026-11-03T18:09:42.000Z","text_snippet":"Users can now auto-connect plugins when they log in to Claude, with MCP servers that accept Claude as a trusted issuer.\n\nIf you’re building plugins for Claude, add support so users get started faster ","text_truncated":true,"company":null,"ai_models":["Claude"],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/ClaudeDevs/status/2117680635561312732"},{"post_id":"2117670658113155075","author_id":"2024518793679294464","author_handle":"ClaudeDevs","author_name":"ClaudeDevs","created_at":"2026-11-03T17:30:03.000Z","text_snippet":"October was a big month for Claude Code 🍁\n\nWe shipped mods, made the desktop app better at running lots of sessions side by side, gave you more insight into where your usage goes, and plenty more. Her","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/ClaudeDevs/status/2117670658113155075"},{"post_id":"2117332449382510884","author_id":"2024518793679294464","author_handle":"ClaudeDevs","author_name":"ClaudeDevs","created_at":"2026-11-02T19:06:08.000Z","text_snippet":"Message threads are now in public beta on the Messages API.\n\nThe API caches your conversation on the server between turns, so instead of resending the full conversation, you send only new messages and","text_truncated":true,"company":null,"ai_models":["Claude"],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/ClaudeDevs/status/2117332449382510884"},{"post_id":"2116957135661945283","author_id":"33836629","author_handle":"karpathy","author_name":"Andrej Karpathy","created_at":"2026-11-01T18:14:46.000Z","text_snippet":"Weekend hack: HackerTube. I was annoyed with YouTube's recommendations so I had Claude filter down 43M comments over 20 years of HN to 6,454 videos that keep being recommended. *Significantly* better ","text_truncated":true,"company":null,"ai_models":["Opus 5.5","Claude"],"like_count":51840,"retweet_count":4771,"reply_count":2334,"quote_count":1767,"bookmark_count":43432,"impression_count":5342584,"engagement":104144,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/karpathy/status/2116957135661945283"},{"post_id":"2116349211549843666","author_id":"1353836358901501952","author_handle":"AnthropicAI","author_name":"Anthropic","created_at":"2026-10-31T01:59:06.000Z","text_snippet":"New Anthropic research: Automating subtle emergent misalignment research.\n\nRed-teaming is a vital part of model safety testing, but it’s also limited by researchers’ time. To see if we could automate ","text_truncated":true,"company":null,"ai_models":["Claude"],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/AnthropicAI/status/2116349211549843666"},{"post_id":"2114773600574279837","author_id":"2070631956824698880","author_handle":"JensenHuang","author_name":"Jensen Huang","created_at":"2026-10-26T17:38:11.000Z","text_snippet":"I was the opening act for a family of ducks.\n\nThank you, Berlin. What a GTC.\n\nEurope is building its AI ecosystem and economy, from AI factories to agents to robots.\n\nDSX POD: Vera Rubin modular facto","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"quoted","post_url":"https://x.com/JensenHuang/status/2114773600574279837"},{"post_id":"2112892178535985356","author_id":"770254611475271681","author_handle":"pollenrobotics","author_name":"Pollen Robotics","created_at":"2026-10-21T13:02:05.000Z","text_snippet":"Microducks on stage for Jensen Huang’s famous keynote!\nWe couldn’t be prouder of our little ones. 🥹 https://t.co/QGXE7cxxLa","text_truncated":false,"company":"NVIDIA","ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":null,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/pollenrobotics/status/2112892178535985356"},{"post_id":"2111522655224696942","author_id":"1687573409457135616","author_handle":"wowchaaa","author_name":"woushounou: Z.M.","created_at":"2026-10-17T18:20:05.000Z","text_snippet":"@KenXieFortinet @Fortinet —\n@OllieWickenden \n@kailanmason_ \n@BaileyBeaucha14 \n@Dinosaur_Tail_ \n—\n—\n@AlgChinaEmbassy \n@EnSctlndEmbassy \n—\n@instagramdzayer \n@instagram \n@Polaroid\n\nhttps://t.co/gJRUFF1HA","text_truncated":true,"company":null,"ai_models":[],"like_count":0,"retweet_count":0,"reply_count":0,"quote_count":0,"bookmark_count":0,"impression_count":1,"engagement":0,"metrics_present":true,"lang":null,"is_ai_related":null,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"quoted,replied_to","post_url":"https://x.com/wowchaaa/status/2111522655224696942"},{"post_id":"2111522099923685589","author_id":"1687573409457135616","author_handle":"wowchaaa","author_name":"woushounou: Z.M.","created_at":"2026-10-17T18:17:53.000Z","text_snippet":"@KenXieFortinet \n\n—\n@AlgChinaEmbassy  \n—\n\nhttps://t.co/xIaYaQLMPF \nhttps://t.co/jVJCLyW9ot \n\n—\n@EnSctlndEmbassy \n—\n\nhttps://t.co/2dcmR6ariQ \nhttps://t.co/Vb13XkCRBF https://t.co/oz4MugysJL","text_truncated":false,"company":null,"ai_models":[],"like_count":0,"retweet_count":0,"reply_count":0,"quote_count":1,"bookmark_count":0,"impression_count":10,"engagement":1,"metrics_present":true,"lang":null,"is_ai_related":null,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"quoted","post_url":"https://x.com/wowchaaa/status/2111522099923685589"},{"post_id":"2111203028141531391","author_id":"6844292","author_handle":"Engineering","author_name":"Engineering","created_at":"2026-10-16T21:10:00.000Z","text_snippet":"RT @santiagomed: Ever wondered what it takes to ship an encrypted chat API?\n\nI wrote up how to build on the 𝕏 Chat API and a sneak peak on…","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"retweeted","post_url":"https://x.com/Engineering/status/2111203028141531391"},{"post_id":"2111171539479711824","author_id":"1215441834412953600","author_handle":"santiagomed","author_name":"Santiago","created_at":"2026-10-16T19:04:53.000Z","text_snippet":"Ever wondered what it takes to ship an encrypted chat API?\n\nI wrote up how to build on the 𝕏 Chat API and a sneak peak on how we built it https://t.co/kX7HIn4I86","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/santiagomed/status/2111171539479711824"},{"post_id":"2110778025629347999","author_id":"20749410","author_handle":"finkd","author_name":"Mark Zuckerberg","created_at":"2026-10-15T17:01:12.000Z","text_snippet":"Muse Spark Open -- weights releasing today -- runs great on new Mac Studios thanks to work with @johnternus and Apple. https://t.co/U2wJNrKBOg","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/finkd/status/2110778025629347999"},{"post_id":"2110517572575895671","author_id":"1034844617261248512","author_handle":"AIatMeta","author_name":"AI at Meta","created_at":"2026-10-14T23:46:15.000Z","text_snippet":"Watch the full convo with @finkd, @alexandr_wang and @collision:\n\nhttps://t.co/AJ9GHXjB2d","text_truncated":false,"company":null,"ai_models":[],"like_count":24,"retweet_count":0,"reply_count":1,"quote_count":1,"bookmark_count":11,"impression_count":13683,"engagement":37,"metrics_present":true,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"quoted,replied_to","post_url":"https://x.com/AIatMeta/status/2110517572575895671"},{"post_id":"2110399597088477681","author_id":"1034844617261248512","author_handle":"AIatMeta","author_name":"AI at Meta","created_at":"2026-10-14T15:57:27.000Z","text_snippet":"@finkd and @alexandr_wang talk Muse Wonder and all things MSL with @collision.\n\nWatch the full convo: https://t.co/AJ9GHXj3cF https://t.co/cA40AVCOqI","text_truncated":false,"company":null,"ai_models":[],"like_count":120,"retweet_count":12,"reply_count":15,"quote_count":2,"bookmark_count":21,"impression_count":27593,"engagement":170,"metrics_present":true,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"quoted","post_url":"https://x.com/AIatMeta/status/2110399597088477681"},{"post_id":"2110116688507355620","author_id":"20749410","author_handle":"finkd","author_name":"Mark Zuckerberg","created_at":"2026-10-13T21:13:17.000Z","text_snippet":"@Wahndo_ that's just my face","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":null,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"replied_to","post_url":"https://x.com/finkd/status/2110116688507355620"},{"post_id":"2110115454907826499","author_id":"20749410","author_handle":"finkd","author_name":"Mark Zuckerberg","created_at":"2026-10-13T21:08:23.000Z","text_snippet":"@etnshow @collision @patrickc I'm confident we can reach the frontier here too","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":null,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"replied_to","post_url":"https://x.com/finkd/status/2110115454907826499"},{"post_id":"2110056110107337021","author_id":"1965352399322640384","author_handle":"etnshow","author_name":"etn.","created_at":"2026-10-13T17:12:34.000Z","text_snippet":"Introducing The Cheeky Pint Benchmark.\n\nWe made our intern watch every episode of Cheeky Pint to bring you this breakdown of pints drank by guests to the nearest sixth.\n\nCongratulations to @elonmusk w","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/etnshow/status/2110056110107337021"},{"post_id":"2109800073865642114","author_id":"944004195534983168","author_handle":"Wahndo_","author_name":"wahndo","created_at":"2026-10-13T00:15:10.000Z","text_snippet":"zuck is getting a lot of hate for this video but (1) guinness is performative at best and (2) he had two beers during the interview https://t.co/6dVFA78nZV","text_truncated":false,"company":"Meta","ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/Wahndo_/status/2109800073865642114"},{"post_id":"2108035064441520342","author_id":"2070631956824698880","author_handle":"JensenHuang","author_name":"Jensen Huang","created_at":"2026-10-08T03:21:39.000Z","text_snippet":"Awesome day, @satyanadella! \n\nWindows sparked a platform shift that created a new industry for NVIDIA. Then we invented programmable shading GPUs for DirectX, which led to CUDA. \n\nThen we partnered to","text_truncated":true,"company":"Microsoft","ai_models":["GPT"],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"quoted","post_url":"https://x.com/JensenHuang/status/2108035064441520342"},{"post_id":"2107939627898400819","author_id":"20571756","author_handle":"satyanadella","author_name":"Satya Nadella","created_at":"2026-10-07T21:02:25.000Z","text_snippet":"Great to partner with NVIDIA as we kick off this next chapter for Windows.\n\nThank you @JensenHuang and @sriramk for joining us today! https://t.co/Jh1os7T9Zu","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/satyanadella/status/2107939627898400819"},{"post_id":"2105412899225084283","author_id":"6844292","author_handle":"Engineering","author_name":"Engineering","created_at":"2026-09-30T21:42:06.000Z","text_snippet":"RT @kyletruong: First week at @X done and first big ship: introducing 23 new X Chat endpoints!","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"retweeted","post_url":"https://x.com/Engineering/status/2105412899225084283"},{"post_id":"2105404937052299450","author_id":"37363664","author_handle":"kyletruong","author_name":"Kyle","created_at":"2026-09-30T21:10:28.000Z","text_snippet":"First week at @X done and first big ship: introducing 23 new X Chat endpoints! https://t.co/d16A9rExa0","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"quoted","post_url":"https://x.com/kyletruong/status/2105404937052299450"},{"post_id":"2105348324484342238","author_id":"2070631956824698880","author_handle":"JensenHuang","author_name":"Jensen Huang","created_at":"2026-09-30T17:25:30.000Z","text_snippet":"Yesterday at the White House, leaders from across our industry came together to sign the White House Accord on Super Intelligence.\n\nThe principle is simple: the companies building this technology have","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/JensenHuang/status/2105348324484342238"},{"post_id":"2104501815484264479","author_id":"2070631956824698880","author_handle":"JensenHuang","author_name":"Jensen Huang","created_at":"2026-09-28T09:21:47.000Z","text_snippet":"NVIDIA Open Agent Safety Platform Reference Design combines NVIDIA OpenShell and NVIDIA Sentry.\n\nOpenShell is an open-source secure runtime that gives AI agents clear, enforceable boundaries. It trace","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"replied_to","post_url":"https://x.com/JensenHuang/status/2104501815484264479"},{"post_id":"2104499465055023424","author_id":"2070631956824698880","author_handle":"JensenHuang","author_name":"Jensen Huang","created_at":"2026-09-28T09:12:26.000Z","text_snippet":"Today, with over 100 industry partners, we introduced the NVIDIA Open Agent Safety Platform, bringing together OpenShell and Sentry.\n\nArtificial intelligence is extraordinary technology that will adva","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/JensenHuang/status/2104499465055023424"},{"post_id":"2102544948486603009","author_id":"6844292","author_handle":"Engineering","author_name":"Engineering","created_at":"2026-09-22T23:45:53.000Z","text_snippet":"Livestream API ✅ \n\nStreaming on X ✅ https://t.co/tgPStX8E0t","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"quoted","post_url":"https://x.com/Engineering/status/2102544948486603009"},{"post_id":"2102538449597468994","author_id":"6844292","author_handle":"Engineering","author_name":"Engineering","created_at":"2026-09-22T23:20:04.000Z","text_snippet":"RT @mike_rosinsky: One of my favorite verticals that I've worked on, and there's so much more to come.\n\nA world-class streaming platform ne…","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"retweeted","post_url":"https://x.com/Engineering/status/2102538449597468994"},{"post_id":"2102535850852553215","author_id":"1830023695835787264","author_handle":"mike_rosinsky","author_name":"Mike Rosinsky","created_at":"2026-09-22T23:09:44.000Z","text_snippet":"One of my favorite verticals that I've worked on, and there's so much more to come.\n\nA world-class streaming platform needs a world-class API to match. Now it's here.\n\nTell your favorite streaming sof","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"quoted","post_url":"https://x.com/mike_rosinsky/status/2102535850852553215"},{"post_id":"2102442885828260350","author_id":"6844292","author_handle":"Engineering","author_name":"Engineering","created_at":"2026-09-22T17:00:20.000Z","text_snippet":"RT @chat: X Numbers are here.\n\nShare yours with anyone you want to contact you, even if you don't follow them. It's an optional way for peo…","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"retweeted","post_url":"https://x.com/Engineering/status/2102442885828260350"},{"post_id":"2102442240354165057","author_id":"1928879631526141952","author_handle":"chat","author_name":"XChat","created_at":"2026-09-22T16:57:46.000Z","text_snippet":"X Numbers are here.\n\nShare yours with anyone you want to contact you, even if you don't follow them. It's an optional way for people to message or call you, without you needing to accept requests or f","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":false,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/chat/status/2102442240354165057"},{"post_id":"2093831959784915036","author_id":"6844292","author_handle":"Engineering","author_name":"Engineering","created_at":"2026-08-29T22:43:35.000Z","text_snippet":"RT @santiagomed: The @XDevelopers and @bot team worked tirelessly this week to make the X in Grok Bot experience as seamless as possible.…","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"retweeted","post_url":"https://x.com/Engineering/status/2093831959784915036"},{"post_id":"2093830254712242205","author_id":"1215441834412953600","author_handle":"santiagomed","author_name":"Santiago","created_at":"2026-08-29T22:36:48.000Z","text_snippet":"The @XDevelopers and @bot team worked tirelessly this week to make the X in Grok Bot experience as seamless as possible.\n\nOn top of the included credits to Grok Bot users, this week we started giving ","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"quoted","post_url":"https://x.com/santiagomed/status/2093830254712242205"},{"post_id":"2090900581674098976","author_id":"6844292","author_handle":"Engineering","author_name":"Engineering","created_at":"2026-08-21T20:35:20.000Z","text_snippet":"RT @santiagomed: We're building the Everything API so agents can work across X and beyond.\n\nTo get started with the X Ads MCP, assign your…","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"retweeted","post_url":"https://x.com/Engineering/status/2090900581674098976"},{"post_id":"2090895753527144743","author_id":"1215441834412953600","author_handle":"santiagomed","author_name":"Santiago","created_at":"2026-08-21T20:16:09.000Z","text_snippet":"We're building the Everything API so agents can work across X and beyond.\n\nTo get started with the X Ads MCP, assign your developer app to an Ads project at https://t.co/gjk1mkIeYj https://t.co/Nh8VfM","text_truncated":true,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":"en","is_ai_related":true,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"quoted","post_url":"https://x.com/santiagomed/status/2090895753527144743"},{"post_id":"2087954374072893897","author_id":"6844292","author_handle":"Engineering","author_name":"Engineering","created_at":"2026-08-13T17:28:09.000Z","text_snippet":"RT @XOpenSource: https://t.co/soxNY8YdP7","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":null,"is_ai_related":null,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"retweeted","post_url":"https://x.com/Engineering/status/2087954374072893897"},{"post_id":"2087951962004230428","author_id":"2085518049571217408","author_handle":"XOpenSource","author_name":"X Open Source","created_at":"2026-08-13T17:18:34.000Z","text_snippet":"https://t.co/soxNY8YdP7","text_truncated":false,"company":null,"ai_models":[],"like_count":null,"retweet_count":null,"reply_count":null,"quote_count":null,"bookmark_count":null,"impression_count":null,"engagement":null,"metrics_present":false,"lang":null,"is_ai_related":null,"is_formal_monitor_post":false,"slack_delivered":null,"post_type":"original","post_url":"https://x.com/XOpenSource/status/2087951962004230428"}]};
+/* X · AI READER — x_messages graph (offline, no libraries) */
+(function () {
+  "use strict";
+
+  const posts = (typeof DATA !== "undefined" && Array.isArray(DATA.posts)) ? DATA.posts : [];
+  const maxEngagement = posts.reduce(function (m, p) {
+    return (p.engagement != null && p.engagement > m) ? p.engagement : m;
+  }, 0);
+
+  const COMPANY_COLOR = {
+    Anthropic: "#e8a87c",
+    X: "#e7e9ea",
+    Meta: "#5aa8ff",
+    xAI: "#c6f542",
+    Google: "#7ab8ff",
+    NVIDIA: "#8adf00",
+    Microsoft: "#54c4f0"
+  };
+
+  const COL = {
+    bg: "#05060c",
+    hub: "#e8fbff",
+    hubGlow: "#4de0ff",
+    author: "#8eb0ff",
+    authorFill: "#1a2a55",
+    postAI: "#3ee0c5",
+    postNot: "#7c8499",
+    postUnk: "#4a5162",
+    company: "#f0c36a",
+    model: "#f472e8",
+    edgeHub: "rgba(77,224,255,0.28)",
+    edgeAuthor: "rgba(142,176,255,0.22)",
+    edgeCompany: "rgba(240,195,106,0.28)",
+    edgeModel: "rgba(244,114,232,0.26)",
+    label: "rgba(230,238,255,0.92)",
+    mute: "rgba(230,238,255,0.22)",
+    grid: "rgba(90,150,190,0.055)"
+  };
+
+  const canvas = document.getElementById("stage");
+  const ctx = canvas.getContext("2d", { alpha: false });
+  const hubLogo = new Image();
+  hubLogo.decoding = "async";
+  hubLogo.src = "assets/cir-logo.png";
+  hubLogo.onload = function () { /* redraw picks up logo on next frame */ };
+  const tooltip = document.getElementById("tooltip");
+  const searchInput = document.getElementById("search");
+  const replayBtn = document.getElementById("replay");
+  const filterBar = document.getElementById("filters");
+  const showingEl = document.getElementById("showing");
+  const rangeEl = document.getElementById("range");
+  const statEls = {
+    posts: document.getElementById("stat-posts"),
+    authors: document.getElementById("stat-authors"),
+    companies: document.getElementById("stat-companies"),
+    models: document.getElementById("stat-models"),
+    slack: document.getElementById("stat-slack")
+  };
+
+  const nodes = [];
+  const edges = [];
+  const nodeById = new Map();
+  let w = 0, h = 0, dpr = 1, cx = 0, cy = 0;
+  let hover = null, selected = null, dragging = null;
+  let dragMoved = false, dragOffX = 0, dragOffY = 0;
+  let pointerX = 0, pointerY = 0;
+  let running = true;
+  let revealT0 = 0;
+  let clock = 0;
+  let reducedMotion = false;
+  try {
+    reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  } catch (e) { reducedMotion = false; }
+
+  const state = {
+    query: "",
+    filters: { ai: false, delivered: false, company: false, model: false }
+  };
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  function vancouverParts(iso) {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return { pretty: String(iso || "—"), offset: "" };
+    const pretty = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Vancouver",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true
+    }).format(d);
+    let offset = "";
+    const tzPart = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Vancouver",
+      timeZoneName: "shortOffset",
+      hour: "2-digit"
+    }).formatToParts(d).find(function (p) { return p.type === "timeZoneName"; });
+    if (tzPart && tzPart.value) {
+      const m = tzPart.value.match(/([+-])(\d{1,2})(?::?(\d{2}))?/);
+      if (m) {
+        const hh = String(parseInt(m[2], 10));
+        offset = "UTC" + m[1] + hh + (m[3] && m[3] !== "00" ? ":" + m[3] : "");
+      } else {
+        offset = tzPart.value;
+      }
+    }
+    return { pretty: pretty, offset: offset };
+  }
+
+  function vancouverLabel(iso) {
+    const p = vancouverParts(iso);
+    if (p.offset) return p.pretty + " America/Vancouver (" + p.offset + ")";
+    return p.pretty + " America/Vancouver";
+  }
+
+  function fmtNum(n) {
+    if (n == null) return "—";
+    return Number(n).toLocaleString("en-US");
+  }
+
+  function uniqueSorted(arr) {
+    return Array.from(new Set(arr)).sort(function (a, b) {
+      return String(a).localeCompare(String(b));
+    });
+  }
+
+  const authorsMap = new Map();
+  const companyCounts = new Map();
+  const modelCounts = new Map();
+  let slackCount = 0;
+  let minCreated = null, maxCreated = null;
+
+  posts.forEach(function (p) {
+    const hdl = p.author_handle || "unknown";
+    if (!authorsMap.has(hdl)) {
+      authorsMap.set(hdl, {
+        handle: hdl,
+        name: p.author_name || hdl,
+        author_id: p.author_id,
+        count: 0,
+        posts: []
+      });
+    }
+    const a = authorsMap.get(hdl);
+    a.count += 1;
+    a.posts.push(p);
+    if (p.company) companyCounts.set(p.company, (companyCounts.get(p.company) || 0) + 1);
+    (p.ai_models || []).forEach(function (m) {
+      if (m) modelCounts.set(m, (modelCounts.get(m) || 0) + 1);
+    });
+    if (p.slack_delivered === true) slackCount += 1;
+    if (p.created_at) {
+      const t = Date.parse(p.created_at);
+      if (!isNaN(t)) {
+        if (minCreated == null || t < minCreated) minCreated = t;
+        if (maxCreated == null || t > maxCreated) maxCreated = t;
+      }
+    }
+  });
+
+  const authorList = Array.from(authorsMap.values()).sort(function (a, b) {
+    return b.count - a.count || a.handle.localeCompare(b.handle);
+  });
+  const companyList = Array.from(companyCounts.keys()).sort(function (a, b) {
+    return companyCounts.get(b) - companyCounts.get(a) || a.localeCompare(b);
+  });
+  const modelList = Array.from(modelCounts.keys()).sort(function (a, b) {
+    return modelCounts.get(b) - modelCounts.get(a) || a.localeCompare(b);
+  });
+
+  const STATS = {
+    posts: posts.length,
+    authors: authorList.length,
+    companies: companyList.length,
+    models: modelList.length,
+    slack: slackCount
+  };
+
+  function postColor(p) {
+    if (p.company && COMPANY_COLOR[p.company]) return COMPANY_COLOR[p.company];
+    if (p.is_ai_related === true) return COL.postAI;
+    if (p.is_ai_related === false) return COL.postNot;
+    return COL.postUnk;
+  }
+
+  function postRadius(p) {
+    if (p.engagement == null) return 3.6;
+    const v = Math.log10(1 + p.engagement);
+    const vmax = Math.log10(1 + (maxEngagement || 1));
+    return 3.6 + 9.5 * (v / vmax);
+  }
+
+  function authorRadius(count) {
+    const maxC = authorList.length ? authorList[0].count : 1;
+    return 7 + 10 * Math.sqrt(count / maxC);
+  }
+
+  function addNode(n) {
+    n.vx = 0;
+    n.vy = 0;
+    n.x = 0;
+    n.y = 0;
+    n.px = 0;
+    n.py = 0;
+    n.appear = 0;
+    n.gen = n.gen || 0;
+    n.delay = n.delay || 0;
+    nodeById.set(n.id, n);
+    nodes.push(n);
+    return n;
+  }
+
+  function addEdge(a, b, kind) {
+    edges.push({ a: a, b: b, kind: kind, phase: Math.random() });
+  }
+
+  const hub = addNode({
+    id: "hub",
+    type: "hub",
+    label: "CIR · AI power",
+    r: 38,
+    gen: 0,
+    delay: 0,
+    mass: 8
+  });
+
+  authorList.forEach(function (a, i) {
+    addNode({
+      id: "a:" + a.handle,
+      type: "author",
+      handle: a.handle,
+      name: a.name,
+      count: a.count,
+      label: "@" + a.handle,
+      r: authorRadius(a.count),
+      gen: 1,
+      delay: 0.18 + (i / Math.max(1, authorList.length - 1)) * 0.7,
+      mass: 2.2
+    });
+    addEdge(hub, nodeById.get("a:" + a.handle), "hub");
+  });
+
+  posts.forEach(function (p, i) {
+    const authorNode = nodeById.get("a:" + p.author_handle);
+    const n = addNode({
+      id: "p:" + p.post_id,
+      type: "post",
+      post: p,
+      label: "@" + p.author_handle,
+      r: postRadius(p),
+      color: postColor(p),
+      gen: 2,
+      delay: 0.7 + (i / Math.max(1, posts.length - 1)) * 1.15,
+      mass: 1
+    });
+    if (authorNode) addEdge(authorNode, n, "author");
+  });
+
+  companyList.forEach(function (c, i) {
+    addNode({
+      id: "c:" + c,
+      type: "company",
+      label: c,
+      count: companyCounts.get(c),
+      color: COMPANY_COLOR[c] || COL.company,
+      r: 8 + Math.min(10, companyCounts.get(c) * 0.45),
+      gen: 3,
+      delay: 1.6 + (i / Math.max(1, companyList.length - 1)) * 0.5,
+      mass: 2.4
+    });
+  });
+
+  modelList.forEach(function (m, i) {
+    addNode({
+      id: "m:" + m,
+      type: "model",
+      label: m,
+      count: modelCounts.get(m),
+      r: 7 + Math.min(8, modelCounts.get(m) * 0.55),
+      gen: 3,
+      delay: 1.85 + (i / Math.max(1, modelList.length - 1)) * 0.55,
+      mass: 2.2
+    });
+  });
+
+  posts.forEach(function (p) {
+    const pn = nodeById.get("p:" + p.post_id);
+    if (!pn) return;
+    if (p.company && nodeById.has("c:" + p.company)) {
+      addEdge(pn, nodeById.get("c:" + p.company), "company");
+    }
+    (p.ai_models || []).forEach(function (m) {
+      if (nodeById.has("m:" + m)) addEdge(pn, nodeById.get("m:" + m), "model");
+    });
+  });
+
+  const adj = new Map();
+  nodes.forEach(function (n) { adj.set(n, []); });
+  edges.forEach(function (e) {
+    adj.get(e.a).push(e.b);
+    adj.get(e.b).push(e.a);
+  });
+
+  function seedLayout() {
+    cx = w / 2;
+    cy = h / 2 + 8;
+    hub.x = cx;
+    hub.y = cy;
+    const minDim = Math.min(w, h);
+    const R_a = minDim * 0.236;
+    const authors = nodes.filter(function (n) { return n.type === "author"; });
+    authors.forEach(function (n, i) {
+      const ang = -Math.PI / 2 + (i / authors.length) * Math.PI * 2;
+      n.x = cx + Math.cos(ang) * R_a;
+      n.y = cy + Math.sin(ang) * R_a;
+    });
+    authors.forEach(function (an) {
+      const kids = adj.get(an).filter(function (n) { return n.type === "post"; });
+      const a0 = Math.atan2(an.y - cy, an.x - cx);
+      const nK = kids.length;
+      const spread = Math.min(2.6, 0.42 * nK);
+      kids.forEach(function (p, i) {
+        const t = nK === 1 ? 0 : (i - (nK - 1) / 2) * (spread / Math.max(1, nK - 1));
+        const r = 52 + nK * 2.2 + p.r * 1.5;
+        p.x = an.x + Math.cos(a0 + t) * r;
+        p.y = an.y + Math.sin(a0 + t) * r;
+      });
+    });
+    const entities = nodes.filter(function (n) { return n.type === "company" || n.type === "model"; });
+    const R_e = minDim * 0.40;
+    entities.forEach(function (n, i) {
+      const ang = -Math.PI / 2 + 0.22 + (i / Math.max(1, entities.length)) * Math.PI * 2;
+      const wobble = n.type === "model" ? 18 : -8;
+      n.x = cx + Math.cos(ang) * (R_e + wobble);
+      n.y = cy + Math.sin(ang) * (R_e + wobble);
+    });
+  }
+
+  function restLength(e) {
+    if (e.kind === "hub") return Math.min(w, h) * 0.236;
+    if (e.kind === "author") return 62 + e.b.r;
+    if (e.kind === "company") return 150;
+    if (e.kind === "model") return 140;
+    return 80;
+  }
+
+  function simulate(steps, temp) {
+    const n = nodes.length;
+    const kr = 1650;
+    const damp = 0.76;
+    for (let s = 0; s < steps; s++) {
+      const heat = temp == null ? 1 : temp;
+      for (let i = 0; i < n; i++) {
+        nodes[i].fx = 0;
+        nodes[i].fy = 0;
+      }
+      for (let i = 0; i < n; i++) {
+        const a = nodes[i];
+        for (let j = i + 1; j < n; j++) {
+          const b = nodes[j];
+          let dx = b.x - a.x;
+          let dy = b.y - a.y;
+          let d2 = dx * dx + dy * dy;
+          if (d2 < 0.25) {
+            dx = (Math.random() - 0.5) * 0.4;
+            dy = (Math.random() - 0.5) * 0.4;
+            d2 = dx * dx + dy * dy;
+          }
+          if (d2 > 420 * 420) continue;
+          const d = Math.sqrt(d2);
+          const f = (kr * heat) / d2;
+          const inv = f / d;
+          const ma = a.mass || 1, mb = b.mass || 1;
+          a.fx -= dx * inv / ma;
+          a.fy -= dy * inv / ma;
+          b.fx += dx * inv / mb;
+          b.fy += dy * inv / mb;
+        }
+      }
+      for (let k = 0; k < edges.length; k++) {
+        const e = edges[k];
+        const a = e.a, b = e.b;
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const d = Math.sqrt(dx * dx + dy * dy) + 0.001;
+        const rest = restLength(e);
+        const ks = e.kind === "hub" ? 0.045 : e.kind === "author" ? 0.085 : 0.028;
+        const f = (d - rest) * ks * heat;
+        const fx = (dx / d) * f;
+        const fy = (dy / d) * f;
+        const ma = a.mass || 1, mb = b.mass || 1;
+        a.fx += fx / ma;
+        a.fy += fy / ma;
+        b.fx -= fx / mb;
+        b.fy -= fy / mb;
+      }
+      const R_a = Math.min(w, h) * 0.236;
+      const R_e = Math.min(w, h) * 0.40;
+      for (let i = 0; i < n; i++) {
+        const nd = nodes[i];
+        if (nd.type === "hub") continue;
+        const dx = nd.x - cx;
+        const dy = nd.y - cy;
+        const dist = Math.sqrt(dx * dx + dy * dy) + 0.001;
+        let target = R_a;
+        let kg = 0.012;
+        if (nd.type === "post") { target = R_a + 70; kg = 0.006; }
+        if (nd.type === "company") { target = R_e - 8; kg = 0.02; }
+        if (nd.type === "model") { target = R_e + 16; kg = 0.02; }
+        const g = (target - dist) * kg * heat;
+        nd.fx += (dx / dist) * g;
+        nd.fy += (dy / dist) * g;
+      }
+      hub.fx += (cx - hub.x) * 0.25;
+      hub.fy += (cy - hub.y) * 0.25;
+
+      const pad = 36;
+      for (let i = 0; i < n; i++) {
+        const nd = nodes[i];
+        if (nd.pinned) continue;
+        nd.vx = (nd.vx + nd.fx) * damp;
+        nd.vy = (nd.vy + nd.fy) * damp;
+        const sp = Math.hypot(nd.vx, nd.vy);
+        const cap = 9 * heat;
+        if (sp > cap) {
+          nd.vx = nd.vx / sp * cap;
+          nd.vy = nd.vy / sp * cap;
+        }
+        nd.x += nd.vx;
+        nd.y += nd.vy;
+        if (nd.x < pad) nd.x = pad;
+        if (nd.y < pad) nd.y = pad;
+        if (nd.x > w - pad) nd.x = w - pad;
+        if (nd.y > h - pad) nd.y = h - pad;
+      }
+      hub.x = cx;
+      hub.y = cy;
+      hub.vx = 0;
+      hub.vy = 0;
+    }
+  }
+
+  function resize() {
+    dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    w = Math.max(1, window.innerWidth);
+    h = Math.max(1, window.innerHeight);
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const first = !hub.x && !hub.y;
+    const ox = cx, oy = cy;
+    cx = w / 2;
+    cy = h / 2 + 8;
+    if (first) {
+      seedLayout();
+      simulate(320, 1);
+      simulate(80, 0.45);
+      nodes.forEach(function (n) {
+        n.px = n.x;
+        n.py = n.y;
+        n.vx = 0;
+        n.vy = 0;
+      });
+    } else {
+      const dx = cx - ox, dy = cy - oy;
+      nodes.forEach(function (n) {
+        n.x += dx;
+        n.y += dy;
+        n.px = n.x;
+        n.py = n.y;
+      });
+    }
+  }
+
+  function easeOutCubic(t) {
+    const x = Math.max(0, Math.min(1, t));
+    return 1 - Math.pow(1 - x, 3);
+  }
+
+  function revealProgress(now) {
+    const t = reducedMotion ? 10 : (now - revealT0) / 1000;
+    nodes.forEach(function (n) {
+      n.appear = easeOutCubic((t - n.delay) / 0.42);
+    });
+  }
+
+  function startReveal() {
+    revealT0 = performance.now();
+    if (reducedMotion) {
+      nodes.forEach(function (n) { n.appear = 1; });
+    }
+    animateStats();
+  }
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function visualPos(n) {
+    const t = n.appear;
+    if (t >= 1) return { x: n.x, y: n.y };
+    if (t <= 0) return { x: hub.x, y: hub.y };
+    const e = easeOutCubic(t);
+    return { x: lerp(hub.x, n.x, e), y: lerp(hub.y, n.y, e) };
+  }
+
+  function postVisibleByFilter(p) {
+    if (state.filters.ai && p.is_ai_related !== true) return false;
+    if (state.filters.delivered && p.slack_delivered !== true) return false;
+    if (state.filters.company && !p.company) return false;
+    if (state.filters.model && !(p.ai_models && p.ai_models.length)) return false;
+    return true;
+  }
+
+  function textMatch(n, q) {
+    if (!q) return true;
+    if (n.type === "hub") {
+      const hay = (n.label + " cir opencir ai power x ai reader x_messages").toLowerCase();
+      return hay.indexOf(q) !== -1;
+    }
+    if (n.type === "author") {
+      return (n.handle && n.handle.toLowerCase().indexOf(q) !== -1) ||
+        (n.name && n.name.toLowerCase().indexOf(q) !== -1);
+    }
+    if (n.type === "company" || n.type === "model") {
+      return n.label.toLowerCase().indexOf(q) !== -1;
+    }
+    if (n.type === "post") {
+      const p = n.post;
+      const bag = [
+        p.author_handle, p.author_name, p.text_snippet, p.company,
+        p.post_id, p.lang, p.post_type, (p.ai_models || []).join(" ")
+      ].join(" ").toLowerCase();
+      return bag.indexOf(q) !== -1;
+    }
+    return false;
+  }
+
+  function computeActive() {
+    const q = state.query;
+    const hasFilter = state.filters.ai || state.filters.delivered || state.filters.company || state.filters.model || !!q;
+    nodes.forEach(function (n) {
+      n.matched = false;
+      n.active = !hasFilter;
+    });
+    if (!hasFilter) {
+      return { hasFilter: false, posts: STATS.posts };
+    }
+    const matched = [];
+    nodes.forEach(function (n) {
+      if (n.type === "post") {
+        n.matched = postVisibleByFilter(n.post) && textMatch(n, q);
+      } else if (n.type === "author") {
+        n.matched = textMatch(n, q) && !state.filters.ai && !state.filters.delivered && !state.filters.company && !state.filters.model ? textMatch(n, q) : false;
+        if (q && textMatch(n, q) && !state.filters.ai && !state.filters.delivered && !state.filters.company && !state.filters.model) {
+          n.matched = true;
+        } else if (q && textMatch(n, q)) {
+          n.matched = true;
+        }
+      } else if (n.type === "company" || n.type === "model") {
+        n.matched = q ? textMatch(n, q) : false;
+      } else if (n.type === "hub") {
+        n.matched = false;
+      }
+    });
+    nodes.forEach(function (n) {
+      if (n.matched) matched.push(n);
+    });
+    const activeSet = new Set(matched);
+    matched.forEach(function (n) {
+      adj.get(n).forEach(function (m) { activeSet.add(m); });
+    });
+    if (q) {
+      nodes.forEach(function (n) {
+        if (n.type === "author" && textMatch(n, q)) {
+          adj.get(n).forEach(function (m) {
+            if (m.type === "post" && postVisibleByFilter(m.post)) {
+              activeSet.add(m);
+              n.matched = true;
+              activeSet.add(n);
+            }
+          });
+        }
+        if ((n.type === "company" || n.type === "model") && textMatch(n, q)) {
+          adj.get(n).forEach(function (m) {
+            if (m.type === "post" && postVisibleByFilter(m.post)) {
+              activeSet.add(m);
+              activeSet.add(n);
+              n.matched = true;
+            }
+          });
+        }
+      });
+    }
+    activeSet.add(hub);
+    nodes.forEach(function (n) { n.active = activeSet.has(n); });
+    let pc = 0;
+    nodes.forEach(function (n) { if (n.type === "post" && n.active) pc += 1; });
+    return { hasFilter: true, posts: pc };
+  }
+
+  function neighborhood(n) {
+    const set = new Set([n]);
+    adj.get(n).forEach(function (m) { set.add(m); });
+    return set;
+  }
+
+  function dimFactor(n) {
+    if (n.appear <= 0) return 0;
+    let base = n.active ? 1 : 0.12;
+    if (selected) {
+      const nb = neighborhood(selected);
+      base *= nb.has(n) ? 1 : 0.08;
+    }
+    if (hover && hover !== n && !selected) {
+      /* slight emphasis on hover handled in stroke */
+    }
+    return base;
+  }
+
+  function drawGrid() {
+    ctx.fillStyle = COL.bg;
+    ctx.fillRect(0, 0, w, h);
+    const step = 42;
+    const ox = (clock * 3) % step;
+    const oy = (clock * 1.6) % step;
+    ctx.beginPath();
+    ctx.strokeStyle = COL.grid;
+    ctx.lineWidth = 1;
+    for (let x = -step + ox; x <= w + step; x += step) {
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, h);
+    }
+    for (let y = -step + oy; y <= h + step; y += step) {
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
+    }
+    ctx.stroke();
+    /* faint radial rings */
+    ctx.beginPath();
+    ctx.strokeStyle = "rgba(77,224,255,0.05)";
+    const minDim = Math.min(w, h);
+    for (let i = 1; i <= 4; i++) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, minDim * 0.1 * i, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    const g = ctx.createRadialGradient(cx, cy, 20, cx, cy, minDim * 0.72);
+    g.addColorStop(0, "rgba(5,8,20,0)");
+    g.addColorStop(1, "rgba(2,3,8,0.55)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+  }
+
+  function edgeColor(kind, alpha) {
+    if (kind === "hub") return "rgba(77,224,255," + alpha + ")";
+    if (kind === "author") return "rgba(142,176,255," + alpha + ")";
+    if (kind === "company") return "rgba(240,195,106," + alpha + ")";
+    if (kind === "model") return "rgba(244,114,232," + alpha + ")";
+    return "rgba(180,200,230," + alpha + ")";
+  }
+
+  function drawEdges(now) {
+    for (let i = 0; i < edges.length; i++) {
+      const e = edges[i];
+      const vis = Math.min(e.a.appear, e.b.appear);
+      if (vis <= 0.02) continue;
+      const pa = visualPos(e.a);
+      const pb = visualPos(e.b);
+      let alpha = 0.22 * vis * Math.min(dimFactor(e.a), dimFactor(e.b));
+      if (selected) {
+        const nb = neighborhood(selected);
+        if (nb.has(e.a) && nb.has(e.b)) alpha = 0.7 * vis;
+        else alpha *= 0.15;
+      }
+      ctx.beginPath();
+      ctx.strokeStyle = edgeColor(e.kind, alpha);
+      ctx.lineWidth = e.kind === "hub" ? 1.15 : 0.9;
+      ctx.moveTo(pa.x, pa.y);
+      ctx.lineTo(pb.x, pb.y);
+      ctx.stroke();
+
+      if (!reducedMotion && vis > 0.6 && alpha > 0.08) {
+        const spd = e.kind === "hub" ? 0.08 : 0.12;
+        const t = (e.phase + now / 1000 * spd) % 1;
+        const px = lerp(pa.x, pb.x, t);
+        const py = lerp(pa.y, pb.y, t);
+        ctx.beginPath();
+        ctx.fillStyle = edgeColor(e.kind, Math.min(0.95, alpha * 3.2));
+        ctx.arc(px, py, e.kind === "hub" ? 1.7 : 1.25, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+
+  function pathShape(n, r, pos) {
+    const x = pos.x, y = pos.y;
+    ctx.beginPath();
+    if (n.type === "hub") {
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+    } else if (n.type === "author") {
+      for (let i = 0; i < 6; i++) {
+        const a = Math.PI / 6 + i * Math.PI / 3;
+        const fn = i ? "lineTo" : "moveTo";
+        ctx[fn](x + Math.cos(a) * r, y + Math.sin(a) * r);
+      }
+      ctx.closePath();
+    } else if (n.type === "company") {
+      const s = r * 0.86;
+      const rr = 3;
+      const l = x - s, t = y - s, w2 = s * 2, h2 = s * 2;
+      ctx.moveTo(l + rr, t);
+      ctx.arcTo(l + w2, t, l + w2, t + h2, rr);
+      ctx.arcTo(l + w2, t + h2, l, t + h2, rr);
+      ctx.arcTo(l, t + h2, l, t, rr);
+      ctx.arcTo(l, t, l + w2, t, rr);
+      ctx.closePath();
+    } else if (n.type === "model") {
+      ctx.moveTo(x, y - r);
+      ctx.lineTo(x + r, y);
+      ctx.lineTo(x, y + r);
+      ctx.lineTo(x - r, y);
+      ctx.closePath();
+    } else {
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+    }
+  }
+
+  function nodeFill(n) {
+    if (n.type === "hub") return COL.hub;
+    if (n.type === "author") return "#8eb0ff";
+    if (n.type === "company") return n.color || COL.company;
+    if (n.type === "model") return COL.model;
+    return n.color || COL.postUnk;
+  }
+
+  function drawNodes(now) {
+    const ordered = nodes.slice().sort(function (a, b) {
+      if (a.type === "hub") return 1;
+      if (b.type === "hub") return -1;
+      return a.r - b.r;
+    });
+    for (let i = 0; i < ordered.length; i++) {
+      const n = ordered[i];
+      if (n.appear <= 0) continue;
+      const pos = visualPos(n);
+      const dim = dimFactor(n);
+      const r = n.r * (0.25 + 0.75 * n.appear);
+      const col = nodeFill(n);
+      const isHot = n === hover || n === selected || n.matched;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0.06, dim);
+      if (n.type === "hub" && !reducedMotion) {
+        const pulse = 1 + 0.06 * Math.sin(now / 700);
+        ctx.save();
+        ctx.globalAlpha = 0.18 * dim;
+        ctx.strokeStyle = COL.hubGlow;
+        ctx.lineWidth = 1.2;
+        ctx.setLineDash([4, 6]);
+        ctx.lineDashOffset = -now / 80;
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, r * 1.85 * pulse, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.restore();
+      }
+      ctx.shadowColor = col;
+      ctx.shadowBlur = (isHot ? 22 : 12) * dim;
+      pathShape(n, r, pos);
+      if (n.type === "hub") {
+        const logoReady = hubLogo && hubLogo.complete && hubLogo.naturalWidth > 0;
+        if (logoReady) {
+          const size = r * 2.15;
+          ctx.shadowColor = COL.hubGlow;
+          ctx.shadowBlur = (isHot ? 30 : 18) * dim;
+          ctx.drawImage(hubLogo, pos.x - size / 2, pos.y - size / 2, size, size);
+          ctx.shadowBlur = 0;
+        } else {
+          ctx.fillStyle = "#0a1a22";
+          ctx.fill();
+          ctx.shadowBlur = 24;
+          ctx.strokeStyle = COL.hubGlow;
+          ctx.lineWidth = 2.2;
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+          ctx.beginPath();
+          ctx.fillStyle = COL.hub;
+          ctx.arc(pos.x, pos.y, 5.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      } else if (n.type === "author") {
+        ctx.fillStyle = "rgba(14,22,48,0.95)";
+        ctx.fill();
+        ctx.shadowBlur = 16;
+        ctx.strokeStyle = col;
+        ctx.lineWidth = isHot ? 2.2 : 1.5;
+        ctx.stroke();
+      } else if (n.type === "company" || n.type === "model") {
+        ctx.fillStyle = col;
+        ctx.globalAlpha = Math.max(0.08, dim * 0.92);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = "rgba(255,255,255,0.35)";
+        ctx.lineWidth = isHot ? 1.6 : 0.8;
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = col;
+        ctx.fill();
+        if (n.post && n.post.slack_delivered === true) {
+          ctx.shadowBlur = 0;
+          ctx.strokeStyle = "#ffd56a";
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        } else if (n.post && n.post.is_formal_monitor_post === true) {
+          ctx.shadowBlur = 0;
+          ctx.strokeStyle = "rgba(255,255,255,0.55)";
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+
+      const showLabel = n.type === "hub" || n.type === "author" || n.type === "company" || n.type === "model" || (n === hover && n.type === "post") || (n === selected && n.type === "post");
+      if (showLabel && n.appear > 0.55 && dim > 0.25) {
+        const label = n.type === "hub" ? "CIR · AI power" : n.label;
+        const fontSize = n.type === "hub" ? 11 : n.type === "author" ? (n.count >= 4 ? 10 : 9) : 9;
+        ctx.save();
+        ctx.globalAlpha = dim * n.appear;
+        ctx.font = (n.type === "hub" ? "600 " : "500 ") + fontSize + "px Avenir Next, Helvetica Neue, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        const ly = pos.y + (n.type === "hub" ? r + 10 : r + 5);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "rgba(5,6,12,0.85)";
+        ctx.strokeText(label, pos.x, ly);
+        ctx.fillStyle = n.type === "hub" ? "#d9f7ff" : COL.label;
+        ctx.fillText(label, pos.x, ly);
+        if (n.type === "author") {
+          ctx.font = "500 8px Avenir Next, Helvetica Neue, sans-serif";
+          ctx.fillStyle = "rgba(180,200,230,0.75)";
+          ctx.fillText(String(n.count), pos.x, ly + 12);
+        }
+        if (n.type === "company" || n.type === "model") {
+          ctx.font = "500 8px Avenir Next, Helvetica Neue, sans-serif";
+          ctx.fillStyle = "rgba(180,200,230,0.7)";
+          ctx.fillText(String(n.count), pos.x, ly + 11);
+        }
+        ctx.restore();
+      }
+    }
+  }
+
+  function hitTest(x, y) {
+    let best = null, bestD = 1e9;
+    for (let i = 0; i < nodes.length; i++) {
+      const n = nodes[i];
+      if (n.appear < 0.3) continue;
+      const p = visualPos(n);
+      const d = Math.hypot(p.x - x, p.y - y);
+      const thresh = Math.max(10, n.r + 8);
+      if (d < thresh && d < bestD) {
+        best = n;
+        bestD = d;
+      }
+    }
+    return best;
+  }
+
+  function metricRow(p) {
+    function cell(label, v) {
+      return "<span class='m'><em>" + esc(label) + "</em> " + esc(fmtNum(v)) + "</span>";
+    }
+    return (
+      cell("Likes", p.like_count) +
+      cell("Reposts", p.retweet_count) +
+      cell("Replies", p.reply_count) +
+      cell("Quotes", p.quote_count) +
+      cell("Bookmarks", p.bookmark_count) +
+      cell("Impressions", p.impression_count)
+    );
+  }
+
+  function tooltipHTML(n) {
+    if (n.type === "hub") {
+      return "<div class='k'>HUB · CIR AI POWER</div><div class='t'>CIR · crawls X messages</div><div class='s'>Open Cyber Threat Intelligence · lab.lab.x_messages · " +
+        STATS.posts + " posts · " + STATS.authors + " authors</div>";
+    }
+    if (n.type === "author") {
+      return "<div class='k'>AUTHOR</div><div class='t'>@" + esc(n.handle) + "</div>" +
+        "<div class='s'>" + esc(n.name) + " · " + n.count + " post" + (n.count === 1 ? "" : "s") + " in this table</div>";
+    }
+    if (n.type === "company") {
+      return "<div class='k'>COMPANY</div><div class='t'>" + esc(n.label) + "</div>" +
+        "<div class='s'>Mentioned on " + n.count + " post" + (n.count === 1 ? "" : "s") + " (non-null company)</div>";
+    }
+    if (n.type === "model") {
+      return "<div class='k'>MODEL</div><div class='t'>" + esc(n.label) + "</div>" +
+        "<div class='s'>Mentioned on " + n.count + " post" + (n.count === 1 ? "" : "s") + " (non-null ai_models)</div>";
+    }
+    const p = n.post;
+    const ai = p.is_ai_related === true ? "AI-related" : p.is_ai_related === false ? "Not AI-related" : "AI flag unknown";
+    const flags = [
+      ai,
+      p.slack_delivered === true ? "Delivered to Slack" : null,
+      p.is_formal_monitor_post === true ? "Formal monitor post" : null,
+      p.company ? ("Company: " + p.company) : null,
+      (p.ai_models && p.ai_models.length) ? ("Models: " + p.ai_models.join(", ")) : null,
+      p.lang ? ("Lang: " + p.lang) : "Lang unknown",
+      p.post_type ? ("Type: " + p.post_type) : null
+    ].filter(Boolean).join(" · ");
+    const snippet = (p.text_snippet || "") + (p.text_truncated ? "…" : "");
+    const metricsNote = p.metrics_present ? "" : "<div class='s'>Engagement metrics are NULL for this row</div>";
+    return "<div class='k'>POST</div><div class='t'>@" + esc(p.author_handle) +
+      (p.author_name && p.author_name !== p.author_handle ? " · " + esc(p.author_name) : "") +
+      "</div><div class='when'>" + esc(vancouverLabel(p.created_at)) + "</div>" +
+      "<div class='tx'>" + esc(snippet) + "</div>" +
+      "<div class='metrics'>" + metricRow(p) + "</div>" + metricsNote +
+      "<div class='s'>" + esc(flags) + "</div>";
+  }
+
+  function placeTooltip(n, ev) {
+    tooltip.innerHTML = tooltipHTML(n);
+    tooltip.hidden = false;
+    const pad = 16;
+    let x = ev.clientX + 16;
+    let y = ev.clientY + 16;
+    const tw = tooltip.offsetWidth || 320;
+    const th = tooltip.offsetHeight || 160;
+    if (x + tw > w - pad) x = ev.clientX - tw - 12;
+    if (y + th > h - pad) y = ev.clientY - th - 12;
+    if (x < pad) x = pad;
+    if (y < pad) y = pad;
+    tooltip.style.left = x + "px";
+    tooltip.style.top = y + "px";
+  }
+
+  function hideTooltip() {
+    tooltip.hidden = true;
+  }
+
+  function setHover(n, ev) {
+    hover = n;
+    if (n && ev) placeTooltip(n, ev);
+    else hideTooltip();
+    canvas.style.cursor = n ? "pointer" : "crosshair";
+  }
+
+  function updateShowing() {
+    const a = computeActive();
+    if (!showingEl) return;
+    if (!a.hasFilter && !selected) {
+      showingEl.textContent = STATS.posts + " posts · " + STATS.authors + " authors · " +
+        STATS.companies + " companies · " + STATS.models + " models";
+    } else if (selected) {
+      const nb = neighborhood(selected);
+      let pc = 0;
+      nb.forEach(function (n) { if (n.type === "post") pc += 1; });
+      showingEl.textContent = "Focused · " + pc + " connected post" + (pc === 1 ? "" : "s") + " · click empty space to clear";
+    } else {
+      showingEl.textContent = "Showing " + a.posts + " of " + STATS.posts + " posts";
+    }
+  }
+
+  function animateStats() {
+    const duration = reducedMotion ? 0 : 900;
+    const t0 = performance.now();
+    const targets = STATS;
+    function step(now) {
+      const t = duration === 0 ? 1 : Math.min(1, (now - t0) / duration);
+      const e = easeOutCubic(t);
+      statEls.posts.textContent = String(Math.round(targets.posts * e));
+      statEls.authors.textContent = String(Math.round(targets.authors * e));
+      statEls.companies.textContent = String(Math.round(targets.companies * e));
+      statEls.models.textContent = String(Math.round(targets.models * e));
+      statEls.slack.textContent = String(Math.round(targets.slack * e));
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function tick(now) {
+    clock = now / 1000;
+    revealProgress(now);
+    if (!dragging) simulate(1, reducedMotion ? 0 : 0.12);
+    drawGrid();
+    drawEdges(now);
+    drawNodes(now);
+    if (running) requestAnimationFrame(tick);
+  }
+
+  canvas.addEventListener("pointermove", function (ev) {
+    pointerX = ev.clientX;
+    pointerY = ev.clientY;
+    if (dragging) {
+      const dx = ev.clientX - dragOffX;
+      const dy = ev.clientY - dragOffY;
+      if (Math.hypot(ev.clientX - dragging.startX, ev.clientY - dragging.startY) > 4) dragMoved = true;
+      dragging.node.x += dx;
+      dragging.node.y += dy;
+      dragging.node.px = dragging.node.x;
+      dragging.node.py = dragging.node.y;
+      dragging.node.vx = 0;
+      dragging.node.vy = 0;
+      dragOffX = ev.clientX;
+      dragOffY = ev.clientY;
+      placeTooltip(dragging.node, ev);
+      return;
+    }
+    setHover(hitTest(ev.clientX, ev.clientY), ev);
+  });
+
+  canvas.addEventListener("pointerdown", function (ev) {
+    const n = hitTest(ev.clientX, ev.clientY);
+    if (n) {
+      dragging = { node: n, startX: ev.clientX, startY: ev.clientY };
+      dragMoved = false;
+      dragOffX = ev.clientX;
+      dragOffY = ev.clientY;
+      n.pinned = true;
+      canvas.setPointerCapture(ev.pointerId);
+    }
+  });
+
+  canvas.addEventListener("pointerup", function (ev) {
+    if (dragging) {
+      const n = dragging.node;
+      if (!dragMoved) {
+        selected = (selected === n) ? null : n;
+        updateShowing();
+      }
+      n.pinned = false;
+      dragging = null;
+    } else {
+      selected = null;
+      updateShowing();
+    }
+    setHover(hitTest(ev.clientX, ev.clientY), ev);
+  });
+
+  canvas.addEventListener("pointerleave", function () {
+    if (!dragging) setHover(null);
+  });
+
+  canvas.addEventListener("pointercancel", function () {
+    if (dragging) {
+      dragging.node.pinned = false;
+      dragging = null;
+    }
+  });
+
+  window.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape") {
+      selected = null;
+      if (searchInput && document.activeElement === searchInput && searchInput.value) {
+        searchInput.value = "";
+        state.query = "";
+      }
+      updateShowing();
+    }
+    if (ev.key === "/" && document.activeElement !== searchInput) {
+      ev.preventDefault();
+      searchInput.focus();
+    }
+  });
+
+  if (searchInput) {
+    searchInput.addEventListener("input", function () {
+      state.query = (searchInput.value || "").trim().toLowerCase();
+      updateShowing();
+    });
+  }
+
+  if (filterBar) {
+    filterBar.addEventListener("click", function (ev) {
+      const btn = ev.target.closest("[data-filter]");
+      if (!btn) return;
+      const key = btn.getAttribute("data-filter");
+      if (key === "all") {
+        state.filters.ai = state.filters.delivered = state.filters.company = state.filters.model = false;
+      } else if (state.filters.hasOwnProperty(key)) {
+        state.filters[key] = !state.filters[key];
+      }
+      Array.prototype.forEach.call(filterBar.querySelectorAll("[data-filter]"), function (b) {
+        const k = b.getAttribute("data-filter");
+        if (k === "all") {
+          const any = state.filters.ai || state.filters.delivered || state.filters.company || state.filters.model;
+          b.classList.toggle("on", !any);
+        } else {
+          b.classList.toggle("on", !!state.filters[k]);
+        }
+      });
+      updateShowing();
+    });
+  }
+
+  if (replayBtn) {
+    replayBtn.addEventListener("click", function () {
+      selected = null;
+      startReveal();
+      updateShowing();
+    });
+  }
+
+  if (rangeEl && minCreated != null && maxCreated != null) {
+    const a = vancouverParts(new Date(minCreated).toISOString());
+    const b = vancouverParts(new Date(maxCreated).toISOString());
+    rangeEl.textContent = a.pretty + "  →  " + b.pretty + "  ·  America/Vancouver";
+  }
+
+  window.addEventListener("resize", resize);
+
+  resize();
+  computeActive();
+  updateShowing();
+  startReveal();
+  requestAnimationFrame(tick);
+})();
+
+  </script>
+</body>
+</html>
